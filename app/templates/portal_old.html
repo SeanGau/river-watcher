@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-hant">
+	<head>
+		<meta charset="UTF-8" />		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+		<title>BCSRCSP</title>
+		<style>
+			table, th, td {
+				border: 1px solid black;
+				border-collapse: collapse;
+				padding: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<input type='text' name='riverid' placeholder='riverid'/><input class="sub-sets" type='button' value='訂閱'/>
+		<h1 id="sub-h1">已訂閱</h1>
+		<ul id="sub-ul">
+		{% for riverid in sub_list %}
+			<li><input class="sub-sets" type="button" value="{{riverid}}"/></li>
+		{% endfor %}
+		</ul>
+		<span id="result">?</span>
+		<script>
+			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+			var sub_list = {{sub_list}};
+			$("body").on('click', '.sub-sets', function() {
+				var clicked_id = $(this).attr("value");
+				var this_sel=$(this);
+				var type="remove";
+				if(clicked_id=="訂閱"){
+					clicked_id = $("input[name='riverid']").val();
+					type="add";
+				}
+				$.getJSON($SCRIPT_ROOT + '/sub', {
+					riverid: clicked_id,
+					type: type
+				}, function(cb) {
+					if(cb.result=="ok"){
+						if(type=="add"){
+							$("#result").text("add: "+clicked_id);
+							$("#sub-ul").append('<li><input class="sub-sets" type="button" value="'+clicked_id+'"/></li>');
+						}
+						else{
+							$("#result").text("remove: "+clicked_id);
+							this_sel.parent('li').remove();									
+						}
+					}
+					else
+						console.log("ERROR!!");
+				});		
+			})
+		</script>
+	</body>
+ </html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-hant">
+	<head>
+		<meta charset="UTF-8" />
+		<title>BCSRCSP</title>
+		<style>
+			table, th, td {
+				border: 1px solid black;
+				border-collapse: collapse;
+				padding: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<table>
+		{% for user in users %}
+			<tr>
+			<td>{{users[user].id}}</td><td>{{user}}</td><td>{{users[user].password}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+    </form>
+	</body>
+ </html>

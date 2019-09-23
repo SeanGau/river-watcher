@@ -1,0 +1,91 @@
+body, #map {
+	height: 100vh;
+	margin: 0;
+}
+
+.leaflet-control-layers {
+	background-color: rgba(0,0,0,0);	
+	color: white;
+}
+
+.leaflet-touch .leaflet-control-layers{
+	border-width: 0;
+}
+
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url("../img/layers.svg");
+	background-size: 50px 50px;
+	background-position: center;
+}
+
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 50px;
+	height: 50px;
+}
+
+.leaflet-control-layers .leaflet-control-layers-list{
+	background-color: rgba(0,0,0,0.2);
+	padding: 1em;
+}
+
+.leaflet-control-printer {
+	background-color: rgba(0,0,0,0);
+	padding: 1em;
+	border-width: 0;
+	background-image: url("../img/print.svg");
+	background-size: 50px 50px;
+	background-position: center;
+	width: 50px;
+	height: 50px;
+}
+
+.leaflet-control-share {
+	background-color: rgba(0,0,0,0);
+	padding: 1em;
+	border-width: 0;
+	background-image: url("../img/share.svg");
+	background-size: 50px 50px;
+	background-position: center;
+	width: 50px;
+	height: 50px;
+}
+#detail-box {
+	z-index: 1000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 10px;
+	height: 500px;
+	width: 0px;
+	background-color: #242730;
+}
+#toggle-detail {
+	z-index: 1000;
+	height: 40px;
+	width: 40px;
+	border-radius: 5px;
+	position: absolute;
+	right: -45px;
+}
+
+#toggle-back #toggle-back-dot{
+	z-index: 1000;
+	width: 3em;
+	height: 2em;
+	color: rgb(15,201,220);
+	background-color: #091d28;
+	border: 1px solid #AAA;
+	border-radius: 3px;
+	position: absolute;
+	bottom: 20px;
+	left: 10px;
+}
+#toggle-back:hover #toggle-back-index{
+	display: block;
+}
+#toggle-back-index {
+	color: #AAA;
+	position: absolute;
+	bottom: 100px;
+	display: none;
+}

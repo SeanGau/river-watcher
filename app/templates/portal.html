@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-hant">
+	<head>
+		<meta charset="UTF-8" />
+		<title>{{GLOBAL_TITLE}}</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+		<link href="http://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/portal.css')}}">
+	</head>
+	<body>
+		<div class="container-fluid" id="landing-page">			
+			<img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/>
+			<div class="ex-link-group">
+				<div><a href="#"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
+				<div><a href="#"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
+				<div><a href="#"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
+			</div>
+			<a style="position: absolute; right: 1em; bottom: 1em; font-size: 1em; color: #D8D8D8; text-align: center;" href="{{url_for('map')}}">前往河川地圖　─────<img id="go-to-map" src="{{url_for('static', filename='img/right_arrow.svg')}}"/></a>
+		</div>
+		<div class="portal-page container-fluid">	
+			<div class="row justify-content-center">
+				<div class="col col-md-10">
+					{%if username is defined%}
+					<p style="color: #AAA; margin-bottom: 5vh 0; text-align: left;">Hello, {{ username }}　歡迎回來！<a href="{{url_for('logout')}}">登出</a></p>
+					{%else%}
+					<p style="color: #AAA; text-align: left; font-size: 1em;">若成為會員，將可隨時收到您關注河川之訂閱電子報。</p>
+					<p style="color: #AAA; margin-bottom: 5vh; text-align: left; font-size: 0.8em;">未成為會員？<a href="{{url_for('reg')}}" style="color: rgb(15,201,220);">申請會員</a></p>
+					{%endif%}
+				</div>
+			</div>
+			{%if sub_list is defined%}
+			<div id="portal-subs" class="row justify-content-center">
+				<div class="portal-block col col-md-2 text-center">
+					<h5 class="text-center">關注的河川</h5>
+					<button id="search-submit" type="submit" style=""><img src="{{url_for('static', filename='img/search.svg')}}"></button>
+					<input id="subs-search" type="text" placeholder="新增關注河川" name="search"/>
+				</div>
+				<div class="portal-block col col-md-8" id="sub-group">
+					{% for riverid in sub_list %}
+					<p class="sub-sets">{{riverid}}<button name="{{riverid}}">✖</button></p>
+					{% endfor %}	
+				</div>
+			</div>
+			{%endif%}
+			<div id="portal-about" class="row justify-content-center">
+				<div class="portal-block col col-md-2">
+					<h5 class="text-center">關於我們</h5>
+				</div>
+				<div class="portal-block col col-md-8">
+					<ul class="nav nav-tabs">
+						<li><a data-toggle="tab" href="#about-team">建置團隊</a></li>
+						<li><a data-toggle="tab" href="#about-platform">平台介紹</a></li>
+						<li><a data-toggle="tab" href="#about-meaning">建設意義</a></li>
+						<li><a data-toggle="tab" href="#about-what">可獲得什麼資料？</a></li>
+					</ul>
+					<div class="tab-content">
+						<div id="about-team" class="tab-pane fade">
+							<h3>HOME</h3>
+							<p>Some content.</p>
+						</div>
+						<div id="about-platform" class="tab-pane fade">
+							<h3>Menu 1</h3>
+							<p>Some content in menu 1.</p>
+						</div>
+						<div id="about-meaning" class="tab-pane fade">
+							<h3>Menu 2</h3>
+							<p>Some content in menu 2.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="portal-links" class="row justify-content-center">
+				<div class="portal-block col col-md-2">
+					<h5 class="text-center">外部連結</h5>
+				</div>
+				<div class="portal-block col col-md-8">
+					<p class="collapse-toggle collapsed" style="margin-top: 3em; color: #AAA;" data-toggle="collapse" href="#collapse-links" role="button" aria-expanded="false" aria-controls="collapse-links">在此提供其他相關單位之快速連結以供查詢。</p>
+					<div class="collapse" id="collapse-links" style="margin-bottom: 2em; color: #AAA;">
+						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
+						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
+						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
+						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
+						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
+					</div>
+				</div>
+			</div>
+			<div id="portal-reply" class="row justify-content-center">
+				<div class="portal-block col col-md-2">
+					<h5 class="text-center">意見回饋</h5>
+				</div>
+				<div class="portal-block col col-md-8">
+					<p class="collapse-toggle collapsed" style="margin-top: 3em; color: #AAA;" data-toggle="collapse" href="#collapse-reply" role="button" aria-expanded="false" aria-controls="collapse-reply">若您對本平台有任何的意見或建議，歡迎您與我們聯繫。</p>
+					<div class="collapse" id="collapse-reply">
+						<p>AAAAAAAAAAAAAAAAAAAA</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- ----------------------------------------- -->
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.1/velocity.min.js"></script>
+		<script>
+			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+			$("#search-submit").click(function(){
+				var riverid = $("#subs-search").val();
+				var retVal = confirm("確認訂閱"+riverid+"?");
+				if( retVal == false ) {
+					return;
+				}
+				$.getJSON($SCRIPT_ROOT + '/portal', {
+					riverid: riverid,
+					type: "add"
+				}, function(cb) {
+					if(cb.result=="ok"){
+						$("#sub-group").append('<p class="sub-sets">'+riverid+'<button name="'+riverid+'">✖</button></p>');						
+					}
+					else
+						console.log("ERROR!!");
+				});
+			});
+			$("body").on('click', '.sub-sets button', function() {
+				var this_sel=$(this);
+				var retVal = confirm("確認取消訂閱"+this_sel.attr("name")+"?");
+				if( retVal == false ) {
+					return;
+				}
+				$.getJSON($SCRIPT_ROOT + '/portal', {
+					riverid: this_sel.attr("name"),
+					type: "remove"
+				}, function(cb) {
+					if(cb.result=="ok"){
+					this_sel.parent("p").remove();					
+					}
+					else
+						console.log("ERROR!!");
+				});
+			});
+			$(window).ready(function(){
+				console.log($('#sub-group .sub-sets').length);
+			});
+		</script>
+	</body>
+ </html>

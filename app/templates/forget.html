@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-hant">
+	<head>
+		<meta charset="UTF-8" />
+		<title>{{GLOBAL_TITLE}}</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+		<link href="http://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+	</head>
+	<body>
+		<div class="d-flex justify-content-center align-items-center container-fluid login-page">
+			<img class="main-img" style="height: 10vh;" src="{{url_for('static', filename='img/logo_w.png')}}"/>
+			<div class="login-box d-flex justify-content-center login-box-user">
+				<div class="text-center" style="width: 80%;">	
+					<h4 class="text-center" style="margin-bottom: 0;">忘記密碼</h4>
+					<p style="color: #AAA; font-size: 0.8em; width: 100%; margin-bottom: 5vh;" class="text-center">我們將寄送確認信至您的之信箱，進行身分認證。</p>
+					<form action='{{url_for('forget_pw')}}' method='POST' class="login-form">
+						<label class="label-idpw form-inline">使用者名稱　<input type='text' name='username' placeholder='高O翔' required/></label>
+						<label class="label-idpw form-inline">信箱　<input type='text' name='email' placeholder='bambooculture@gmail.com' required/></label>
+						<input class="btn-style1" type='submit' value="進行認證"/>
+						</form>
+					</div>
+			</div>
+		</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
+	</body>
+ </html>

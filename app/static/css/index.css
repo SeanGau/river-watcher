@@ -1,0 +1,183 @@
+body, .login-page, #landing-page {
+	height: 100vh;
+}
+
+a, p, h1, h2, h3, h4, h5, input, label {
+	font-family: 'Noto Sans TC', sans-serif;
+	text-decoration: none;
+	text-align: justify;
+	text-justify:inter-ideograph;
+	line-height: 2em;
+	letter-spacing: 0.1px;
+}
+
+body {
+	background-image: url("../img/bg.jpg");
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+}
+
+#enter-arrow {
+	height: 7vh;
+	position: absolute;
+	left: 50vw;
+	top: 85vh;
+	transform-origin: 50% 50%;
+	transform: translate3d(-50%, -50%, 0);			
+	animation: arrow-movement 2s ease-in-out infinite;
+}			
+@keyframes arrow-movement {
+  0% {
+	opacity: 0.8;
+	top: 85vh;
+  }
+  50% {
+	opacity: 0.9;
+	top: 86vh;
+  }
+  100% {
+	opacity: 0.8;
+	top: 85vh;
+  }
+}
+
+.main-img {
+	top: 5vh;
+	left: 3vw;
+	height: 25vh;
+	position: fixed;
+}		
+
+.main-discription {
+	position: absolute;
+	top: 32vh;
+	left: 3vw;
+	width: 32vw;
+	color: #D8D8D8;
+	font-weight: 400;
+}
+
+#copyright {
+	position: fixed;
+	right: 0.8em;
+	bottom: 0;
+	color: #AAA;
+	font-size: 0.8em;
+}
+
+.login-page {
+	background-color: rgba(0,0,0,0.7);
+}			
+.login-box{
+	width: 33vw;
+	min-height: 60vh;
+	margin: 0;
+	border-radius: 3px;
+}			
+.login-box h4 {
+	color: white;
+	margin-bottom: 5vh;
+}			
+.login-box div {
+	position: relative;
+	top: 10vh;
+}			
+.login-box-user{
+	background-color: rgba(100,100,100,0.3);
+	border: 1px solid #D8D8D8;
+}			
+.login-box-guest{
+	background-color: rgba(100,100,100,0.3);
+}
+.login-box-guest p {
+	border: 0;
+	font-size: 0.8em; 
+	color: #AAA; 
+	vertical-align: top;
+	margin: 0;
+}
+
+.label-idpw{
+	width: 100%;
+	border-bottom: 1px solid #666;
+	color: white;
+	line-height: 2em;
+}
+.label-idpw input{
+	background: rgba(0, 0, 0, 0);
+	border: none;
+	outline: none;
+	color: #CCC;
+	width: 60%;
+}
+.label-idpw input::placeholder{
+	opacity: 0.7;
+}
+
+.login-form p {
+	display: inline-block;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+.login-form p a, .login-form p label {
+	border: 0;
+	font-size: 0.8em; 
+	color: #AAA; 
+	vertical-align: top;
+	margin: 0;
+}
+
+.btn-style1 {
+	color: white;
+	background-color: rgba(104,111,121,0.6);
+	font-size: 1em;
+	font-weight: 200;
+	padding: 0 2em;
+	border: none;
+	border-radius: 2px;
+	transition: 0.2s;
+	margin: 5% 0;
+}			
+.btn-style1:hover {
+	color: rgb(15,201,220);				
+	background-color: rgba(104,111,121,0.7);
+}
+
+.checkbox-style1 {
+	display: block;
+	position: relative;
+	padding-left: 1.5em;
+	cursor: pointer;
+	user-select: none;
+}
+.checkbox-style1 input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+.checkbox-style1-box {
+	transition: 0.2s;
+	position: absolute;
+	top: 0.5em;
+	left: 0;
+	height: 1.2em;
+	width: 1.2em;
+	border-radius: 50%;
+	background-color: #eee;
+}
+.checkbox-style1:hover input ~ .checkbox-style1-box {
+	background-color: #ccc;
+}
+.checkbox-style1 input:checked ~ .checkbox-style1-box {
+	background-color: rgb(15,201,220);
+}
+
+@media (max-width: 992px) {
+	.login-box{
+		width: 45vw;
+	}
+}

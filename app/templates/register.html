@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-hant">
+	<head>
+		<meta charset="UTF-8" />
+		<title>{{GLOBAL_TITLE}}</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+		<link href="http://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+	</head>
+	<body>
+		<div class="d-flex justify-content-center align-items-center container-fluid login-page">
+			<img class="main-img" style="height: 10vh;" src="{{url_for('static', filename='img/logo_w.png')}}"/>
+			<div class="login-box d-flex justify-content-center login-box-user">
+				<div class="text-center" style="width: 80%;">	
+					<h4 class="text-center">成為會員</h4>
+					<form action='{{url_for('reg')}}' method='POST' class="login-form">
+						<label class="label-idpw form-inline">使用者名稱　<input type='text' name='username' placeholder='高O翔' required/></label>
+						<label class="label-idpw form-inline">信箱　<input type='text' name='email' placeholder='bambooculture@gmail.com' required/></label>
+						<label class="label-idpw form-inline">密碼　<input type='password' name='password' placeholder='至少8位英數' required/></label>
+						<p class=" form-inline"><label class="checkbox-style1">成為會員後之<a href="#" style="font-size: 1em;" data-toggle="modal" data-target="#myModal">會員條款</a><input type="checkbox" name="termok" required/><span class="checkbox-style1-box"></span></label></p>
+						<input class="btn-style1" type='submit' value="申請會員"/>
+						</form>
+					<a style="color: #AAA; font-size: 0.8em; width: 100%;" class="text-center">成為會員後，您將收到所關注河川之訂閱電子報</a>
+					</div>
+			</div>
+		</div>
+		<div id="myModal" class="modal fade" role="dialog">
+		    <div class="modal-dialog">
+				<div class="modal-content" style="background-color: rgba(100,100,100,0.75); color: #D8D8D8;">
+					<div class="modal-header">
+							<h4 class="modal-title">會員條款</h4>
+					</div>
+					<div class="modal-body">
+						<p>Some text in the modal.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn" data-dismiss="modal" style="background-color: rgba(255,255,255,0.2); color: #D8D8D8;">關閉</button>
+					</div>
+				</div>
+		    </div>
+		</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
+	</body>
+ </html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-hant">
+	<head>
+		<meta charset="UTF-8" />
+		<title>{{GLOBAL_TITLE}}</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+		<link href="http://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+		<link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
+	</head>
+	<body>
+		<div class="container-fluid" id="map">			
+		</div>
+		<div id="detail-box">
+			<img id="toggle-detail" src="{{url_for('static', filename='img/right_arrow.svg')}}"/>
+		</div>
+		<div id="toggle-back" class="text-center">
+			<div id="toggle-back-dot">● ●</div>
+			<div id="toggle-back-index">AAAAAAAAAAAA</div>
+		</div>
+		
+		<!-- ----------------------------------------- -->
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.1/velocity.min.js"></script>
+		<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+		<script src="{{url_for('static', filename='js/leaflet-tilelayer-wmts.js')}}"></script>
+		<script> 
+			//leaflet
+			
+			var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://www.mapbox.com/">mapbox</a> ',
+				mbUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjandjYWtwem0wYnB3NDlvN2h0anRuM3Z1In0.Y7tYEgVHjszA66NQ08PVYg',
+				MymbUrl = 'https://api.mapbox.com/styles/v1/js00193/{id}/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjandjYWtwem0wYnB3NDlvN2h0anRuM3Z1In0.Y7tYEgVHjszA66NQ08PVYg#15.7/44.599542/-70.560438/0';
+			var satellite = L.tileLayer(mbUrl, {id: 'satellite-v9',   attribution: mbAttr}),
+				streets = L.tileLayer(MymbUrl, {id: 'ck0lupyad8k061dmv7zvbvwgv',   attribution: mbAttr});
+			
+			var mymap = L.map('map', {
+				center: [25.1426293,121.4592866],
+				zoom: 18,
+				maxZoom: 18,
+				minZoom: 7,
+				layers: [streets],
+				zoomControl: false
+			});		
+			L.control.zoom({
+				position:'topright'
+			}).addTo(mymap);
+			
+			var baseMaps = {
+				"空照圖": satellite,
+				//"空照街道": satellite_street,
+				
+				"街道圖": streets,
+			};
+			/*
+			var overlayMaps = {			
+				"河川河道": river_layer,
+			};								*/
+			L.marker([25.142691, 121.459289]).addTo(mymap)
+			.bindTooltip('A pretty CSS3 popup.<br> Easily customizable.')
+			.openTooltip();
+			
+			L.Control.Printer = L.Control.extend({
+				onAdd: function(map) {
+					var btn = L.DomUtil.create('button','leaflet-control-printer');
+					btn.onclick = function(){
+						console.log("print!");
+					};
+					return btn;
+				}				
+			});
+			L.control.printer = function(opts) {
+				return new L.Control.Printer(opts);
+			}
+			
+			L.Control.Share = L.Control.extend({
+				onAdd: function(map) {
+					var btn = L.DomUtil.create('button','leaflet-control-share');
+					btn.onclick = function(){
+						console.log("share!");
+					};
+					return btn;
+				}				
+			});
+			L.control.share = function(opts) {
+				return new L.Control.Share(opts);
+			}
+			
+			L.control.share({ position: 'bottomright' }).addTo(mymap);			
+			L.control.printer({ position: 'bottomright' }).addTo(mymap);			
+			L.control.layers(baseMaps, null, {position:'bottomright'}).addTo(mymap);				
+			
+			mymap.on('moveend', function() {  
+				console.log(mymap.getBounds().getWest()); 
+			});
+		</script>
+		<script>
+			//detail box
+			var toggle=false;
+			$('#toggle-detail').click(function(){
+				if(!toggle){
+					$("#detail-box").velocity({width: "200px"}, {duration:500, loop:false, easing:"spring"});
+					$(this).velocity({rotateZ:'180deg'}, {duration:300, loop:false, easing:"easeOutSine"});
+					toggle = true;
+				}
+				else{
+					$("#detail-box").velocity({width: "0px"}, {duration:300, loop:false, easing:"easeOutSine"});
+					$(this).velocity({rotateZ:'0deg'}, {duration:300, loop:false, easing:"easeOutSine"});
+					toggle = false;
+				}
+			});
+		</script>
+	</body>
+ </html>
