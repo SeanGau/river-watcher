@@ -3,6 +3,15 @@ body, #map {
 	margin: 0;
 }
 
+a, p, h1, h2, h3, h4, h5, input, label {
+	font-family: 'Noto Sans TC', sans-serif;
+	text-decoration: none;
+	text-align: justify;
+	text-justify:inter-ideograph;
+	line-height: 2em;
+	letter-spacing: 0.1px;
+}
+
 .leaflet-control-layers {
 	background-color: rgba(0,0,0,0);	
 	color: white;
@@ -72,20 +81,37 @@ body, #map {
 	z-index: 1000;
 	width: 3em;
 	height: 2em;
-	color: rgb(15,201,220);
+	color: rgba(15,201,220,0.7);
 	background-color: #091d28;
 	border: 1px solid #AAA;
 	border-radius: 3px;
 	position: absolute;
 	bottom: 20px;
 	left: 10px;
+	transition: 0.2s;
 }
-#toggle-back:hover #toggle-back-index{
+#toggle-back #toggle-back-dot:hover {
+	color: rgba(0,0,0,0);
+	border-width: 0;
+}
+#toggle-back #toggle-back-dot:hover #toggle-back-index{
 	display: block;
 }
 #toggle-back-index {
-	color: #AAA;
-	position: absolute;
-	bottom: 100px;
+	background-color: #091d28;
+	border: 1px solid #AAA;
+	border-radius: 3px;
 	display: none;
+	position: absolute;
+	bottom: 0em;
+	width: 12em;
+}
+#toggle-back-index a {
+	color: #AAA;
+	transition: 0.2s;
+	padding: 0.5em;
+}
+#toggle-back-index a:hover {
+	color: rgba(15,201,220,1);
+	text-decoration: none;
 }

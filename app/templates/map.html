@@ -16,10 +16,33 @@
 		</div>
 		<div id="detail-box">
 			<img id="toggle-detail" src="{{url_for('static', filename='img/right_arrow.svg')}}"/>
+			<div class="container-fluid">	
+				<ul class="nav nav-tabs">
+					<li><a data-toggle="tab" href="#about-team">建置團隊</a></li>
+					<li><a data-toggle="tab" href="#about-platform">平台介紹</a></li>
+					<li><a data-toggle="tab" href="#about-meaning">建設意義</a></li>
+					<li><a data-toggle="tab" href="#about-what">可獲得什麼資料？</a></li>
+				</ul>
+				<div class="tab-content">
+					<div id="about-team" class="tab-pane fade">
+						<h3>HOME</h3>
+						<p>Some content.</p>
+					</div>
+					<div id="about-platform" class="tab-pane fade">
+						<h3>Menu 1</h3>
+						<p>Some content in menu 1.</p>
+					</div>
+					<div id="about-meaning" class="tab-pane fade">
+						<h3>Menu 2</h3>
+						<p>Some content in menu 2.</p>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div id="toggle-back" class="text-center">
-			<div id="toggle-back-dot">● ●</div>
-			<div id="toggle-back-index">AAAAAAAAAAAA</div>
+			<div id="toggle-back-dot">● ●
+				<div id="toggle-back-index"><a href="{{url_for('portal')}}">個人主頁</a><a href="#">動態說明</a></div>
+			</div>
 		</div>
 		
 		<!-- ----------------------------------------- -->
@@ -33,9 +56,9 @@
 			//leaflet
 			
 			var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://www.mapbox.com/">mapbox</a> ',
-				mbUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjandjYWtwem0wYnB3NDlvN2h0anRuM3Z1In0.Y7tYEgVHjszA66NQ08PVYg',
+				//mbUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjandjYWtwem0wYnB3NDlvN2h0anRuM3Z1In0.Y7tYEgVHjszA66NQ08PVYg',
 				MymbUrl = 'https://api.mapbox.com/styles/v1/js00193/{id}/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjandjYWtwem0wYnB3NDlvN2h0anRuM3Z1In0.Y7tYEgVHjszA66NQ08PVYg#15.7/44.599542/-70.560438/0';
-			var satellite = L.tileLayer(mbUrl, {id: 'satellite-v9',   attribution: mbAttr}),
+			var satellite = L.tileLayer(MymbUrl, {id: 'ck0x9ai2j5kgb1co36kagohqm',   attribution: mbAttr}),
 				streets = L.tileLayer(MymbUrl, {id: 'ck0lupyad8k061dmv7zvbvwgv',   attribution: mbAttr});
 			
 			var mymap = L.map('map', {
