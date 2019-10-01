@@ -1,4 +1,4 @@
 app/config.py
 ENV/
-flaskapp.wsgi
-config.py
+**/flaskapp.wsgi
+**/config.py

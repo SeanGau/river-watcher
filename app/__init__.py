@@ -9,6 +9,7 @@ app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
 mail = Mail(app)
 
 def gethashed(data): #尚未salting
+	data = data+app.config['SECRET_KEY']
 	s = hashlib.sha256()
 	s.update(data.encode("UTF-8"))
 	h = s.hexdigest()

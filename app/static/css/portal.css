@@ -202,33 +202,15 @@ body {
 	background-color: rgba(104,111,121,0.7);
 }
 
-.checkbox-style1 {
-	display: block;
-	position: relative;
-	padding-left: 1.5em;
-	cursor: pointer;
-	user-select: none;
+.scroll-style {
+	scrollbar-color: #394551 #242730;
+	scrollbar-width: thin;
 }
-.checkbox-style1 input {
-	position: absolute;
-	opacity: 0;
-	cursor: pointer;
-	height: 0;
-	width: 0;
+.scroll-style::-webkit-scrollbar {
+	width: 8px;
+	background-color: #242730;
 }
-.checkbox-style1-box {
-	transition: 0.2s;
-	position: absolute;
-	top: 0.5em;
-	left: 0;
-	height: 1.2em;
-	width: 1.2em;
-	border-radius: 50%;
-	background-color: #eee;
-}
-.checkbox-style1:hover input ~ .checkbox-style1-box {
-	background-color: #ccc;
-}
-.checkbox-style1 input:checked ~ .checkbox-style1-box {
-	background-color: #0FC9DC;	
+.scroll-style::-webkit-scrollbar-thumb {
+	background-color: #394551;
+	border-radius: 4px;
 }

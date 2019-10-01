@@ -1,6 +1,7 @@
 body, #map {
 	height: 100vh;
 	margin: 0;
+	color: #AAA;
 }
 
 a, p, h1, h2, h3, h4, h5, input, label {
@@ -8,8 +9,9 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	text-decoration: none;
 	text-align: justify;
 	text-justify:inter-ideograph;
-	line-height: 2em;
 	letter-spacing: 0.1px;
+	line-height: 2em;
+	font-weight: 400;
 }
 
 .leaflet-control-layers {
@@ -64,12 +66,104 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	top: 0;
 	left: 0;
 	margin: 10px;
-	height: 500px;
+	max-height: 90vh;
 	width: 0px;
 	background-color: #242730;
 }
+#detail-box {
+	color: white;
+}
+#adv-search {
+	margin: 1em;
+	width: 80%;
+	background-color: rgba(0,0,0,0);
+	border-width: 0;
+	color: white;
+	font-size: 1.5em;
+	text-align: center;
+}
+#detail-index {
+	overflow: hidden;
+	padding: 0;
+}
+#detail-index .nav {
+	display: block;
+	border: 0;
+}
+#detail-index .nav a{
+	color: #666;
+	font-size: 1.3em;
+	margin: 0 0.8em;
+	text-align: center;
+}
+#detail-index .nav a:hover, #detail-index .nav .active {
+	color: white;
+	text-decoration: none;
+}
+#detail-index .tab-content {
+	margin: 15px;
+}
+
+#detail-pcc .nav a{
+	font-size: 1em;
+	padding: 0 0.5em;
+} 
+#detail-pcc .nav a.active{
+	border-bottom: 3px solid white;
+}
+#detail-pcc .pcc-filter {
+	background-color: #29323b;
+	min-height: 50px;
+	margin-top: 5px;
+	padding: 5px;
+}
+#detail-pcc .pcc-filter .radio-style1 p {
+	margin: 0;
+}
+#detail-pcc .pcc-filter .radio-style1 p input{
+	width: 2em;
+	background-color: rgba(0,0,0,0);
+	color: rgb(252,112,5);
+	border-width: 0;
+	border-bottom: 1px solid #666;
+	line-height: 1em;
+}
+
+.row {
+	height: 1.5em;
+	color: #AAA;
+}
+.row a{	
+	color: #AAA;
+}
+.row .col {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.scroll-list {
+	background-color: #29323b;	
+	max-height: 30vh;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding: 0.8em;
+	margin-top: 1em;
+}
+#pcc-list a{
+	line-height: 1em;
+	color: #AAA;
+}
+
+#detail-news #news-pcc {
+	background-color: #29323b;	
+	padding: 1em;
+}
+#detail-news #news-pcc .nav a{
+	font-size: 1em;
+}
+
 #toggle-detail {
-	z-index: 1000;
 	height: 40px;
 	width: 40px;
 	border-radius: 5px;
@@ -77,6 +171,9 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	right: -45px;
 }
 
+#toggle-back {	
+	z-index: 1000;
+}
 #toggle-back #toggle-back-dot{
 	z-index: 1000;
 	width: 3em;
@@ -114,4 +211,133 @@ a, p, h1, h2, h3, h4, h5, input, label {
 #toggle-back-index a:hover {
 	color: rgba(15,201,220,1);
 	text-decoration: none;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 2.2em;
+  height: 1.2em;
+  line-height: 1em;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(15,201,220,1);
+  background-color: rgba(0,0,0,0);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1em;
+  width: 1em;
+  left: 0.1em;
+  bottom: 0.1em;
+  background-color: rgba(15,201,220,1);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: rgba(0,0,0,0);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px rgba(0,0,0,0);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(1em);
+  -ms-transform: translateX(1em);
+  transform: translateX(1em);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 1em;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.radio-style1 {
+	display: block;
+	position: relative;
+	padding-top: 0.2em;
+	padding-left: 2.4em;
+	cursor: pointer;
+	user-select: none;
+}
+.radio-style1 input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+.radio-style1-box {
+	transition: 0.2s;
+	position: absolute;
+	top: 0.8em;
+	left: 0.8em;
+	height: 0.8em;
+	width: 0.8em;
+	border-radius: 50%;
+	background-color: rgba(0,0,0,0);
+	border: 1px solid #AAA;	
+}
+.radio-style1:hover input ~ .radio-style1-box {
+	border: 1px solid #0FC9DC;	
+}
+.radio-style1 input:checked ~ .radio-style1-box {
+	background-color: #0FC9DC;	
+	border: 1px solid #0FC9DC;	
+}
+
+.nav.custom-nav a span {
+	transition: 0.2s;
+	display: inline-block;
+	margin-right: 0.5em;
+	top: 0.8em;
+	left: 0.8em;
+	height: 0.8em;
+	width: 0.75em;
+	border-radius: 50%;
+	background-color: rgba(0,0,0,0);
+	border: 1px solid #AAA;		
+}
+.nav.custom-nav a:hover span {
+	border: 1px solid #0FC9DC;		
+}
+.nav.custom-nav a.active span {
+	background-color: #0FC9DC;	
+	border: 1px solid #0FC9DC;		
+} 
+
+
+.scroll-style {
+	scrollbar-color: #394551 #242730;
+	scrollbar-width: thin;
+}
+.scroll-style::-webkit-scrollbar {
+	width: 8px;
+	background-color: #242730;
+}
+.scroll-style::-webkit-scrollbar-thumb {
+	background-color: #394551;
+	border-radius: 4px;
 }

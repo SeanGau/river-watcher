@@ -176,6 +176,19 @@ body {
 	background-color: rgb(15,201,220);
 }
 
+.scroll-style {
+	scrollbar-color: #394551 #242730;
+	scrollbar-width: thin;
+}
+.scroll-style::-webkit-scrollbar {
+	width: 8px;
+	background-color: #242730;
+}
+.scroll-style::-webkit-scrollbar-thumb {
+	background-color: #394551;
+	border-radius: 4px;
+}
+
 @media (max-width: 992px) {
 	.login-box{
 		width: 45vw;

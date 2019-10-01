@@ -16,24 +16,82 @@
 		</div>
 		<div id="detail-box">
 			<img id="toggle-detail" src="{{url_for('static', filename='img/right_arrow.svg')}}"/>
-			<div class="container-fluid">	
-				<ul class="nav nav-tabs">
-					<li><a data-toggle="tab" href="#about-team">建置團隊</a></li>
-					<li><a data-toggle="tab" href="#about-platform">平台介紹</a></li>
-					<li><a data-toggle="tab" href="#about-meaning">建設意義</a></li>
-					<li><a data-toggle="tab" href="#about-what">可獲得什麼資料？</a></li>
-				</ul>
-				<div class="tab-content">
-					<div id="about-team" class="tab-pane fade">
-						<h3>HOME</h3>
-						<p>Some content.</p>
+			<div class="container-fluid text-center" id="detail-index">	
+				<input id="adv-search" type="text" placeholder="搜尋河川名" name="adv-search"/>
+				<div class="nav nav-tabs" style="">
+					<a data-toggle="tab" href="#detail-pcc" class="active">標案檢索</a>
+					<a data-toggle="tab" href="#detail-news">最新消息</a>
+					<a data-toggle="tab" href="#detail-group">河川社群</a>
+				</div>
+				<div class="tab-content text-left">
+					<div id="detail-pcc" class="tab-pane fade active show">
+						<div class="nav nav-tabs">
+							<a data-toggle="tab" href="#pcc-years" class="active">年份</a>
+							<a data-toggle="tab" href="#pcc-img" class="disable">圖庫</a>					
+						</div>
+						<div class="tab-content">
+							<div id="pcc-years" class="tab-pane fade active show">
+								<div style="width: 100%;">
+									<div class="pcc-filter">
+										<label class="radio-style1" for="year-filter-1">
+											<p>民國<input type="text" value="107" placeholder="107"/>年至<input type="text" value="108" placeholder="108"/>年</p>
+										<input type="radio" name="year-filter" id="year-filter-1"/><span class="radio-style1-box"></span></label>
+									</div>
+									<div class="pcc-filter">
+										<label class="radio-style1" for="year-filter-2">
+											<p>民國<input type="text" value="106" placeholder="106" style="color: rgb(252,112,5)"/>年及<input type="text" value="107" placeholder="107" style="color: rgb(252,152,45)"/>年及<input type="text" value="108" placeholder="108" style="color: rgb(252,192,85)"/>年</p>
+										<input type="radio" name="year-filter" id="year-filter-2"/><span class="radio-style1-box"></span></label>
+									</div>
+									<div style="width: 100%;">										
+										<div style="text-align:center; margin: 10% 2% 2% 2%;"> 
+											<a style="float: left; font-size: 1.2em; border-bottom: 3px solid white;">標案類型</a>
+											<a class="label-toggle active">已決標</a>
+											<label class="switch" for="toggle-isdone">
+												<input type="checkbox" name="toggle-isdone" id="toggle-isdone">
+												<span class="slider round"></span>
+											</label>
+											<a class="label-toggle active">未決標</a>
+										</div>									
+										<div id="pcc-list" class="container-fluid scroll-style scroll-list">
+										</div>										
+									</div>
+								</div>								
+							</div>
+						</div>
 					</div>
-					<div id="about-platform" class="tab-pane fade">
-						<h3>Menu 1</h3>
-						<p>Some content in menu 1.</p>
+					<div id="detail-news" class="tab-pane fade">
+						<div id="news-pcc">
+							<div class="nav nav-tabs text-center custom-nav" style="border-bottom: 1px solid #AAA;">
+								<a data-toggle="tab" href="#news-newest" class="active"><span></span>最新標案公告</a>
+								<a data-toggle="tab" href="#news-last"><span></span>最後決標公告</a>					
+							</div>
+							<div class="tab-content">
+								<div id="news-newest" class="tab-pane fade active show scroll-style scroll-list">
+									<div class="row"><div class="col-4"><a>機關代碼</a></div><div class="col"><a>3.13.20.20</a></div></div>
+									<div class="row"><div class="col-4"><a>機關名稱</a></div><div class="col"><a>經濟部水利署第十河川局</a></div></div>
+									<div class="row"><div class="col-4"><a>機關地址</a></div><div class="col"><a>220新北市板橋區四川路2段橋頭1號</a></div></div>
+									<div class="row"><div class="col-4"><a>聯絡人</a></div><div class="col"><a>林思達</a></div></div>
+									<div class="row"><div class="col-4"><a>連絡電話</a></div><div class="col"><a>(02)89669870 分機 1259</a></div></div>
+									<div class="row"><div class="col-4"><a>標案案號</a></div><div class="col"><a>W10P108014</a></div></div>
+									<div class="row"><div class="col-4"><a>標案名稱</a></div><div class="col"><a>108年度淡水河流域及河口海域基樁埋設大斷面水文測站測量工作</a></div></div>
+									<div class="row"><div class="col-4"><a>預算金額</a></div><div class="col"><a>1,305,300元</a></div></div>
+									<div class="row"><div class="col-4"><a>履約地點</a></div><div class="col"><a>新北市－全區</a></div></div>
+								</div>
+							</div>
+						</div>
+						<div id="more-news" class=" scroll-style scroll-list" style="max-height: 15vh;">
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+							<div class="row"><div class="col-4"><a>108.09.01</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAAAA</a></div></div>
+						</div>
 					</div>
-					<div id="about-meaning" class="tab-pane fade">
-						<h3>Menu 2</h3>
+					<div id="detail-group" class="tab-pane fade">
+						<h3>河川社群</h3>
 						<p>Some content in menu 2.</p>
 					</div>
 				</div>
@@ -126,7 +184,7 @@
 			var toggle=false;
 			$('#toggle-detail').click(function(){
 				if(!toggle){
-					$("#detail-box").velocity({width: "200px"}, {duration:500, loop:false, easing:"spring"});
+					$("#detail-box").velocity({width: "400px"}, {duration:500, loop:false, easing:"spring"});
 					$(this).velocity({rotateZ:'180deg'}, {duration:300, loop:false, easing:"easeOutSine"});
 					toggle = true;
 				}
@@ -136,6 +194,16 @@
 					toggle = false;
 				}
 			});
+			
+			$('#toggle-isdone').on('input', function() {
+				if($("#toggle-isdone:checked").val()=="on"){
+				}
+			});
+			
+			var i=0;
+			for(i=0; i<20; i++) {
+				$("#pcc-list").append('<div class="row"><div class="col-4"><a href="#">108年度</a></div><div class="col"><a href="#">AAAAAAAAAAAAAAAA</a></div></div>');
+			}
 		</script>
 	</body>
  </html>
