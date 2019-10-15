@@ -1,5 +1,5 @@
 import flask
-import requests, pymysql, hashlib, json
+import requests, pymysql, hashlib, json, csv, os
 from config import connection, mmConfig
 from flask_mail import Mail, Message
 
@@ -21,14 +21,30 @@ def alert(message, redir): #alert then redirect
 						window.location.href = "{redir}";
 						</script>'''
 
-def mmsend(message): #傳訊息至mattermost
-	SERVER_URL = "http://bambooculture.tw:8065"	
+def mmsend(message, fpath = None): #傳訊息至mattermost
+	SERVER_URL = "http://bambooculture.tw:8065"
+	CHANNEL_ID = mmConfig['channel_id']
+	mmKey = mmConfig['token']
 	s = requests.Session()
-	s.headers.update({"Authorization": "Bearer "+mmConfig['token']})
-	p = s.post(SERVER_URL + '/api/v4/posts', data=json.dumps({
-	   "channel_id": mmConfig['channel_id'],
-		"message": message
-	}))	
+	s.headers.update({"Authorization": "Bearer "+mmKey})
+	if fpath is not None:
+		form_data = {
+			"channel_id": ('', CHANNEL_ID),
+			"client_ids": ('', "id_for_the_file"),
+			"files": (os.path.basename(fpath), open(fpath, 'rb')),
+		}
+		r = s.post(SERVER_URL + '/api/v4/files', files=form_data)
+		FILE_ID = r.json()["file_infos"][0]["id"]		
+		p = s.post(SERVER_URL + '/api/v4/posts', data=json.dumps({
+		   "channel_id": CHANNEL_ID,
+			"message": message,
+			"file_ids": [ FILE_ID ]
+		}))
+	else:
+		p = s.post(SERVER_URL + '/api/v4/posts', data=json.dumps({
+		   "channel_id": CHANNEL_ID,
+			"message": message
+		}))	
 	
 def getusers(email = None): #取得使用者資料庫
 	users={}
@@ -131,14 +147,19 @@ def mm():
 		
 @app.route("/portal") #主要使用者頁面
 def portal():
+	rivers_data = []
+	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/static/pcc/rivers20191003_small.csv', newline='' ,encoding='utf-8-sig')
+	csv_reader = csv.DictReader(query_rivers)
+	for row in csv_reader:
+		rivers_data.append(row)
 	username = flask.session.get('username', False)
 	if not username:
-		return flask.render_template('portal.html')
+		return flask.render_template('portal.html',rivers_data=rivers_data)
 	sub_list = get_subscribe()
 	riverid = flask.request.args.get('riverid', False)
 	type = flask.request.args.get('type', False)
 	if not riverid or not type:
-		return flask.render_template('portal.html', sub_list=sub_list, username=username)
+		return flask.render_template('portal.html', sub_list=sub_list, username=username, rivers_data=rivers_data)
 	return flask.jsonify(result = adj_subscribe(sub_list,riverid,type))
 		
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
@@ -163,6 +184,10 @@ def reg():
 @app.route('/map')
 def map():
 	return flask.render_template('map.html')
+	
+@app.route('/link')
+def link():
+	return flask.render_template('ext.html')
 	
 if __name__ == "__main__":
 	app.run(host = "0.0.0.0", port = 5000)

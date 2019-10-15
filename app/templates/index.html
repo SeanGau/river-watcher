@@ -26,17 +26,17 @@
 					<form action='{{url_for('login')}}' method='POST' class="login-form">
 						<label class="label-idpw form-inline">信箱　<input type='text' name='email' placeholder='bambooculture@gmail.com'/></label>
 						<label class="label-idpw form-inline">密碼　<input type='password' name='password' placeholder='‧‧‧‧‧‧‧‧‧‧'/></label>
-						<p class=" form-inline"><label class="checkbox-style1">記住帳號密碼<input type="checkbox" name="rememberme"/><span class="checkbox-style1-box"></span></label><a href="{{url_for('forget_pw')}}">忘記密碼?</a></p>
-						<input class="btn-style1" type='submit' value="會員登入"/>
+						<p class=" form-inline"><label class="checkbox-style1">記住我<input type="checkbox" name="rememberme"/><span class="checkbox-style1-box"></span></label><a href="{{url_for('forget_pw')}}">忘記密碼？</a></p>
+						<input class="btn-style1" type='submit' value="登入"/>
 					</form>
 				</div>
 			</div>
 			<div class="login-box d-flex justify-content-center login-box-guest">
 				<div class="text-center">
 					<h4 class="text-center">我是訪客</h4>
-					<input class="btn-style1" type="button" value="繼續瀏覽" onclick="location.href='{{url_for('portal')}}'"/><br>
-					<input class="btn-style1" type="button" value="成為會員" onclick="location.href='{{url_for('reg')}}'"/>
-					<p>成為會員將不定時收到河川電子報，<br>讓你隨時掌握所關注河川最新消息。</p>
+					<input class="btn-style1" type="button" value="訪客瀏覽" onclick="location.href='{{url_for('portal')}}'"/><br>
+					<input class="btn-style1" type="button" value="加入會員" onclick="location.href='{{url_for('reg')}}'"/>
+					<p class="text-center">成為會員後，將不定時收到標案通知電子報，<br>讓您隨時掌握所訂閱的河川最新工程消息。</p>
 				</div>
 			</div>
 			<a style="position: absolute; font-size: 1em; background-color: #D8D8D8; color: #575d69; border-radius: 50%; width: 3em; height: 3em; text-align: center; line-height: 3em;">或</a>

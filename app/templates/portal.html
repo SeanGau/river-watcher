@@ -14,9 +14,9 @@
 		<div class="container-fluid" id="landing-page">			
 			<img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/>
 			<div class="ex-link-group">
-				<div><a href="#"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
-				<div><a href="#"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
-				<div><a href="#"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
+				<div id="ext-mattermost"><a href="{{url_for('link')}}#ext-mattermost"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
+				<div id="ext-depositar"><a href="{{url_for('link')}}#ext-depositar"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
+				<div id="ext-groups"><a href="{{url_for('link')}}#ext-groups"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
 			</div>
 			<a style="position: absolute; right: 1em; bottom: 1em; font-size: 1em; color: #D8D8D8; text-align: center;" href="{{url_for('map')}}">前往河川地圖　─────<img id="go-to-map" src="{{url_for('static', filename='img/right_arrow.svg')}}"/></a>
 		</div>
@@ -26,8 +26,8 @@
 					{%if username is defined%}
 					<p style="color: #AAA; margin-bottom: 5vh 0; text-align: left;">Hello, {{ username }}　歡迎回來！<a href="{{url_for('logout')}}">登出</a></p>
 					{%else%}
-					<p style="color: #AAA; text-align: left; font-size: 1em;">若成為會員，將可隨時收到您關注河川之訂閱電子報。</p>
-					<p style="color: #AAA; margin-bottom: 5vh; text-align: left; font-size: 0.8em;">未成為會員？<a href="{{url_for('reg')}}" style="color: rgb(15,201,220);">申請會員</a></p>
+					<p style="color: #AAA; text-align: left; font-size: 1em;">成為會員後，將不定時收到標案通知電子報，讓您隨時掌握所訂閱的河川最新工程消息。</p>
+					<p style="color: #AAA; margin-bottom: 5vh; text-align: left; font-size: 0.8em;">還不是會員嗎？<a href="{{url_for('reg')}}" style="color: rgb(15,201,220);">加入會員</a></p>
 					{%endif%}
 				</div>
 			</div>
@@ -36,7 +36,12 @@
 				<div class="portal-block col col-md-2 text-center">
 					<h5 class="text-center">關注的河川</h5>
 					<button id="search-submit" type="submit" style=""><img src="{{url_for('static', filename='img/search.svg')}}"></button>
-					<input id="subs-search" type="text" placeholder="新增關注河川" name="search"/>
+					<input id="subs-search" type="text" list="river-list" placeholder="新增關注河川" name="search"/>
+					<datalist id="river-list">
+					{% for river in rivers_data %}
+						<option value="{{river['溪流名稱']}}">
+					{% endfor %}	
+					</datalist>
 				</div>
 				<div class="portal-block col col-md-8" id="sub-group">
 					{% for riverid in sub_list %}
@@ -58,16 +63,71 @@
 					</ul>
 					<div class="tab-content">
 						<div id="about-team" class="tab-pane fade">
-							<h3>HOME</h3>
-							<p>Some content.</p>
+							<h3>建置團隊</h3>
+							<p>竹圍工作室，是一個從創意文化出發、關心社會永續與生態的藝術空間與交流平台。座落於淡水河畔、見證著土地與城市的消長，種下了我們關注環境的潛在基因。從2002年的《城市與河流的交會–竹圍環境藝術節》、到2009年啟動研究的《樹梅坑溪環境藝術行動》、2015年到巴黎氣候峰會參加Art COP21，分享環境藝術的經驗…，一次又一次的藝術進駐、藝術介入社會計畫、社會參與行動，累積成為今日的我們。
+</p>
+<p>從《樹梅坑溪環境藝術行動》的軟性介入，到《大河小溪全民齊督工》公民科技地圖平台，竹圍工作室持續以多元的手法，推動社會的向上質變。台灣擁有亞洲最強而穩定的公民科學力，我們希望能以藝術翻轉思維，結合科技推動更深入的公民參與，讓更多人能看見台灣河溪的豐富與深度，並善用這些開放資訊成為推動流域關懷的重要推手。
+</p>
 						</div>
 						<div id="about-platform" class="tab-pane fade">
-							<h3>Menu 1</h3>
-							<p>Some content in menu 1.</p>
+							<h3>平台介紹</h3>
+							<p>大河小溪全民齊督工地圖平台，於 2019 年獲得 g0v 零時政府的公民科技創新獎助金，試圖透過公民科技降低公私部門之間的資訊落差，並將溪流整治工程相關部門的公開資訊視覺化。這個開源平台讓竹圍工作室長久以來對於環境的關注，有機會進一步對社會機制面造成影響，架構屬於台灣的河川情報系統，並拋出一個公民參與的另類想像。
+</p>
+<p>我們期望透過這個平台，建構以下可能：(1) 組織與社群的資訊網絡、(2) 河川系統與野溪情報網、(3) 公私部門資訊合作管道。
+</p> 
+<p>在平台上，使用者可以看到單一水系上，有哪些河川夥伴也正在關心這條河流。也能透過討論區，加入各種議題的討論、分享最新消息，或交換不同流域之間的經驗與故事。甚至，可以運用圖片上傳功能、研究資料寄存所、維基數據等管道，補充更多河川相關資料，參與台灣河川資料庫的共筆編輯。
+</p>
+<p>而政府所公開出來的工程點位資料，也會在地圖上被標記出來，方便以視覺化的方式理解歷年工程與水系之間的相對關係。當使用者對自己所關心的河川溪流點擊訂閱，一旦這條溪流和相關水系有新的工程發包，就會收到信件主動通知，提醒使用者介入追蹤。
+</p>
+<p>我們的資料來源分別來自各政府部門之公開資訊、維基數據（Wikidata）、維基共享資源（Wikimedis Commons）、研究資料寄存所（d_depositar）。
+</p>
+<p>
+※本專案所產出的開源軟體套件或開放授權方式如下─<br>
+◆資料和程式碼以 GNU GPLv3 條款授權釋出<br>
+◆文件及圖像以 CC BY-SA 4.0 International 條款授權釋出<br>
+</p>
+<p>
+<a href="https://github.com/SeanGau/river-watcher" target="_blank">專案程式(Github)</a><br>
+<a href="https://g0v.hackmd.io/s/SJbW178u4" target="_blank">HackMD</a><br>
+<a href="http://beta.hackfoldr.org/bcsrcsp" target="_blank">Hackfoldr</a><br>
+<a href="https://grants.g0v.tw/projects/5c3ab62e0c53ab001b42996f" target="_blank">提案頁面</a><br>
+<a href="https://g0v.hackmd.io/zatQZk4XRwaWL3nG98Bowg" target="_blank">期中報告</a><br>
+<a href="https://g0v.hackmd.io/HJhU7aByRmyDxkTLky_GeQ" target="_blank">期末報告</a></p>
 						</div>
 						<div id="about-meaning" class="tab-pane fade">
-							<h3>Menu 2</h3>
-							<p>Some content in menu 2.</p>
+							<h3>建設意義</h3>
+							<p>近年野溪水泥化現象普遍，相關工程標案會被公告在特定網站招標，但其公開資訊有限，未註明確切緣由、施工地點等，更別說要追蹤後續結果。為了讓關心河川的人能有效即時監督，本平台將彙整全台不同主管機關所發包的河川工程相關資訊，使水系與工程地點能進一步視覺化、地圖化，並開放民眾上傳施工圖片，成為通報監督河川施工的好幫手。
+</p>
+<p>在「大河小溪全民齊督工」地圖平台訂閱自己所關心的水系後，同一水系的相關工程都會在發包時主動發送通報給在地流域團體，讓全台灣各地關心河川、關心流域相關議題的單位都能收到更即時的工程資訊，讓民眾能從標案發包之初就開始追蹤工程的進度，並透過多筆資料的累積，提供未來描繪比對不同工程之間互動關係的資料基礎。
+</p>
+						</div>
+						<div id="about-what" class="tab-pane fade">
+							<h3>可獲得什麼資料？</h3>
+							<p>
+1、開標主動通報：<br>
+訂閱水系、河川溪流後，即時通知標案發包最新消息<br>
+<br>
+2、位置比對：<br>
+比對歷年河川溪流整治工程點位和各河川水系、上下游之間的關係<br>
+<br>
+3、相關河川社群登錄/查詢：<br>
+新增關注河川溪流的組織單位名錄<br>
+<br>
+4、各縣市特定水系及工程點位圖資整合下載：<br>
+將特定水系的工程點位圖另存成為圖檔下載使用<br>
+<br>
+5、一次性圖層上傳與工程點位比對圖資整合下載：<br>
+使用者可自行上傳KML檔案，與地圖平台上的工程點位資料進行比對分析，並另存成為圖檔下載使用。所上傳的圖層資料將不會留存至下次登入<br>
+<br>
+6、河川拍攝圖資上傳／檢索：<br>
+使用者可自行上傳具有GPS位址的河川溪流工程圖片，讓地圖平台的其他使用者可以知道這條溪流的現況與照片紀錄<br>
+<br>
+7、瀏覽河川溪流相關工程審議會、說明會、公聽會消息：<br>
+使用者可點選任一河川，並檢視近期公布的工程審議會、說明會、公聽會等相關消息<br>
+<br>
+8、搜尋並連結各河川溪流相關資料集：<br>
+使用者可檢視與任一河川有關且被上傳到「資料寄存所」的河川溪流相關資料集，或在該網站進行註冊自行上傳更多資料。<br>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -94,7 +154,12 @@
 				<div class="portal-block col col-md-8">
 					<p class="collapse-toggle collapsed" style="margin-top: 3em; color: #AAA;" data-toggle="collapse" href="#collapse-reply" role="button" aria-expanded="false" aria-controls="collapse-reply">若您對本平台有任何的意見或建議，歡迎您與我們聯繫。</p>
 					<div class="collapse" id="collapse-reply">
-						<p>AAAAAAAAAAAAAAAAAAAA</p>
+						<p>本網站是由g0v零時政府公民科技創新獎助金贊助建置的開源專案，並由所有關注河川議題的社會大眾共同參與彙整而成。
+</p>
+<p>為了讓平台更符合公民參與和全民督工的設計初衷，歡迎各位針對《大河小溪全民齊督工》地圖平台的使用體驗給予我們意見與回饋，協助我們做得更好。<br>
+<br>
+意見回饋信箱：riverwatcher@bambooculture.com
+</p>
 					</div>
 				</div>
 			</div>
@@ -144,6 +209,8 @@
 			$(window).ready(function(){
 				console.log($('#sub-group .sub-sets').length);
 			});
+			
+			
 		</script>
 	</body>
  </html>

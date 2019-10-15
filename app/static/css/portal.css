@@ -19,10 +19,8 @@ body {
 }
 
 .main-img {
-	top: 5vh;
-	left: 3vw;
+	margin: 15px;
 	height: 10vh;
-	position: absolute;
 }		
 
 .portal-page {
@@ -51,6 +49,28 @@ body {
 	border-radius: 2px;
 	border: 1px solid #D8D8D8;
 }
+.ex-link-group div a:hover {
+	color: #0FC9DC;		
+	text-decoration: none;
+}
+.ex-link-group #ext-mattermost:hover::after {
+	content: "定期更新河川標案消息的討論區";
+	color: #AAA;
+	padding: 1em;
+	font-family: 'Noto Sans TC', sans-serif;
+}
+.ex-link-group #ext-depositar:hover::after {
+	content: "上傳河川相關資料的線上資料庫";
+	color: #AAA;
+	padding: 1em;
+	font-family: 'Noto Sans TC', sans-serif;
+}
+.ex-link-group #ext-groups:hover::after {
+	content: "新增關注河川溪流的組織單位名錄";
+	color: #AAA;
+	padding: 1em;
+	font-family: 'Noto Sans TC', sans-serif;
+}
 
 #go-to-map {
 	display: inline; 
@@ -69,11 +89,6 @@ body {
   100% {
 	left: -1em;
   }
-}
-
-.ex-link-group div a:hover {
-	color: #0FC9DC;		
-	text-decoration: none;
 }
 
 .portal-page .row h5{
@@ -150,6 +165,9 @@ body {
 #portal-about .active{
 	color: rgb(15,201,220);
 }
+#portal-about .tab-content, #collapse-links, #collapse-reply {
+	padding: 2em 2em 2em 0;
+}
 
 #portal-links .portal-block{
 	margin-top: 1em;
@@ -213,4 +231,44 @@ body {
 .scroll-style::-webkit-scrollbar-thumb {
 	background-color: #394551;
 	border-radius: 4px;
+}
+
+
+.ext-box {
+	padding: 10% 10% 0% 10%;
+	color: white;
+}
+
+.ext-box-title {
+	border: 1px solid white;
+	background-color: rgba(100,100,100,0.3);
+	height: 4em;
+	border-radius: 2px;
+	position: relative;
+}
+.ext-box-title a {
+	position: absolute;
+	bottom: 1em;
+	left: 1em;
+	line-height: 1.5em;
+	border-left: 3px solid rgb(15,201,220);
+	padding-left: 1em;
+}
+.ext-box p {
+	color: #AAA;
+	margin-bottom: 0.5em;
+	margin-top: 1em;
+	line-height: 1.5em;
+}
+
+.ext-img {
+	width: 100%;
+}
+
+.modal-content {
+	background-color: rgba(100,100,100,1); 
+	color: #D8D8D8;
+}
+.modal-footer {
+	border: 0;
 }
