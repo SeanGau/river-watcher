@@ -12,8 +12,8 @@
 	</head>
 	<body>
 		<div class="d-flex justify-content-center align-items-center container-fluid login-page">
-			<img class="main-img" style="height: 10vh;" src="{{url_for('static', filename='img/logo_w.png')}}"/>
-			<div class="login-box d-flex justify-content-center login-box-user">
+			<a href="{{url_for('index')}}"><img class="main-img" style="height: 10vh;" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
+			<div class="login-box d-flex justify-content-center login-box-user col-md-4">
 				<div class="text-center" style="width: 80%;">	
 					<h4 class="text-center">成為會員</h4>
 					<form action='{{url_for('reg')}}' method='POST' class="login-form">

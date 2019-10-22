@@ -2,16 +2,66 @@
 <html lang="zh-hant">
 	<head>
 		<meta charset="UTF-8" />
-		<title>BCSRCSP</title>
+		<title>{{GLOBAL_TITLE}}</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+		<link href="http://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
 	</head>
-	<body>
-		<form method='post' action="/mm"> 
-        <p>
-			TEXT:<input type='text' name='text' />
-		</p>
-        <p>
-			<button type='submit'>傳送</button>
-		</p>    
-    </form>
+	<body class="scroll-style">
+		<div class="container-fluid" id="landing-page">			
+			<img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/>
+			<p class="main-discription">
+				本平台為2019年g0v零時政府公民科技獎助金贊助專案，是一個透過公民科技、公民參與所共同建構的台灣河溪標案工程地圖平台，每個人都可以透過上傳和編輯，讓平台上的資訊更加豐富。
+			</p>
+			<img id="enter-arrow" src="{{url_for('static', filename='img/ENTER_float.svg')}}"/>
+			<a id="copyright">竹圍工作室版權所有 CC BY-SA 4.0</a>
+		</div>
+		<div class="login-page container-fluid row h-100">
+			<div class="login-box col-lg-6 my-auto login-box-user">
+				<div class="text-center" style="width: 80%;">	
+					<h4 class="text-center">我是會員</h4>
+					<form action='{{url_for('login')}}' method='POST' class="login-form">
+						<label class="label-idpw form-inline">信箱　<input type='text' name='email' placeholder='bambooculture@gmail.com'/></label>
+						<label class="label-idpw form-inline">密碼　<input type='password' name='password' placeholder='‧‧‧‧‧‧‧‧‧‧'/></label>
+						<p class=" form-inline"><label class="checkbox-style1">記住我<input type="checkbox" name="rememberme"/><span class="checkbox-style1-box"></span></label><a href="{{url_for('forget_pw')}}">忘記密碼？</a></p>
+						<input class="btn-style1" type='submit' value="登入"/>
+					</form>
+				</div>
+			</div>
+			<div class="login-box col-lg-6 my-auto login-box-guest">
+				<div class="text-center">
+					<h4 class="text-center">我是訪客</h4>
+					<input class="btn-style1" type="button" value="訪客瀏覽" onclick="location.href='{{url_for('portal')}}'"/><br>
+					<input class="btn-style1" type="button" value="加入會員" onclick="location.href='{{url_for('reg')}}'"/>
+					<p class="text-center">成為會員後，將不定時收到標案通知電子報，<br>讓您隨時掌握所訂閱的河川最新工程消息。</p>
+				</div>
+			</div>
+			<a style="position: absolute; font-size: 1em; background-color: #D8D8D8; color: #575d69; border-radius: 50%; width: 3em; height: 3em; text-align: center; line-height: 3em;">或</a>
+		</div>
+		
+		<!-- ----------------------------------------- -->
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.1/velocity.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$('html, body').scrollTop(0);
+			});
+			var isImgSmall = false;
+			$(window).scroll(function(){
+				if($(this).scrollTop()>$('#landing-page').height()/2 && !isImgSmall){
+					isImgSmall = true;
+					$(".main-img").stop().velocity({height:'10vh'}, {duration:500, loop:false, easing:"easeOutSine"});
+				}
+				else if($(this).scrollTop()<$('#landing-page').height()/2 && isImgSmall){
+					isImgSmall = false;
+					$(".main-img").stop().velocity({height:'25vh'}, {duration:500, loop:false, easing:"easeOutSine"});
+				}
+			});
+		</script>
 	</body>
  </html>

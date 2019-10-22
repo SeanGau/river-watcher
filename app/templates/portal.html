@@ -12,7 +12,7 @@
 	</head>
 	<body class="scroll-style">
 		<div class="container-fluid" id="landing-page">			
-			<img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/>
+			<a href="{{url_for('index')}}"><img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
 			<div class="ex-link-group">
 				<div id="ext-mattermost"><a href="{{url_for('link')}}#ext-mattermost"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
 				<div id="ext-depositar"><a href="{{url_for('link')}}#ext-depositar"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
@@ -32,29 +32,29 @@
 				</div>
 			</div>
 			{%if sub_list is defined%}
-			<div id="portal-subs" class="row justify-content-center">
-				<div class="portal-block col col-md-2 text-center">
+			<div class="portal-subs row justify-content-center">
+				<div class="portal-block col-md-2 text-center">
 					<h5 class="text-center">關注的河川</h5>
 					<button id="search-submit" type="submit" style=""><img src="{{url_for('static', filename='img/search.svg')}}"></button>
-					<input id="subs-search" type="text" list="river-list" placeholder="新增關注河川" name="search"/>
+					<input id="subs-search" type="text" list="river-list" placeholder="新增關鍵字" name="search"/>
 					<datalist id="river-list">
 					{% for river in rivers_data %}
-						<option value="{{river['溪流名稱']}}">
+						<option value="{{river['name']}}({{river['city']}})">
 					{% endfor %}	
 					</datalist>
 				</div>
-				<div class="portal-block col col-md-8" id="sub-group">
+				<div class="portal-block col-md-8" id="sub-group">
 					{% for riverid in sub_list %}
 					<p class="sub-sets">{{riverid}}<button name="{{riverid}}">✖</button></p>
 					{% endfor %}	
 				</div>
 			</div>
 			{%endif%}
-			<div id="portal-about" class="row justify-content-center">
-				<div class="portal-block col col-md-2">
+			<div class="portal-about row justify-content-center">
+				<div class="portal-block col-md-2">
 					<h5 class="text-center">關於我們</h5>
 				</div>
-				<div class="portal-block col col-md-8">
+				<div class="portal-block col-md-8">
 					<ul class="nav nav-tabs">
 						<li><a data-toggle="tab" href="#about-team">建置團隊</a></li>
 						<li><a data-toggle="tab" href="#about-platform">平台介紹</a></li>
@@ -132,33 +132,30 @@
 					</div>
 				</div>
 			</div>
-			<div id="portal-links" class="row justify-content-center">
-				<div class="portal-block col col-md-2">
+			<div class="portal-links row justify-content-center">
+				<div class="portal-block col-md-2">
 					<h5 class="text-center">外部連結</h5>
 				</div>
-				<div class="portal-block col col-md-8">
+				<div class="portal-block col-md-8">
 					<p class="collapse-toggle collapsed" style="margin-top: 3em; color: #AAA;" data-toggle="collapse" href="#collapse-links" role="button" aria-expanded="false" aria-controls="collapse-links">在此提供其他相關單位之快速連結以供查詢。</p>
 					<div class="collapse" id="collapse-links" style="margin-bottom: 2em; color: #AAA;">
-						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
-						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
-						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
-						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
-						<a href="#">AAAAAAAAAAAAAAAAAAAA</a><br>
+						<h3>外部連結</h3>
 					</div>
 				</div>
 			</div>
-			<div id="portal-reply" class="row justify-content-center">
-				<div class="portal-block col col-md-2">
+			<div class="portal-reply row justify-content-center">
+				<div class="portal-block col-md-2">
 					<h5 class="text-center">意見回饋</h5>
 				</div>
-				<div class="portal-block col col-md-8">
+				<div class="portal-block col-md-8">
 					<p class="collapse-toggle collapsed" style="margin-top: 3em; color: #AAA;" data-toggle="collapse" href="#collapse-reply" role="button" aria-expanded="false" aria-controls="collapse-reply">若您對本平台有任何的意見或建議，歡迎您與我們聯繫。</p>
 					<div class="collapse" id="collapse-reply">
+					<h3>意見回饋</h3>
 						<p>本網站是由g0v零時政府公民科技創新獎助金贊助建置的開源專案，並由所有關注河川議題的社會大眾共同參與彙整而成。
 </p>
 <p>為了讓平台更符合公民參與和全民督工的設計初衷，歡迎各位針對《大河小溪全民齊督工》地圖平台的使用體驗給予我們意見與回饋，協助我們做得更好。<br>
-<br>
-意見回饋信箱：riverwatcher@bambooculture.com
+</p>
+<p style="text-align: left">意見回饋信箱：<a href="mailto:riverwatcher@bambooculture.com">riverwatcher@bambooculture.com</a>
 </p>
 					</div>
 				</div>
@@ -178,7 +175,7 @@
 				if( retVal == false ) {
 					return;
 				}
-				$.getJSON($SCRIPT_ROOT + '/portal', {
+				$.getJSON($SCRIPT_ROOT + '/api/adjsub', {
 					riverid: riverid,
 					type: "add"
 				}, function(cb) {
@@ -195,7 +192,7 @@
 				if( retVal == false ) {
 					return;
 				}
-				$.getJSON($SCRIPT_ROOT + '/portal', {
+				$.getJSON($SCRIPT_ROOT + '/api/adjsub', {
 					riverid: this_sel.attr("name"),
 					type: "remove"
 				}, function(cb) {

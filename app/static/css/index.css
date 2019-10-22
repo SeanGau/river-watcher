@@ -70,7 +70,6 @@ body {
 	background-color: rgba(0,0,0,0.7);
 }			
 .login-box{
-	width: 33vw;
 	min-height: 62vh;
 	margin: 0;
 	border-radius: 3px;
@@ -96,6 +95,18 @@ body {
 	color: #AAA; 
 	vertical-align: top;
 	margin: 0;
+}
+
+#or-circle {
+	position: absolute; 
+	font-size: 1em; 
+	background-color: #D8D8D8; 
+	color: #575d69; 
+	border-radius: 50%; 
+	width: 3em; 
+	height: 3em; 
+	text-align: center; 
+	line-height: 3em;
 }
 
 .label-idpw{
@@ -189,9 +200,16 @@ body {
 	border-radius: 4px;
 }
 
-@media (max-width: 992px) {
-	.login-box{
-		width: 45vw;
+@media (max-width: 768px) {
+	.main-img {
+		max-height: 20vh;
+		position: absolute;
+	}		
+	.main-discription {
+		width: 80vw;
+	}
+	#or-circle {
+		margin-top: 12vh;
 	}
 }
 

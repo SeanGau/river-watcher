@@ -16,11 +16,11 @@
 			<p class="main-discription">
 				本平台為2019年g0v零時政府公民科技獎助金贊助專案，是一個透過公民科技、公民參與所共同建構的台灣河溪標案工程地圖平台，每個人都可以透過上傳和編輯，讓平台上的資訊更加豐富。
 			</p>
-			<img id="enter-arrow" src="{{url_for('static', filename='img/ENTER_float.svg')}}"/>
+			<a href="javascript:void(0)" onclick="enter()"><img id="enter-arrow" src="{{url_for('static', filename='img/ENTER_float.svg')}}"/></a>
 			<a id="copyright">竹圍工作室版權所有 CC BY-SA 4.0</a>
 		</div>
-		<div class="login-page d-flex justify-content-center align-items-center container-fluid">
-			<div class="login-box d-flex justify-content-center login-box-user">
+		<div class="login-page d-flex justify-content-center align-items-center container-fluid row mx-0">
+			<div class="login-box d-flex justify-content-center login-box-user col-md-4">
 				<div class="text-center" style="width: 80%;">	
 					<h4 class="text-center">我是會員</h4>
 					<form action='{{url_for('login')}}' method='POST' class="login-form">
@@ -31,7 +31,7 @@
 					</form>
 				</div>
 			</div>
-			<div class="login-box d-flex justify-content-center login-box-guest">
+			<div class="login-box d-flex justify-content-center login-box-guest col-md-4">
 				<div class="text-center">
 					<h4 class="text-center">我是訪客</h4>
 					<input class="btn-style1" type="button" value="訪客瀏覽" onclick="location.href='{{url_for('portal')}}'"/><br>
@@ -39,7 +39,7 @@
 					<p class="text-center">成為會員後，將不定時收到標案通知電子報，<br>讓您隨時掌握所訂閱的河川最新工程消息。</p>
 				</div>
 			</div>
-			<a style="position: absolute; font-size: 1em; background-color: #D8D8D8; color: #575d69; border-radius: 50%; width: 3em; height: 3em; text-align: center; line-height: 3em;">或</a>
+			<a id="or-circle">或</a>
 		</div>
 		
 		<!-- ----------------------------------------- -->
@@ -62,6 +62,10 @@
 					$(".main-img").stop().velocity({height:'25vh'}, {duration:500, loop:false, easing:"easeOutSine"});
 				}
 			});
+			
+			function enter() {
+				$('html,body').animate({scrollTop:$('.login-page').offset().top},600);
+			}
 		</script>
 	</body>
  </html>

@@ -12,14 +12,9 @@
 	</head>
 	<body class="scroll-style" style="background-attachment: fixed;">
 		<div class="container-fluid" style="background-color: rgba(15,25,35,0.8); min-height: 200vh;">			
-			<img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/>
+			<a href="{{url_for('index')}}"><img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
 			<div class="row ext-box" id="ext-mattermost">
-				<div class="col-6">
-					<div class="ext-box-title"><a>討論群組</a></div>
-					<p>這是一個附屬於《大河小溪全民齊督工》地圖平台的河川議題討論區，可以自由新增群組，隨意提出議題進行交流分享。我們會定期把電子採購網上跟河川有關的標案工程公告在「標案通知」的頻道上，讓大家知道近期有哪些工程即將展開！</p>
-					<a style="float: right; font-size: 1em; color: #D8D8D8; text-align: center;" href="http://river-watcher.bambooculture.tw:8065" target="_blank">前往　─────<img id="go-to-map" src="{{url_for('static', filename='img/right_arrow.svg')}}"/></a>
-				</div>
-				<div class="col-6">
+				<div class="col-md-6 order-md-12">
 					<a href="#" style="font-size: 1em;" data-toggle="modal" data-target="#modal-mattermost"><img class="ext-img" src="{{url_for('static', filename='img/mattermost.png')}}"/></a>
 					<div id="modal-mattermost" class="modal fade" role="dialog">
 						<div class="modal-dialog modal-lg">
@@ -27,9 +22,14 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-md-6 order-md-1">
+					<div class="ext-box-title"><a>討論群組</a></div>
+					<p>這是一個附屬於《大河小溪全民齊督工》地圖平台的河川議題討論區，可以自由新增群組，隨意提出議題進行交流分享。我們會定期把電子採購網上跟河川有關的標案工程公告在「標案通知」的頻道上，讓大家知道近期有哪些工程即將展開！</p>
+					<a style="float: right; font-size: 1em; color: #D8D8D8; text-align: center;" href="http://river-watcher.bambooculture.tw:8065" target="_blank">前往　─────<img id="go-to-map" src="{{url_for('static', filename='img/right_arrow.svg')}}"/></a>
+				</div>
 			</div>
 			<div class="row ext-box" id="ext-depositar">
-				<div class="col-6">
+				<div class="col-md-6">
 					<a href="#" style="font-size: 1em;" data-toggle="modal" data-target="#modal-depositar"><img class="ext-img" src="{{url_for('static', filename='img/depositar.jpg')}}"/></a>
 					<div id="modal-depositar" class="modal fade" role="dialog">
 						<div class="modal-dialog modal-lg">
@@ -37,7 +37,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-6">
+				<div class="col-md-6">
 					<div class="ext-box-title"><a>資料寄存</a></div>
 					<p>研究資料寄存所就是為了協同研究而建立的！在取得個人帳號之後，研究者就可建立專案，彼此分享資料集。<br>
 							上傳至此的資料集，只要有在關鍵字一欄標註相關河川，即會出現在地圖上相關河川的最新消息中。

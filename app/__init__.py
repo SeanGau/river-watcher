@@ -1,5 +1,6 @@
 import flask
 import requests, pymysql, hashlib, json, csv, os
+import urllib.parse
 from config import connection, mmConfig
 from flask_mail import Mail, Message
 
@@ -65,7 +66,7 @@ def getusers(email = None): #取得使用者資料庫
 	return users	
 
 def adj_subscribe(result_set,riverid,type):
-	riverid = int(riverid)
+	#riverid = int(riverid)
 	with connection.cursor() as cursor:
 		sql = f'INSERT INTO river_subscribe (email, riverid) VALUES("{flask.session.get("email", "not loginned")}", "{riverid}")'
 		if type=="remove":
@@ -77,14 +78,31 @@ def adj_subscribe(result_set,riverid,type):
 		return "ok"
 	return False
 		
-def get_subscribe():
+def get_subscribe(email = False, riverid = False):
 	with connection.cursor() as cursor:
-		sql = f'SELECT `riverid` FROM river_subscribe WHERE `email` = "{flask.session.get("email", "not loginned")}"'
-		cursor.execute(sql)
-		result_set = [item[0] for item in cursor.fetchall()]
-		print(result_set)
-		return result_set
-		
+		if email:
+			sql = f'SELECT `riverid` FROM river_subscribe WHERE `email` = "{email}"'
+			cursor.execute(sql)
+			result_set = [item[0] for item in cursor.fetchall()]
+			print(result_set)
+			return result_set
+		elif riverid:
+			sql = f'SELECT `email` FROM river_subscribe WHERE `riverid` = "{riverid}"'
+			cursor.execute(sql)
+			result_set = [item[0] for item in cursor.fetchall()]
+			print(result_set)
+			return result_set
+		else:
+			return False
+
+def get_rivers_list():
+	rivers_data = []
+	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/static/pcc/rivers20191017_small.csv', newline='' ,encoding='utf-8-sig')
+	csv_reader = csv.DictReader(query_rivers)
+	for row in csv_reader:
+		rivers_data.append(row)
+	return rivers_data
+
 #-------------------------------------以下是頁面控制----------------------------------------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -147,20 +165,40 @@ def mm():
 		
 @app.route("/portal") #主要使用者頁面
 def portal():
-	rivers_data = []
-	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/static/pcc/rivers20191003_small.csv', newline='' ,encoding='utf-8-sig')
-	csv_reader = csv.DictReader(query_rivers)
-	for row in csv_reader:
-		rivers_data.append(row)
+	rivers_data = get_rivers_list()
 	username = flask.session.get('username', False)
 	if not username:
 		return flask.render_template('portal.html',rivers_data=rivers_data)
-	sub_list = get_subscribe()
+	else:
+		sub_list = get_subscribe(email = flask.session.get("email", "not loginned"))
+		return flask.render_template('portal.html', sub_list=sub_list, username=username, rivers_data=rivers_data)
+
+@app.route('/api/adjsub') #修改訂閱
+def adjsub():
+	sub_list = get_subscribe(email = flask.session.get("email", "not loginned"))
 	riverid = flask.request.args.get('riverid', False)
 	type = flask.request.args.get('type', False)
 	if not riverid or not type:
-		return flask.render_template('portal.html', sub_list=sub_list, username=username, rivers_data=rivers_data)
+		return flask.abort(400)
 	return flask.jsonify(result = adj_subscribe(sub_list,riverid,type))
+		
+@app.route('/api/sendmail')
+def sendmail():
+	riverid = urllib.parse.unquote(flask.request.args.get('riverid', False))
+	date = urllib.parse.unquote(flask.request.args.get('date', False))
+	unit_id = flask.request.args.get('unit_id', False)
+	job_number = flask.request.args.get('job_number', False)
+	job_title = urllib.parse.unquote(flask.request.args.get('title', False))
+	if(riverid and unit_id and job_number and job_title) == False:
+		return flask.abort(400)
+	sub_list = get_subscribe(riverid = riverid)
+	if len(sub_list) > 0:
+		msg = Message(f'大河小溪全民齊督工─{date} {riverid} 標案通知!!', recipients=sub_list)
+		msg.html = f'<a href="https://ronnywang.github.io/pcc-viewer/tender.html?unit_id={unit_id}&job_number={job_number}">{job_title}</a>'
+		mail.send(msg)
+		return msg.html, 202
+	else:
+		return "no one care", 200
 		
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
 def reg():
@@ -183,7 +221,8 @@ def reg():
 
 @app.route('/map')
 def map():
-	return flask.render_template('map.html')
+	rivers_data = get_rivers_list()
+	return flask.render_template('map.html', rivers_data = rivers_data)
 	
 @app.route('/link')
 def link():
