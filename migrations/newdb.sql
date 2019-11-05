@@ -9,6 +9,15 @@ CREATE TABLE `members` (
 	PRIMARY KEY (`id`) USING BTREE
 )CHARACTER SET=utf8 COLLATE=utf8_unicode_ci;
 
+DROP TABLE IF EXISTS `resetpws`;
+CREATE TABLE `resetpws` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`email` text NOT NULL,
+	`token` text NOT NULL,
+	`times` text NOT NULL,
+	PRIMARY KEY (`id`) USING BTREE
+)CHARACTER SET=utf8 COLLATE=utf8_unicode_ci;
+
 DROP TABLE IF EXISTS `river_subscribe`;
 CREATE TABLE `river_subscribe` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,

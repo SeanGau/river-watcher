@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-		<link href="http://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
 	</head>
 	<body>
@@ -19,7 +19,7 @@
 					<form action='{{url_for('reg')}}' method='POST' class="login-form">
 						<label class="label-idpw form-inline">使用者名稱　<input type='text' name='username' placeholder='高O翔' required/></label>
 						<label class="label-idpw form-inline">登入信箱　<input type='text' name='email' placeholder='bambooculture@gmail.com' required/></label>
-						<label class="label-idpw form-inline">登入密碼　<input type='password' name='password' placeholder='至少8位英數' required/></label>
+						<label class="label-idpw form-inline">登入密碼　<input type='password' name='password' minlength='6'placeholder='至少8位英數' required/></label>
 						<p class=" form-inline"><label class="checkbox-style1">我已詳閱<a href="#" style="font-size: 1em;" data-toggle="modal" data-target="#myModal">會員條款與隱私權條款</a><input type="checkbox" name="termok" required/><span class="checkbox-style1-box"></span></label></p>
 						<input class="btn-style1" type='submit' value="加入會員"/>
 						</form>

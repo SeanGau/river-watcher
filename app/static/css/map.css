@@ -13,6 +13,28 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	line-height: 2em;
 	font-weight: 400;
 }
+input:focus, button:focus{
+	outline: none;
+}
+a:hover, #pcc-list a:hover{
+	text-decoration: none;
+	color: rgb(15,201,220);
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+.marker-cluster span {
+	color: black;	
+	font-family: 'Noto Sans TC', sans-serif;
+}
 
 .leaflet-control-layers {
 	background-color: rgba(0,0,0,0);	
@@ -23,7 +45,7 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	border-width: 0;
 }
 
-.leaflet-retina .leaflet-control-layers-toggle {
+.leaflet-control-layers .leaflet-control-layers-toggle {
 	background-image: url("../img/layers.svg");
 	background-size: 50px 50px;
 	background-position: center;
@@ -62,20 +84,19 @@ a, p, h1, h2, h3, h4, h5, input, label {
 }
 #detail-box {
 	z-index: 1000;
+	display: flex;
 	position: absolute;
 	top: 0;
 	left: 0;
 	margin: 10px;
-	max-height: 90vh;
+	height: 90vh;
+	max-width: 420px;
 	width: 0px;
 	background-color: #242730;
-}
-#detail-box {
 	color: white;
 }
 #adv-search {
 	margin: 1em;
-	width: 80%;
 	background-color: rgba(0,0,0,0);
 	border-width: 0;
 	color: white;
@@ -84,7 +105,6 @@ a, p, h1, h2, h3, h4, h5, input, label {
 }
 #detail-index {
 	overflow: hidden;
-	padding: 0;
 }
 #detail-index .nav {
 	display: block;
@@ -113,7 +133,7 @@ a, p, h1, h2, h3, h4, h5, input, label {
 }
 #detail-pcc .pcc-filter {
 	background-color: #29323b;
-	min-height: 50px;
+	height: 50px;
 	margin-top: 5px;
 	padding: 5px;
 }
@@ -121,7 +141,8 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	margin: 0;
 }
 #detail-pcc .pcc-filter .radio-style1 p input{
-	width: 2em;
+	width: 3em;
+	text-align: center;
 	background-color: rgba(0,0,0,0);
 	color: rgb(252,112,5);
 	border-width: 0;
@@ -143,16 +164,32 @@ a, p, h1, h2, h3, h4, h5, input, label {
 }
 
 .scroll-list {
+	height: calc(90vh - 25em);
 	background-color: #29323b;	
-	max-height: 30vh;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding: 0.8em;
 	margin-top: 1em;
 }
+
+#pcc-list {
+	flex: 1 1 auto;
+}
 #pcc-list a{
 	line-height: 1em;
 	color: #AAA;
+}
+#pcc-list .col-3 {
+	white-space: nowrap;
+	text-align: left;
+	padding: 0 0 0 1em;
+}
+#pcc-list div.row:hover a {
+	color: rgb(15,201,220);	
+}
+
+.hovered-marker {	
+	background-color: rgb(15,201,220) !important;	
 }
 
 #detail-news #news-pcc {
@@ -336,8 +373,31 @@ input:checked + .slider:before {
 .scroll-style::-webkit-scrollbar {
 	width: 8px;
 	background-color: #242730;
+	border-radius: 4px;
 }
 .scroll-style::-webkit-scrollbar-thumb {
 	background-color: #394551;
 	border-radius: 4px;
+}
+
+
+@media (max-width: 768px) {
+	#toggle-detail {
+		top: -45px;
+		right: -0px;
+	}
+	#detail-box {
+		top: 10vh;
+		height: 80vh;
+		margin-left: 40px;
+	}
+	#detail-box.show {
+		margin-left: 0;
+	}
+	.scroll-list {
+		height: calc(80vh - 25em);
+	}
+	#toggle-back #toggle-back-dot:hover #toggle-back-index{
+		margin-left: 3em;
+	}
 }

@@ -1,1 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88.64 93.14"><defs><style>.cls-1{fill:none;stroke:#000;stroke-linecap:round;stroke-miterlimit:10;stroke-width:5px;}</style></defs><title>search</title><g id="圖層_2" data-name="圖層 2"><g id="圖層_1-2" data-name="圖層 1"><path d="M36,5A31,31,0,1,1,5,36,31,31,0,0,1,36,5m0-5A36,36,0,1,0,72,36,36,36,0,0,0,36,0Z"/><line class="cls-1" x1="16" y1="35.5" x2="56" y2="35.5"/><line class="cls-1" x1="86.14" y1="90.64" x2="57.86" y2="62.36"/><line class="cls-1" x1="36" y1="55.5" x2="36" y2="15.5"/></g></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 88.6 93.1" style="enable-background:new 0 0 88.6 93.1;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#000000;stroke-width:8;stroke-linecap:round;stroke-miterlimit:10;}
+</style>
+<title>search</title>
+<g>
+	<g id="圖層_1-2">
+		<path d="M36,8.1c15.4,0,27.9,12.5,27.9,27.9S51.4,63.9,36,63.9S8.1,51.4,8.1,36S20.6,8.1,36,8.1 M36,0C16.1,0,0,16.1,0,36
+			s16.1,36,36,36s36-16.1,36-36S55.9,0,36,0z"/>
+		<line class="st0" x1="83" y1="87.5" x2="57.9" y2="62.4"/>
+	</g>
+</g>
+</svg>

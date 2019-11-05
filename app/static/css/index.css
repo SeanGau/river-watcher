@@ -11,6 +11,13 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	letter-spacing: 0.1px;
 }
 
+input:focus, button:focus{
+	outline: none;
+}
+a:hover, .login-form p a:hover{
+	text-decoration: none;
+	color: rgb(15,201,220);
+}
 body {
 	background-image: url("../img/bg.jpg");
 	background-attachment: fixed;
@@ -52,8 +59,6 @@ body {
 .main-discription {
 	position: absolute;
 	top: 32vh;
-	left: 3vw;
-	width: 32vw;
 	color: #D8D8D8;
 	font-weight: 400;
 }
@@ -76,12 +81,11 @@ body {
 }			
 .login-box h4 {
 	color: white;
-	margin-bottom: 5vh;
+	margin: 8vh 0;
 }			
 .login-box div {
-	position: relative;
-	top: 10vh;
-}			
+	padding-bottom: 1em;
+}
 .login-box-user{
 	background-color: rgba(100,100,100,0.3);
 	border: 1px solid #D8D8D8;
@@ -120,7 +124,7 @@ body {
 	border: none;
 	outline: none;
 	color: #CCC;
-	width: 60%;
+	width: calc(100% - 4em);
 }
 .label-idpw input::placeholder{
 	opacity: 0.7;
@@ -149,7 +153,7 @@ body {
 	border: none;
 	border-radius: 2px;
 	transition: 0.2s;
-	margin: 5% 0;
+	margin: 0 0 10% 0;
 }			
 .btn-style1:hover {
 	color: rgb(15,201,220);				
@@ -206,7 +210,9 @@ body {
 		position: absolute;
 	}		
 	.main-discription {
-		width: 80vw;
+		top: 28vh;
+		left: 0;
+		margin: 2em;
 	}
 	#or-circle {
 		margin-top: 12vh;
