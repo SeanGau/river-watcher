@@ -53,12 +53,30 @@ body {
 	padding-top: 5vh;
 }
 
+.portal-news {
+	position: absolute;
+	bottom: 30px;
+	margin: 15px;
+	border: 1px solid #D8D8D8;
+	border-radius: 4px;
+	background-color: rgba(50,50,50,0.75);
+}
+.portal-news > div {
+	height: 8em;
+	# overflow: hidden;
+	# text-overflow: ellipsis;	
+	# white-space: nowrap;
+	width: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
 .ex-link-group {	
 	text-align: left;
 }
 
 .ex-link-group div {
-	margin: 5em 0;
+	margin: 10vh 0;
 }
 
 .ex-link-group div a {
@@ -100,13 +118,23 @@ body {
 	font-family: 'Noto Sans TC', sans-serif;
 }
 
-.go-to-map {
+.go-to-arrow {
 	display: inline; 
 	height: 1.5em;
 	position: relative;
 	left: -5em;
 	bottom: 0.1em;
 	animation: go-movement 2s ease-in-out infinite;
+}
+.go-to-map {
+	z-index: 1000;
+	transition: 0.2s;
+	position: fixed;
+	right: 1em; 
+	bottom: 30px; 
+	font-size: 1.5em; 
+	color: #D8D8D8; 
+	text-align: center;
 }
 @keyframes go-movement {
   0% {
@@ -242,11 +270,12 @@ body {
 	vertical-align: middle;
     display: inline-flex;
 	left: calc(100% - 2em);
-	filter: invert(73%) sepia(23%) saturate(6237%) hue-rotate(138deg) brightness(98%) contrast(88%);
+	filter: invert(59%) sepia(73%) saturate(1538%) hue-rotate(140deg) brightness(101%) contrast(88%);
 }
 .collapse-toggle.collapsed:hover:before {
     content: url('../img/collapsed.svg'); 
-	filter: invert(73%) sepia(23%) saturate(6237%) hue-rotate(138deg) brightness(98%) contrast(88%);
+	filter: invert(59%) sepia(73%) saturate(1538%) hue-rotate(140deg) brightness(101%) contrast(88%);
+	
 }
 .collapse-toggle.collapsed:before {
     content: url('../img/collapsed.svg');
@@ -391,6 +420,9 @@ body {
 
 
 @media (max-width: 768px) {
+	.go-to-map {
+		position: absolute;
+	}
 	.ex-link-group {	
 		text-align: center;
 	}
@@ -429,7 +461,22 @@ body {
 	#rigister-p {
 		text-align: right;
 	}
-		
+	
+	.portal-news {
+		position: static;
+		margin: 0;
+	}	
+	.arrow {
+		display: none;
+	}
+	
+	.mobile-tabs {
+		font-size: 1.5em;
+	}
+	.tab-content h3 {
+		display: none;
+	}
+	
 	.ex-link-group #ext-mattermost:hover::after {
 		content: "";
 	}
@@ -439,5 +486,4 @@ body {
 	.ex-link-group #ext-groups:hover::after {
 		content: "";
 	}
-
 }

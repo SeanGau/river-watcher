@@ -1,13 +1,15 @@
 import flask
-import requests, pymysql, hashlib, json, csv, os, random, string
+import requests, hashlib, json, csv, os, random, string
 import urllib.parse
-from config import connection, mmConfig
+from config import mmConfig, gisdb_engine
 from flask_mail import Mail, Message
+from models import db, Users, Resetpw
 
 app = flask.Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
 mail = Mail(app)
+db.init_app(app)
 
 def gethashed(data):
 	data = data+app.config['SECRET_KEY']
@@ -52,82 +54,82 @@ def mmsend(message, fpath = None): #傳訊息至mattermost
 	
 def getusers(email = None): #取得使用者資料庫
 	users={}
-	sql=''
-	with connection.cursor() as cursor:
-		if email is None:
-			sql = 'SELECT * FROM members'
-		else:
-			sql = f'SELECT * FROM members WHERE `email` = "{email}"'		
-		cursor.execute(sql)
-		result_set=cursor.fetchall()
-		#print(result_set)
-		for row in result_set:
-			users[row[2]]={
-			"id": row[1],
-			"password": row[3]}
-		cursor.close() 
+	result_set = {}
+	if email is None:
+		result_set = db.session.query(Users).all()
+	else:
+		result_set = db.session.query(Users).filter_by(email = email).all()
+	#print(result_set)
+	for row in result_set:
+		users[row.email]={
+		"id": row.username,
+		"password": row.password}
 	return users	
 
 def update_resets(token, email=None, pw=None):
 	if token == "null":
 		return False
-	if pw == None: #更新token
-		with connection.cursor() as cursor:
-			sql = f'SELECT * FROM resetpws WHERE `email` = "{email}"'	
-			cursor.execute(sql)
-			result_set=cursor.fetchall()	
-			sql = f'INSERT INTO resetpws (email, token) VALUES("{email}", "{token}")'		
-			for row in result_set:
-				sql = f'UPDATE resetpws SET `token` = "{token}" WHERE `email` = "{email}"'
-			cursor.execute(sql)
-			connection.commit()
-			return True
-		return False
+	elif pw == None: #更新token
+		reset_user = db.session.query(Resetpw).filter_by(email = email).first()
+		if reset_user != None:
+			reset_user.token = token				
+		else:
+			reset_user=Resetpw(
+				email = email,
+				token = token
+			)
+			db.session.add(reset_user)
+			db.session.commit()
+		return True
 	else: #更新密碼
-		with connection.cursor() as cursor:
-			sql = f'SELECT * FROM resetpws WHERE `token` = "{token}"'	
-			cursor.execute(sql)
-			result_set=cursor.fetchall()	
-			print(result_set)
-			for row in result_set:
-				email = row[1]
-				update_resets("null",email = email)
-				sql = f'UPDATE members SET `password` = "{gethashed(pw+email)}" WHERE `email` = "{email}"'
-			cursor.execute(sql)
-			connection.commit()
-			return True
-		return False
+		token_user = db.session.query(Resetpw).filter_by(token = token).first()
+		if token_user != None:
+			reset_user = db.session.query(Users).filter_by(email = token_user.email).first()
+			token_user.token = "null"
+			reset_user.password = gethashed(pw+email)
+			db.session.merge(token_user)
+			db.session.merge(reset_user)
+			db.session.commit()
+		return True
 		
 def adj_subscribe(result_set,riverid,type):
-	#riverid = int(riverid)
-	with connection.cursor() as cursor:
-		sql = f'INSERT INTO river_subscribe (email, riverid) VALUES("{flask.session.get("email", "not loginned")}", "{riverid}")'
-		if type=="remove":
-			sql = f'DELETE FROM river_subscribe WHERE `email` = "{flask.session.get("email", "not loginned")}" AND `riverid` = "{riverid}"'
-		elif riverid in result_set:
-			return False
-		cursor.execute(sql)
-		connection.commit()
-		return "ok"
-	return False
-		
-def get_subscribe(email = False, riverid = False):
-	with connection.cursor() as cursor:
-		if email:
-			sql = f'SELECT `riverid` FROM river_subscribe WHERE `email` = "{email}"'
-			cursor.execute(sql)
-			result_set = [item[0] for item in cursor.fetchall()]
-			print(result_set)
-			return result_set
-		elif riverid:
-			sql = f'SELECT `email` FROM river_subscribe WHERE `riverid` = "{riverid}"'
-			cursor.execute(sql)
-			result_set = [item[0] for item in cursor.fetchall()]
-			print(result_set)
-			return result_set
-		else:
-			return False
-
+	temp = riverid.split("(")
+	temp[1] = temp[1].replace(")","")
+	user = db.session.query(Users).filter_by(email = flask.session.get("email", "not loginned")).first()
+	temp_sub = user.subscribe.copy()
+	if type=="remove":
+		temp_sub[temp[0]].remove(temp[1])
+	elif riverid in result_set:
+		return False
+	else:
+		if not temp_sub.get(temp[0]):
+			temp_sub[temp[0]] = []
+		temp_sub[temp[0]].append(temp[1])		
+	user.subscribe = json.dumps(temp_sub, ensure_ascii=False).replace('\'','\"')
+	print("updated"+user.subscribe)
+	db.session.commit()
+	return "ok"
+	
+def get_subscribe(email = None, riverid = None):
+	if email != None:
+		user = db.session.query(Users).filter_by(email = email).first()
+		print(user.subscribe)
+		result_set = []
+		for river in user.subscribe.keys():
+			for pos in user.subscribe[river]:
+				result_set.append(f'{river}({pos})')
+		return result_set
+	elif riverid:
+		temp = riverid.split("(")
+		temp[1] = temp[1].replace(")","")
+		users = db.session.execute(f"select email from members where subscribe->'{temp[0]}'?'{temp[1]}'")
+		result_set = []
+		for user in users:
+			result_set.append(user.email)
+		return result_set
+	else:
+		return False
+	
 def get_rivers_list():
 	rivers_data = []
 	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/static/pcc/rivers20191017_small.csv', newline='' ,encoding='utf-8-sig')
@@ -247,6 +249,19 @@ def sendmail():
 	else:
 		return "no one care", 200
 """
+@app.route('/api/getriver')
+def getriver():
+	rivername = flask.request.args.get('rivername', '')
+	if(len(rivername)<2):
+		return "error"
+	with gisdb_engine.connect() as con:
+		rs = con.execute(f"select ST_AsGeoJSON(geom) from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
+		dict = {"type" : "FeatureCollection","features":[]}
+		for row in rs:
+			d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson'])}
+			dict['features'].append(d)
+			
+	return dict
 
 @app.route('/api/addmail',methods=['POST'])
 def addmail():	
@@ -255,11 +270,14 @@ def addmail():
 	if content['num_datas']>0:
 		for river in content['records'].keys():
 			titlelist += river + "\r\n"
+			sub_list = []
 			sub_list = get_subscribe(riverid = river)
 			msg = Message(f'大河小溪全民齊督工─{content["date"]} {river} 標案通知!!', recipients=sub_list)			
+			msg.html = str("")
+			#print(msg)
 			for pccs in content['records'][river]:
-				msg.html += f'- ({pccs["type"]}) [{pccs["title"]}]({pccs["url"]}) \r\n'
-			titlelist += msg.html 
+				titlelist += f'- ({pccs["type"]}) [{pccs["title"]}]({pccs["url"]}) \r\n'
+				msg.html += f'<p><a href=\"{pccs["url"]}\">({pccs["type"]}){pccs["title"]}</a></p>'
 			if len(sub_list) > 0:
 				mail.send(msg)
 		titlelist += "@channel "
@@ -267,7 +285,17 @@ def addmail():
 	else:
 		mmsend(f'{content["date"]} 目前沒有資料')
 	return "OK"
-		
+"""
+@app.route('/test', methods=['GET'])
+def test():
+	if app.debug:
+		msg = Message('test!', recipients=['sean@bambooculture.com'])			
+		msg.html = str("TEST!")
+		mail.send(msg)
+		return "SEND"
+	else:
+		return "X", 404
+"""		
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
 def reg():
 	if flask.request.method == 'GET':
@@ -281,11 +309,15 @@ def reg():
 	elif email in users:
 		return alert('此email已被註冊！', flask.url_for('reg'))
 	else:
-		with connection.cursor() as cursor:	
-			sql = f'INSERT INTO members (username, email, password) VALUES ("{flask.request.form["username"]}", "{email}", "{password}")'
-			cursor.execute(sql)
-			connection.commit()
-			return alert('註冊成功！', flask.url_for('login'))
+		new_user = Users(
+			username = flask.request.form["username"],
+			email = email,
+			password = password,
+			subscribe = "{}"
+		)
+		db.session.add(new_user)
+		db.session.commit()
+		return alert('註冊成功！', flask.url_for('login'))
 
 @app.route('/map')
 def map():

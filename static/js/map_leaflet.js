@@ -53,10 +53,27 @@ function filter_pcc_datas(filter_type){
 		onEachFeature: function (feature, layer) {				
 			layer.on({
 				click: function pccClicked(e) {
-					console.log(e['sourceTarget']['feature']);
+					var properties = e['sourceTarget']['feature']['properties'];
+					$("#pcc-list-detail .scroll-style").html("");
+					for(var key in properties){
+						$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
+						console.log(key+": "+properties[key]+"\n");
+					}
+					var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}">${feature['properties']['工程名稱']}</a>`;
+					$("#pcc-list-detail .go-back span").html("");
+					$("#pcc-list-detail .go-back span").append(title);
+					if(!toggle){
+						$('#toggle-detail').trigger('click');
+					}
+					$("#pcc-list-detail").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+						var className = String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1]).replace('.','');
+						$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
+						$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
+						next();
+					});
 				},
 			});
-			layer.bindTooltip('['+feature['properties']['年份']+']'+feature['properties']['工程名稱'],{direction: "auto"});
+			layer.bindTooltip('['+feature['properties']['年份']+']'+feature['properties']['工程名稱'],{direction: "bottom"});
 			$("#pcc-list").append(`<div class="row"><div class="col-3"><a >${feature['properties']['年份']}年度</a></div><div class="col"><a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}">${feature['properties']['工程名稱']}</a></div></div>`);
 		},
 		pointToLayer: function (feature, latlng) {
@@ -105,30 +122,29 @@ function filter_pcc_datas(filter_type){
 		},
 	});
 }
-/*
-function river_pos_layer() {
-	var ret_data = L.geoJSON(river_datas,{
+
+
+var myStyle = {	
+	"fillColor": "#0FC9DC",
+	"color": "#0FC9DC",
+	"weight": 3,
+	"opacity": 0.7,
+	"fillOpacity": 0.7
+};
+
+function river_pos_layer(river_data) {
+	var ret_data = L.geoJSON(river_data,{
+		style: myStyle,
 		onEachFeature: function onEachFeature(feature, layer) {				
 			layer.on({
 				click: function pccClicked(e) {
-					console.log(e['sourceTarget']['feature']);
 				},
 			});
-			layer.bindTooltip(feature['properties']['name']);
-		},
-		pointToLayer: function (feature, latlng) {
-			return L.marker(latlng, {icon: L.divIcon({
-					className: "my-custom-pin",
-					iconAnchor: [0, 18],
-					labelAnchor: [-4, 0],
-					popupAnchor: [0, -18],
-					html: '<span class="river-icon-style" />'
-				})			
-			});
-		},
+			//layer.bindTooltip(feature['properties']['name']);
+		}
 	});
 	return ret_data;
-}*/
+}
 
 var mymap = L.map('map', {
 	center: [23.7,121],
@@ -206,6 +222,7 @@ mymap.on('zoom', function(){
 	return river_pos_layer.removeFrom(mymap);
 });*/
 var pcc_group;
+var river_choosed = L.layerGroup();
 pcc_group = L.markerClusterGroup({
 	maxClusterRadius: 30,	
 	disableClusteringAtZoom: 11,
@@ -224,20 +241,43 @@ $('#detail-pcc input, #adv-search').change(function(){
 		pcc_group.addLayer(filter_pcc_datas(0));
 	pcc_group.addTo(mymap);				
 });
-$("body").on('click', '.list-title', function() {
+$("#pcc-list").on('click', '.list-title', function() {
 	var latlng = $(this).attr('latlng').split(',');
-	mymap.setView([latlng[1],latlng[0]],15)
-})
+	var className = String(Number(latlng[0])+Number(latlng[1])).replace('.','');
+	mymap.setView([latlng[1],latlng[0]],15);
+	$(`.leaflet-marker-pane .${className} span`).trigger('click');
+});
 
-$("body").on('mouseover','.list-title', function(){
+$("#pcc-list").on('mouseover','.list-title', function(){
 	var latlng = $(this).attr('latlng').split(',');
 	var className = String(Number(latlng[0])+Number(latlng[1])).replace('.','');
 	//console.log(className);
-	$(`.${className} span`).addClass('hovered-marker');
+	$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
+	
 })
-$("body").on('mouseout','.list-title', function(){
+$("#pcc-list").on('mouseout','.list-title', function(){
 	var latlng = $(this).attr('latlng').split(',');
 	var className = String(Number(latlng[0])+Number(latlng[1])).replace('.','');
 	//console.log(className);
-	$(`.${className} span`).removeClass('hovered-marker');
+	$(`.leaflet-marker-pane .${className} span`).removeClass('hovered-marker');
 })		
+
+$("#search-river").submit(function(){
+	$("#on-load").css("display","block");
+	var rivername = $("#search-river input").val();
+	//console.log(rivername);
+	$("#adv-search").val(rivername);
+	$("#adv-search").trigger("change");
+	$.getJSON($SCRIPT_ROOT + '/api/getriver', {
+		rivername: rivername
+	}, function(cb) {
+		$("#on-load").css("display","none");
+		//river_data = JSON.stringify(cb);
+		river_data = cb;
+		river_ = river_pos_layer(river_data);
+		river_choosed.clearLayers();
+		river_choosed.addLayer(river_);
+		river_choosed.addTo(mymap);
+		mymap.fitBounds(river_.getBounds());
+	});
+})

@@ -1,12 +1,11 @@
 ﻿import json,datetime,csv,re,codecs,os,requests,sys,string,copy
 import urllib.request
 from urllib.parse import quote
-from config import mmConfig
 	
 def pcc_crawler():	
 	date_api_url = "https://pcc.g0v.ronny.tw/api/listbydate?date="
 	query_api_url = "https://pcc.g0v.ronny.tw/api/searchbytitle?query="
-	cata_list = ['5132','5133','5134','5139','522','8672','8673','97','98']
+	cata_list = ['5132','5133','5134','5139','522','8672','8673','97','98','8675','85','911','865','8676','8673']
 	ban_list = ['鄉','鎮','區','縣','市','村','部落','橋','港','路','里','碼頭','漁港']
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	debug_mode = False
@@ -154,6 +153,7 @@ def pcc_crawler():
 					try:
 						date_str = (date_a + datetime.timedelta(days=-1*d)).strftime(date_format)
 						statinfo = os.stat(f'{dir_path}/out/pcc_out_{date_str}.csv')
+						print(f'file: {dir_path}/out/pcc_out_{date_str}.csv   size: {statinfo.st_size}')
 						if(statinfo.st_size>200):
 							date_b = date_b + datetime.timedelta(days=-1*d+1)
 							break;
@@ -198,7 +198,8 @@ def pcc_crawler():
 			fo.close()
 		headers = {'Content-Type': 'application/json'}
 		if debug_mode:
-			r = requests.post('http://127.0.0.1:5000/api/addmail', headers=headers, data=json.dumps(pcc_dict)) #寄mail
+			print("debug")
+			#r = requests.post('http://127.0.0.1:5000/api/addmail', headers=headers, data=json.dumps(pcc_dict)) #寄mail
 		else:
 			r = requests.post('https://river-watcher.bambooculture.tw/api/addmail', headers=headers, data=json.dumps(pcc_dict)) #寄mail
 

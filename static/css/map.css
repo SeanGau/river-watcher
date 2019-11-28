@@ -1,9 +1,11 @@
-body, #map {
+body {
+	color: #AAA;
 	height: 100vh;
-	margin: 0;
+}
+#map {
+	height: 100%;
 	color: #AAA;
 }
-
 a, p, h1, h2, h3, h4, h5, input, label {
 	font-family: 'Noto Sans TC', sans-serif;
 	text-decoration: none;
@@ -82,6 +84,45 @@ input[type=number] {
 	width: 50px;
 	height: 50px;
 }
+
+#search-river {
+	z-index: 1000;
+	display: flex;
+	position: absolute;
+	top: 1em;
+	right: 5em;
+}
+#search-river input {
+	margin-right: -1.8em;
+	padding-right: 1.8em;
+	height: 2em;
+	width: 10em;
+	background-color: rgba(100,100,100,0.5);
+	border-radius: 1em;
+	border: 1px solid rgba(100,100,100,0.7);
+	text-align:center;
+	color: white;
+}
+#search-river button {
+	width: 1.3em;
+	height: 1.3em;
+	top: 0.3em;
+	position: relative;
+	background-color: rgba(100,100,100,0);
+	border: 0;
+	background-image: url('../img/search.svg');
+	background-position: center;
+	background-size: fit;
+	background-repeat: no-repeat;
+	filter: invert(71%) sepia(0%) saturate(0%) hue-rotate(333deg) brightness(98%) contrast(84%);
+}
+#search-river button:hover {	
+	filter: invert(73%) sepia(23%) saturate(6237%) hue-rotate(138deg) brightness(98%) contrast(88%);
+}
+#search-river button:active {	
+  transform: translateY(2px);
+}
+
 #detail-box {
 	z-index: 1000;
 	display: flex;
@@ -89,7 +130,7 @@ input[type=number] {
 	top: 0;
 	left: 0;
 	margin: 10px;
-	height: 90vh;
+	height: 90%;
 	max-width: 420px;
 	width: 0px;
 	background-color: #242730;
@@ -122,8 +163,15 @@ input[type=number] {
 }
 #detail-index .tab-content {
 	margin: 15px;
+	height: calc(100% - 10em);
 }
 
+#detail-pcc {
+	height: 100%;
+}
+#detail-pcc .tab-content {
+	height: calc(100% - 2em);
+}
 #detail-pcc .nav a{
 	font-size: 1em;
 	padding: 0 0.5em;
@@ -157,14 +205,16 @@ input[type=number] {
 .row a{	
 	color: #AAA;
 }
-.row .col {
+.row .col, .row .col-4 {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	word-wrap: break-word;
+	word-break: break-all;
 }
 
 .scroll-list {
-	height: calc(90vh - 25em);
+	height: calc(100% - 1em);
 	background-color: #29323b;	
 	overflow-y: scroll;
 	overflow-x: hidden;
@@ -172,7 +222,17 @@ input[type=number] {
 	margin-top: 1em;
 }
 
+
+#pcc-years {
+	height: 100%;
+}
+#pcc-list-box {
+	height: 100%;
+}
+
 #pcc-list {
+	display: block;
+	position: static;
 	flex: 1 1 auto;
 }
 #pcc-list a{
@@ -187,6 +247,51 @@ input[type=number] {
 #pcc-list div.row:hover a {
 	color: rgb(15,201,220);	
 }
+
+#pcc-list-detail {
+	overflow: hidden;
+	display: block;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: -420px;
+}
+#pcc-list-detail .go-back {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	height: 2em !important; 
+}
+#pcc-list-detail .go-back a {
+	color: white;
+}
+#pcc-list-detail .back-arrow img:hover {
+	filter: invert(59%) sepia(73%) saturate(1538%) hue-rotate(140deg) brightness(101%) contrast(88%);
+}
+#pcc-list-detail .back-arrow img {
+	vertical-align: middle;
+	height: 1.5em;
+	width: 1.5em;
+}
+
+#pcc-list-detail .scroll-style {
+	height: calc( 100% - 2em );
+	width: 100%;
+}
+#pcc-list-detail .row:hover {
+	height: auto;
+	margin: 0.5em 0;
+	padding: 0.25em 0;
+	background-color: rgba(100,100,100,0.3);
+}
+#pcc-list-detail .row:hover a {
+	line-height: 1.5em;
+}
+#pcc-list-detail .row:hover .col, #pcc-list-detail .row:hover .col-4 {
+	white-space: normal;
+	text-overflow: clip;
+}
+
 
 .hovered-marker {	
 	background-color: rgb(15,201,220) !important;	
@@ -367,6 +472,8 @@ input:checked + .slider:before {
 
 
 .scroll-style {
+	overflow-y: scroll;
+	overflow-x: hidden;
 	scrollbar-color: #394551 #242730;
 	scrollbar-width: thin;
 }
@@ -387,15 +494,12 @@ input:checked + .slider:before {
 		right: -0px;
 	}
 	#detail-box {
-		top: 10vh;
-		height: 80vh;
+		top: 10%;
+		height: 80%;
 		margin-left: 40px;
 	}
 	#detail-box.show {
 		margin-left: 0;
-	}
-	.scroll-list {
-		height: calc(80vh - 25em);
 	}
 	#toggle-back #toggle-back-dot:hover #toggle-back-index{
 		margin-left: 3em;

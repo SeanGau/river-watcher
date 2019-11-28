@@ -14,47 +14,57 @@
 		<link rel="stylesheet" href="{{url_for('static', filename='css/leaflet-gps.css')}}">
 	</head>
 	<body>
-		<div class="container-fluid" id="map">			
+		<div class="container-fluid m-0 p-0" id="map">			
 		</div>
+		<form id="search-river" action="javascript:void(0);">
+		<a id="on-load" style="display: none;">搜尋河川中...　</a><input type="text" placeholder="搜尋河川" name="search-river"/><button type='submit'></button></form>
 		<div id="detail-box">
 			<img id="toggle-detail" src="{{url_for('static', filename='img/right_arrow.svg')}}"/>
 			<div class="text-center m-0 p-0 h-100 w-100" id="detail-index">	
 				<input id="adv-search" type="text" placeholder="搜尋關鍵字" name="adv-search"/>
 				<div class="nav nav-tabs" style="">
 					<a data-toggle="tab" href="#detail-pcc" class="active">標案檢索</a>
-					<a data-toggle="tab" href="#detail-news">最新消息</a>
-					<a data-toggle="tab" href="#detail-group">河川社群</a>
+					<a data-toggle="tab" href="#detail-news_" disabled>最新消息</a>
+					<a data-toggle="tab" href="#detail-group_" disabled>河川社群</a>
 				</div>
 				<div class="tab-content text-left">
 					<div id="detail-pcc" class="tab-pane fade active show">
 						<div class="nav nav-tabs">
 							<a data-toggle="tab" href="#pcc-years" class="active">年份</a>
-							<a data-toggle="tab" href="#pcc-img" class="disable">圖庫</a>					
+							<a data-toggle="tab" href="#pcc-img" disabled>鄉鎮市區</a>					
 						</div>
 						<div class="tab-content m-0">
-							<div id="pcc-years" class="tab-pane fade active show">
-								<div class="d-flex flex-column">
-									<div class="pcc-filter" id="year-filter-box1">
-										<label class="radio-style1" for="year-filter-1">
-											<p>民國<input type="number" min="50" max="150" placeholder="--" id="year-filter-1-1"/>年至<input type="number" min="50" max="150" value="108" placeholder="--" id="year-filter-1-2"/>年</p>
-										<input type="radio" name="year-filter" id="year-filter-1" checked/><span class="radio-style1-box"></span></label>
-									</div>
-									<div class="pcc-filter" id="year-filter-box2">
-										<label class="radio-style1" for="year-filter-2">
-											<p>民國<input type="number" min="50" max="150" value="106" placeholder="--" style="color: rgb(153,35,0)" id="year-filter-2-1"/>年及<input type="number" min="50" max="150" value="107" placeholder="--" style="color: rgb(255,81,46)" id="year-filter-2-2"/>年及<input type="number" min="50" max="150" value="108" placeholder="--" style="color: rgb(255,181,146)" id="year-filter-2-3"/>年</p>
-										<input type="radio" name="year-filter" id="year-filter-2"/><span class="radio-style1-box"></span></label>
-									</div>									
-									<div style="text-align:center; margin: 5% 2% 2% 2%;"> 
-										<a style="float: left; font-size: 1.2em; border-bottom: 3px solid white;">標案類型</a>
-										<a class="label-toggle active">已決標</a>
-										<label class="switch" for="toggle-isdone">
-											<input type="checkbox" name="toggle-isdone" id="toggle-isdone" disabled="disabled">
-											<span class="slider round"></span>
-										</label>
-										<a class="label-toggle active">未決標</a>
-									</div>	
+							<div id="pcc-years" class="tab-pane fade active show d-flex flex-column">
+								<div class="pcc-filter" id="year-filter-box1">
+									<label class="radio-style1" for="year-filter-1">
+										<p>民國<input type="number" min="50" max="150" placeholder="--" id="year-filter-1-1"/>年至<input type="number" min="50" max="150" value="108" placeholder="--" id="year-filter-1-2"/>年</p>
+									<input type="radio" name="year-filter" id="year-filter-1" checked/><span class="radio-style1-box"></span></label>
+								</div>
+								<div class="pcc-filter" id="year-filter-box2">
+									<label class="radio-style1" for="year-filter-2">
+										<p>民國<input type="number" min="50" max="150" value="106" placeholder="--" style="color: rgb(153,35,0)" id="year-filter-2-1"/>年及<input type="number" min="50" max="150" value="107" placeholder="--" style="color: rgb(255,81,46)" id="year-filter-2-2"/>年及<input type="number" min="50" max="150" value="108" placeholder="--" style="color: rgb(255,181,146)" id="year-filter-2-3"/>年</p>
+									<input type="radio" name="year-filter" id="year-filter-2"/><span class="radio-style1-box"></span></label>
+								</div>									
+								<div style="text-align:center; margin: 5% 2% 2% 2%;"> 
+									<a style="float: left; font-size: 1.2em; border-bottom: 3px solid white;">標案類型</a>
+									<!-- a class="label-toggle active">已決標</a>
+									<label class="switch" for="toggle-isdone">
+										<input type="checkbox" name="toggle-isdone" id="toggle-isdone" disabled="disabled">
+										<span class="slider round"></span>
+									</label>
+									<a class="label-toggle active">未決標</a -->
+								</div>	
+								<div id="pcc-list-box" class="p-0 m-0" style="position: relative;">
 									<div id="pcc-list" class="scroll-style scroll-list">
-									</div>										
+									</div>	
+									<div id="pcc-list-detail" class="scroll-list">
+										<div class="go-back p-0 m-0">
+											<a href="javascript:void(0)" class="back-arrow"><img src="{{url_for('static', filename='img/left_arrow.svg')}}"></a>
+											<span></span>
+										</div>
+										<div class="scroll-style p-0 m-0">
+										</div>
+									</div>		
 								</div>
 							</div>
 						</div>
@@ -79,7 +89,7 @@
 								</div>
 							</div>
 						</div>
-						<div id="more-news" class=" scroll-style scroll-list" style="max-height: 15vh;">
+						<div id="more-news" class=" scroll-style scroll-list">
 						</div>
 					</div>
 					<div id="detail-group" class="tab-pane fade">
@@ -90,7 +100,7 @@
 			</div>
 		</div>
 		<div id="toggle-back" class="text-center">
-			<div id="toggle-back-dot">● ●
+			<div id="toggle-back-dot"><a style="font-family: Arial;">● ●</a>
 				<div id="toggle-back-index"><a href="{{url_for('portal')}}">個人主頁</a><a href="#">動態說明</a></div>
 			</div>
 		</div>
@@ -107,9 +117,13 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 		<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
 		<script src="{{url_for('static', filename='js/leaflet-gps.min.js')}}"></script>
-		<script src="{{url_for('static', filename='js/map_leaflet.js')}}"></script>
 		<script>
 			//detail box
+			$(window).ready(function(){
+				$("body").height(window.innerHeight);
+			});
+			
+			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 			var toggle=false;
 			$('#toggle-detail').click(function(){
 				if(!toggle){
@@ -117,20 +131,21 @@
 					$(this).velocity({rotateZ:'180deg'}, {duration:300, loop:false, easing:"easeOutSine"});
 					toggle = true;
 					$("#detail-box").addClass("show");
-					
-					if($("#year-filter-2:checked").val()=="on"){
-						if($("#year-filter-2-1").val().length < 1)
-							$("#year-filter-2-1").trigger("focus");
-						else if($("#year-filter-2-2").val().length < 1)
-							$("#year-filter-2-2").trigger("focus");
-						else if($("#year-filter-2-3").val().length < 1)
-							$("#year-filter-2-3").trigger("focus");
-					}
-					else {
-						if($("#year-filter-1-2").val().length < 1)
-							$("#year-filter-1-2").trigger("focus");
-						else if($("#year-filter-1-1").val().length < 1)
-							$("#year-filter-1-1").trigger("focus");
+					if($('body').width()>768){
+						if($("#year-filter-2:checked").val()=="on"){
+							if($("#year-filter-2-1").val().length < 1)
+								$("#year-filter-2-1").trigger("focus");
+							else if($("#year-filter-2-2").val().length < 1)
+								$("#year-filter-2-2").trigger("focus");
+							else if($("#year-filter-2-3").val().length < 1)
+								$("#year-filter-2-3").trigger("focus");
+						}
+						else {
+							if($("#year-filter-1-2").val().length < 1)
+								$("#year-filter-1-2").trigger("focus");
+							else if($("#year-filter-1-1").val().length < 1)
+								$("#year-filter-1-1").trigger("focus");
+						}
 					}
 				}
 				else{
@@ -140,6 +155,11 @@
 					$("#detail-box").removeClass("show");
 				}
 			});
+			$('#pcc-list-detail .back-arrow').click(function(){				
+				$("#pcc-list-detail").velocity({left: "-420px"}, {duration:300, loop:false, easing:"easeOutSine"});
+				$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
+			});
 		</script>
+		<script src="{{url_for('static', filename='js/map_leaflet.js')}}"></script>
 	</body>
  </html>

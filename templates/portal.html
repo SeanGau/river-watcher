@@ -18,10 +18,16 @@
 				<div id="ext-mattermost"><a href="{{url_for('link')}}#ext-mattermost"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
 				<div id="ext-depositar"><a href="{{url_for('link')}}#ext-depositar"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
 				<div id="ext-groups"><a href="{{url_for('link')}}#ext-groups"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
-			</div>			
+			</div>	
+			<div class="col-md-4 portal-news">
+				<h5 style="margin: 0.5em 3em;">最新消息</h5>
+				<div>
+					<a href="https://www.facebook.com/events/2433713673533097/" target="_blank">g0v Year-End Banquet | 公民科技創新獎助金 2019 成果發表會暨社群忘年會</a>
+				</div>
+			</div>
 			<div class="arrow arrow-1"></div>
 			<div class="arrow arrow-2"></div>
-			<a style="position: absolute; right: 1em; bottom: 1em; font-size: 1em; color: #D8D8D8; text-align: center;" href="{{url_for('map')}}">前往河川地圖　─────<img class="go-to-map" src="{{url_for('static', filename='img/right_arrow.svg')}}"/></a>
+			<a class="go-to-map" href="{{url_for('map')}}">前往河川地圖　─────<img class="go-to-arrow" src="{{url_for('static', filename='img/right_arrow.svg')}}"/></a>
 		</div>
 		<div class="portal-page container-fluid" id="portal-page">	
 			<div class="row justify-content-center">
@@ -241,9 +247,30 @@
 				});
 			});
 			$(window).ready(function(){
-				console.log($('#sub-group .sub-sets').length);
+				if($("body").width()>768){
+					if($(this).scrollTop()>100){
+						isImgSmall = true;
+						$('.go-to-map').css("width","1em");
+					}
+					else if($(this).scrollTop()<100){
+						isImgSmall = false;
+						$('.go-to-map').css("width","14em");
+					}
+				}
 			});
 			
+			$(window).scroll(function(){
+				if($("body").width()>768){
+					if($(this).scrollTop()>100){
+						isImgSmall = true;
+						$('.go-to-map').css("width","1em");
+					}
+					else if($(this).scrollTop()<100){
+						isImgSmall = false;
+						$('.go-to-map').css("width","14em");
+					}
+				}
+			});
 			
 		</script>
 	</body>
