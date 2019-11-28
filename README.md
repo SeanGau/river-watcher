@@ -1,4 +1,12 @@
 # 大河小溪全民齊督工
+
+
+>[網站平台](https://river-watcher.bambooculture.tw/)
+>
+>[mattermost討論群](https://mattermost.river-watcher.bambooculture.tw/)
+>
+>[hackfoldr](https://beta.hackfoldr.org/bcsrcsp)
+
 大河小溪全民齊督工地圖平台，於 2019 年獲得 g0v 零時政府的公民科技創新獎助金，試圖透過公民科技降低公私部門之間的資訊落差，並將溪流整治工程相關部門的公開資訊視覺化。這個開源平台讓竹圍工作室長久以來對於環境的關注，有機會進一步對社會機制面造成影響，架構屬於台灣的河川情報系統，並拋出一個公民參與的另類想像。
 
 我們期望透過這個平台，建構以下可能：(1) 組織與社群的資訊網絡、(2) 河川系統與野溪情報網、(3) 公私部門資訊合作管道。
@@ -9,6 +17,5 @@
 
 我們的資料來源分別來自各政府部門之公開資訊、維基數據（Wikidata）、維基共享資源（Wikimedia Commons）、研究資料寄存所（d_depositar）、OpenStreetMap 等。
 
-※本專案所產出的開源軟體套件或開放授權方式如下─
-◆資料和程式碼以 GNU GPLv3 條款授權釋出
-◆文件及圖像以 CC BY-SA 4.0 International 條款授權釋出
+* 資料和程式碼以 GNU GPLv3 條款授權釋出
+* 文件及圖像以 CC BY-SA 4.0 International 條款授權釋出
