@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 		<link href="https://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
 		<link rel="stylesheet" href="{{url_for('static', filename='css/map.css')}}">
 		<link rel="stylesheet" href="{{url_for('static', filename='css/leaflet-gps.css')}}">
 	</head>
@@ -17,7 +18,12 @@
 		<div class="container-fluid m-0 p-0" id="map">			
 		</div>
 		<form id="search-river" action="javascript:void(0);">
-		<a id="on-load" style="display: none;">搜尋河川中...　</a><input type="text" placeholder="搜尋河川" name="search-river"/><button type='submit'></button></form>
+			<div id="search-list" class="scroll-style">
+			</div>
+			<div>
+				<a id="on-load" style="display: none;">搜尋河川中...　</a><input type="text" placeholder="搜尋河川" name="search-river"/><button type='submit'></button>
+			</div>
+		</form>
 		<div id="detail-box">
 			<img id="toggle-detail" src="{{url_for('static', filename='img/right_arrow.svg')}}"/>
 			<div class="text-center m-0 p-0 h-100 w-100" id="detail-index">	
@@ -116,6 +122,7 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
 		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 		<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
 		<script src="{{url_for('static', filename='js/leaflet-gps.min.js')}}"></script>
 		<script>
 			//detail box

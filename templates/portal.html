@@ -12,6 +12,9 @@
 		<link rel="stylesheet" href="{{url_for('static', filename='css/portal.css')}}">
 	</head>
 	<body class="scroll-style">
+		{%if isadmin == true%}
+			<p style="background-color: black"><a href="/admin" style="color: white; text-align: center;">進入管理</a></p>
+		{%endif%}
 		<div class="container-fluid" id="landing-page">			
 			<div class="ex-link-group col-md-4">
 				<a href="{{url_for('index')}}"><img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
@@ -19,10 +22,14 @@
 				<div id="ext-depositar"><a href="{{url_for('link')}}#ext-depositar"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
 				<div id="ext-groups"><a href="{{url_for('link')}}#ext-groups"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
 			</div>	
-			<div class="col-md-4 portal-news">
-				<h5 style="margin: 0.5em 3em;">最新消息</h5>
+			<div class="col-md-4 portal-news scroll-style">
+				<h5 style="margin: 2% 10%;">最新消息</h5>
 				<div>
-					<a href="https://www.facebook.com/events/2433713673533097/" target="_blank">g0v Year-End Banquet | 公民科技創新獎助金 2019 成果發表會暨社群忘年會</a>
+					<!--p><a href="https://www.facebook.com/events/2433713673533097/" target="_blank" title="g0v Year-End Banquet | 公民科技創新獎助金 2019 成果發表會暨社群忘年會">2019-11-01　g0v Year-End Banquet | 公民科技創新獎助金 2019 成果發表會暨社群忘年會</a></p-->
+					
+					{%for row in news%}
+						<p><a href="{{row['data']['url']}}" target="_blank" title="{{row['data']['text']}}">{{row['date']}}　{{row['data']['text']}}</a></p>
+					{%endfor%}
 				</div>
 			</div>
 			<div class="arrow arrow-1"></div>
@@ -203,8 +210,17 @@
 					</div>
 				</div>
 			</div>
+				<div class="container-fluid m-0" style="padding: 5% 10%; margin: 0; font-size: 0.9em;">
+				<h4>免責聲明</h4>
+				<p  class="m-0 p-0">
+					一、「大河小溪全民齊督工」為一非商業性網站，網站資料來源均為政府公開資料，雖已採取合理措施確保本網站資料之準確性和完整性，但受限於人力與資源，仍有缺漏之可能，明確聲明本網站不對所提供訊息之準確性和完整性提供任何擔保，對於任何使用或引用本網站網頁資料引致之損失或損害，概不負責。本網站亦有權隨時刪除、暫停或編輯本網站所登載之各項資料，以維護本網站之權益。<br>
+					<br>
+					二、使用本網站之資料與素材，應註明出處，並不得惡意變更其相關資訊，若利用後所展示之資訊與原資料與素材不符，使用者須自負民事、刑事上之法律責任。<br>
+					<br>
+					三、本網站內容若有錯誤，歡迎來信指正。關於本平台的內容和資料，有任何問題、建議或想法，請與我們聯繫。<br>
+				</p>
+			</div>
 		</div>
-		
 		<!-- ----------------------------------------- -->
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>

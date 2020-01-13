@@ -1,0 +1,22 @@
+body, html {
+	color: black;	
+	font-family: 'Noto Sans TC', sans-serif;
+}
+table {
+	max-width: 80vw;
+}
+td, th, table {
+	border: 1px solid black;	
+}
+#user-list, #news-control {
+	width: fit-content;
+	border: 1px solid black;
+	padding: 1em;
+}
+#user-list>div {
+	height: 300px;
+	width: fit-content;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	padding: 1em;
+}

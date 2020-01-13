@@ -63,12 +63,11 @@ body {
 }
 .portal-news > div {
 	height: 8em;
-	# overflow: hidden;
-	# text-overflow: ellipsis;	
-	# white-space: nowrap;
+	text-overflow: ellipsis;	
+	white-space: nowrap;
 	width: 100%;
 	overflow-x: hidden;
-	overflow-y: auto;
+	overflow-y: hidden;
 }
 
 .ex-link-group {	
@@ -263,7 +262,11 @@ body {
 }
 
 .collapse-toggle:before {
-    content: url('../img/not_collapsed.svg'); 
+	content: " ";
+	background-image: url('../img/not_collapsed.svg'); 
+	background-position: center;
+	background-size: cover;
+    # content: url('../img/not_collapsed.svg'); 
 	height: 2em;
 	width: 2em; 
 	position: relative;
@@ -273,12 +276,14 @@ body {
 	filter: invert(59%) sepia(73%) saturate(1538%) hue-rotate(140deg) brightness(101%) contrast(88%);
 }
 .collapse-toggle.collapsed:hover:before {
-    content: url('../img/collapsed.svg'); 
+	content: " ";
+	background-image: url('../img/collapsed.svg'); 
 	filter: invert(59%) sepia(73%) saturate(1538%) hue-rotate(140deg) brightness(101%) contrast(88%);
 	
 }
 .collapse-toggle.collapsed:before {
-    content: url('../img/collapsed.svg');
+	content: " ";
+	background-image: url('../img/collapsed.svg'); 
 	filter: invert(71%) sepia(0%) saturate(0%) hue-rotate(333deg) brightness(98%) contrast(84%);
 }
 .collapse-toggle {

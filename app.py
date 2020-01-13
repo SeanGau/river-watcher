@@ -3,7 +3,8 @@ import requests, hashlib, json, csv, os, random, string
 import urllib.parse
 from config import mmConfig, gisdb_engine
 from flask_mail import Mail, Message
-from models import db, Users, Resetpw
+from models import db, Users, Resetpw, News
+from sqlalchemy.sql import func
 
 app = flask.Flask(__name__)
 app.config.from_object('config')
@@ -29,6 +30,18 @@ def mmsend(message, fpath = None): #傳訊息至mattermost
 	CHANNEL_ID = mmConfig['channel_id']
 	if app.debug:
 		CHANNEL_ID = mmConfig['test_channel_id']
+		print(fpath)
+		#print(message)
+	
+	if len(message)>14000:
+		end_pos = 14000
+		while(1):
+			if message[end_pos] == '\r':
+				break
+			else:
+				end_pos += 1
+		message = message[:end_pos+1]
+		message += '\r\n.\r\n.\r\n.\r\n下載檔案觀看完整爬蟲紀錄'
 		
 	mmKey = mmConfig['token']
 	s = requests.Session()
@@ -51,6 +64,25 @@ def mmsend(message, fpath = None): #傳訊息至mattermost
 		   "channel_id": CHANNEL_ID,
 			"message": message
 		}))	
+
+def getnews(limit_n=5):
+	result_set = db.session.query(News).order_by(News.date.desc()).limit(limit_n).all()
+	news = []
+	for row in result_set:
+		news.append({"data": row.data,"date": row.date, "id": row.id})
+	return news
+	
+def adj_news(date,text,url,id=None):
+	if id==None:
+		new_news = News(
+			data=json.dumps({"url": url, "text": text}, ensure_ascii=False).replace('\'','\"'),
+			date=date
+		)
+		db.session.add(new_news)
+		db.session.commit()
+	else:
+		db.session.query(News).filter_by(id=id).delete()
+		db.session.commit()
 	
 def getusers(email = None): #取得使用者資料庫
 	users={}
@@ -78,16 +110,15 @@ def update_resets(token, email=None, pw=None):
 				email = email,
 				token = token
 			)
-			db.session.add(reset_user)
-			db.session.commit()
+		db.session.add(reset_user)
+		db.session.commit()
 		return True
 	else: #更新密碼
-		token_user = db.session.query(Resetpw).filter_by(token = token).first()
-		if token_user != None:
+		result_set = db.session.execute(f"update resetpw set token=NULL where time_updated>now()-interval'1 day' and token='{token}' RETURNING email")
+		#token_user = db.session.query(Resetpw).filter_by(token = token).filter(time_updated>func.now()).first()
+		for token_user in result_set:
 			reset_user = db.session.query(Users).filter_by(email = token_user.email).first()
-			token_user.token = "null"
-			reset_user.password = gethashed(pw+email)
-			db.session.merge(token_user)
+			reset_user.password = gethashed(pw+token_user.email)
 			db.session.merge(reset_user)
 			db.session.commit()
 		return True
@@ -205,21 +236,30 @@ def reset_pw():
 		else:
 			return alert('重設密碼失敗！', flask.url_for('index')+"#login-page")
 
-@app.route("/admin") #管理員頁面
+@app.route("/admin", methods=['GET', 'POST']) #管理員頁面
 def admin():		
-	if flask.session.get("email") != mmConfig['admin_id']:
+	if flask.session.get("email") not in mmConfig['admin_id']:
 		return flask.abort(403)
-	return flask.render_template('admin.html',users=getusers())
+	if flask.request.method == 'GET':
+		return flask.render_template('admin.html', users=getusers(), news=getnews())
+	else:
+		if(flask.request.form.get('addnews')):
+			adj_news(flask.request.form.get('date'),flask.request.form.get('text'),flask.request.form.get('url'))
+		elif(flask.request.form.get('rmnews')):
+			adj_news(None,None,None,id=flask.request.form.get('id'))
+		return flask.render_template('admin.html', users=getusers(), news=getnews(limit_n=9999))
 		
 @app.route("/portal") #主要使用者頁面
 def portal():
+	isAdmin = flask.session.get("email") in mmConfig['admin_id']
+	print("isAdmin: "+str(isAdmin))
 	rivers_data = get_rivers_list()
 	username = flask.session.get('username', False)
 	if not username:
-		return flask.render_template('portal.html',rivers_data=rivers_data)
+		return flask.render_template('portal.html', news=getnews(), rivers_data=rivers_data)
 	else:
 		sub_list = get_subscribe(email = flask.session.get("email", "not loginned"))
-		return flask.render_template('portal.html', sub_list=sub_list, username=username, rivers_data=rivers_data)
+		return flask.render_template('portal.html', news=getnews(), sub_list=sub_list, username=username, rivers_data=rivers_data, isadmin=isAdmin)
 
 @app.route('/api/adjsub') #修改訂閱
 def adjsub():
@@ -230,44 +270,29 @@ def adjsub():
 		return flask.abort(400)
 	return flask.jsonify(result = adj_subscribe(sub_list,riverid,type))
 
-"""		
-@app.route('/api/sendmail')
-def sendmail():
-	riverid = urllib.parse.unquote(flask.request.args.get('riverid', False))
-	date = urllib.parse.unquote(flask.request.args.get('date', False))
-	unit_id = flask.request.args.get('unit_id', False)
-	job_number = flask.request.args.get('job_number', False)
-	job_title = urllib.parse.unquote(flask.request.args.get('title', False))
-	if(riverid and unit_id and job_number and job_title) == False:
-		return flask.abort(400)
-	sub_list = get_subscribe(riverid = riverid)
-	if len(sub_list) > 0:
-		msg = Message(f'大河小溪全民齊督工─{date} {riverid} 標案通知!!', recipients=sub_list)
-		msg.html = f'<a href="https://ronnywang.github.io/pcc-viewer/tender.html?unit_id={unit_id}&job_number={job_number}">{job_title}</a>'
-		mail.send(msg)
-		return msg.html, 202
-	else:
-		return "no one care", 200
-"""
 @app.route('/api/getriver')
 def getriver():
 	rivername = flask.request.args.get('rivername', '')
 	if(len(rivername)<2):
 		return "error"
 	with gisdb_engine.connect() as con:
-		rs = con.execute(f"select ST_AsGeoJSON(geom) from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
+		rs = con.execute(f"select ST_AsGeoJSON(geom),data from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
 		dict = {"type" : "FeatureCollection","features":[]}
 		for row in rs:
-			d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson'])}
-			dict['features'].append(d)
-			
+			d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
+			dict['features'].append(d)	
 	return dict
+
+@app.route('/api/getpcc')
+def getpcc():
+	return ""
 
 @app.route('/api/addmail',methods=['POST'])
 def addmail():	
 	content = flask.request.json	
 	titlelist = content['date']+ " 有"+ str(content['num_datas'])+"筆資料\r\n"
 	if content['num_datas']>0:
+		#titlelist += f'[檔案連結\r\n]({content["filename"].replace("/var/www/riverwatcher/","https://river-watcher.bambooculture.tw/")})'
 		for river in content['records'].keys():
 			titlelist += river + "\r\n"
 			sub_list = []
@@ -280,8 +305,8 @@ def addmail():
 				msg.html += f'<p><a href=\"{pccs["url"]}\">({pccs["type"]}){pccs["title"]}</a></p>'
 			if len(sub_list) > 0:
 				mail.send(msg)
-		titlelist += "@channel "
-		mmsend(titlelist, fpath=f'{os.path.dirname(os.path.realpath(__file__))}/static/pcc/out/pcc_out_{content["date"]}.csv')
+		titlelist += " @channel "
+		mmsend(titlelist, fpath=content["filename"])
 	else:
 		mmsend(f'{content["date"]} 目前沒有資料')
 	return "OK"

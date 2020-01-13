@@ -18,7 +18,7 @@ a, p, h1, h2, h3, h4, h5, input, label {
 input:focus, button:focus{
 	outline: none;
 }
-a:hover, #pcc-list a:hover{
+a:hover, #pcc-list a:hover, #search-list a:hover{
 	text-decoration: none;
 	color: rgb(15,201,220);
 }
@@ -97,9 +97,9 @@ input[type=number] {
 	padding-right: 1.8em;
 	height: 2em;
 	width: 10em;
-	background-color: rgba(100,100,100,0.5);
+	background-color: rgba(50,50,50,0.9);
 	border-radius: 1em;
-	border: 1px solid rgba(100,100,100,0.7);
+	border: 1px solid rgba(200,200,200,0.7);
 	text-align:center;
 	color: white;
 }
@@ -122,6 +122,29 @@ input[type=number] {
 #search-river button:active {	
   transform: translateY(2px);
 }
+#search-list {
+	position: absolute;
+	left: 0;
+	top: 3em;
+	width: 10em;
+	padding: 0;
+	border-radius: 5px;
+	background-color: rgba(50,50,50,0.9);
+	max-height: 10em;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+#search-list p {
+	padding: 0 1em;
+	margin: 0;
+}
+#search-list p:hover {
+	background-color: rgba(100,100,100,0.3);
+}
+#search-list a {
+	color: #AAA;
+}
+
 
 #detail-box {
 	z-index: 1000;
@@ -161,7 +184,7 @@ input[type=number] {
 	color: white;
 	text-decoration: none;
 }
-#detail-index .tab-content {
+#detail-index>.tab-content {
 	margin: 15px;
 	height: calc(100% - 10em);
 }
@@ -169,7 +192,7 @@ input[type=number] {
 #detail-pcc {
 	height: 100%;
 }
-#detail-pcc .tab-content {
+#detail-pcc>.tab-content {
 	height: calc(100% - 2em);
 }
 #detail-pcc .nav a{
@@ -489,6 +512,9 @@ input:checked + .slider:before {
 
 
 @media (max-width: 768px) {
+	#search-list {		
+		max-height: 3em;
+	}
 	#toggle-detail {
 		top: -45px;
 		right: -0px;

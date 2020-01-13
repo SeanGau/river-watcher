@@ -1,8 +1,11 @@
 var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://www.mapbox.com/">mapbox</a> ',
 	//mbUrl = 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjandjYWtwem0wYnB3NDlvN2h0anRuM3Z1In0.Y7tYEgVHjszA66NQ08PVYg',
-	MymbUrl = 'https://api.mapbox.com/styles/v1/js00193/{id}/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjandjYWtwem0wYnB3NDlvN2h0anRuM3Z1In0.Y7tYEgVHjszA66NQ08PVYg';
+	MymbUrl = 'https://api.mapbox.com/styles/v1/js00193/{id}/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianMwMDE5MyIsImEiOiJjazN0dnFxajMwNjRoM2VwaXFmaXk5YWh0In0.51GvG5wUH9qqLHkNMF6YRQ';
 var satellite = L.tileLayer(MymbUrl, {id: 'ck0x9ai2j5kgb1co36kagohqm',   attribution: mbAttr}),
 	streets = L.tileLayer(MymbUrl, {id: 'ck0lupyad8k061dmv7zvbvwgv',   attribution: mbAttr});
+
+var share_dict = {"type" : "FeatureCollection","features":[]};
+var api_parm = {};
 
 function pcc_icon_style(color) {
 	return `
@@ -20,7 +23,8 @@ function pcc_icon_style(color) {
 }
 
 function filter_pcc_datas(filter_type){
-	return L.geoJSON(pcc_datas,{
+	share_dict['features'] = [];
+	rs = L.geoJSON(pcc_datas,{
 		filter: function (feature, layer) {
 			var adv_key = String($('#adv-search').val());
 			if(adv_key.length > 0) {
@@ -50,7 +54,8 @@ function filter_pcc_datas(filter_type){
 					break;				
 			}
 		},
-		onEachFeature: function (feature, layer) {				
+		onEachFeature: function (feature, layer) {			
+			share_dict['features'].push(feature);	
 			layer.on({
 				click: function pccClicked(e) {
 					var properties = e['sourceTarget']['feature']['properties'];
@@ -121,6 +126,7 @@ function filter_pcc_datas(filter_type){
 			}
 		},
 	});
+	return rs;
 }
 
 
@@ -132,17 +138,34 @@ var myStyle = {
 	"fillOpacity": 0.7
 };
 
-function river_pos_layer(river_data) {
+function river_pos_layer(river_data, filter = null) {
+	var pos_list = [];
 	var ret_data = L.geoJSON(river_data,{
 		style: myStyle,
-		onEachFeature: function onEachFeature(feature, layer) {				
+		filter: function(feature, layer) {
+			if(filter == null)
+				return true;
+			else if(feature['properties']['COUNTYNAME']==filter)
+				return true;
+			else
+				return false;
+		},
+		onEachFeature: function(feature, layer) {				
 			layer.on({
-				click: function pccClicked(e) {
+				click: function(e) {
 				},
 			});
-			//layer.bindTooltip(feature['properties']['name']);
+			//layer.bindTooltip(`${feature['properties']['COUNTYNAME']}(${feature['properties']['TOWNNAME']})`);
+			if(pos_list.indexOf(feature['properties']['COUNTYNAME'])==-1) {
+				pos_list.push(feature['properties']['COUNTYNAME']);
+			}
 		}
 	});
+	if(filter == null){
+		for(var i in pos_list) {
+			$("#search-list").append(`<p><a href="javascript:void(0)" class="river-pos">${pos_list[i]}</a></p>`)
+		}
+	}
 	return ret_data;
 }
 
@@ -206,8 +229,8 @@ L.control.share = function(opts) {
 	return new L.Control.Share(opts);
 }
 
-L.control.share({ position: 'bottomright' }).addTo(mymap);			
-L.control.printer({ position: 'bottomright' }).addTo(mymap);			
+//L.control.share({ position: 'bottomright' }).addTo(mymap);			
+//L.control.printer({ position: 'bottomright' }).addTo(mymap);			
 L.control.layers(baseMaps, null, {position:'bottomright'}).addTo(mymap);				
 
 mymap.on('moveend', function() {  
@@ -222,7 +245,7 @@ mymap.on('zoom', function(){
 	return river_pos_layer.removeFrom(mymap);
 });*/
 var pcc_group;
-var river_choosed = L.layerGroup();
+var river_choosed = new L.FeatureGroup();
 pcc_group = L.markerClusterGroup({
 	maxClusterRadius: 30,	
 	disableClusteringAtZoom: 11,
@@ -262,8 +285,10 @@ $("#pcc-list").on('mouseout','.list-title', function(){
 	$(`.leaflet-marker-pane .${className} span`).removeClass('hovered-marker');
 })		
 
+river_data = {};
 $("#search-river").submit(function(){
 	$("#on-load").css("display","block");
+	$("#search-list").html("");
 	var rivername = $("#search-river input").val();
 	//console.log(rivername);
 	$("#adv-search").val(rivername);
@@ -271,13 +296,149 @@ $("#search-river").submit(function(){
 	$.getJSON($SCRIPT_ROOT + '/api/getriver', {
 		rivername: rivername
 	}, function(cb) {
-		$("#on-load").css("display","none");
-		//river_data = JSON.stringify(cb);
-		river_data = cb;
-		river_ = river_pos_layer(river_data);
-		river_choosed.clearLayers();
-		river_choosed.addLayer(river_);
-		river_choosed.addTo(mymap);
-		mymap.fitBounds(river_.getBounds());
+		if(cb['features'].length>0){
+			$("#on-load").css("display","none");
+			river_data = cb;
+			var river_ = river_pos_layer(river_data);
+			river_choosed.clearLayers();
+			river_choosed.addLayer(river_);
+			river_choosed.addTo(mymap);
+			mymap.fitBounds(river_.getBounds());
+		}
+		else {
+			$("#on-load").css("display","none");		
+			$("#search-list").html("<p><a>查無此溪流</a></p>");	
+		}
 	});
 })
+$("#search-list").on('click','.river-pos', function() {
+	var river_ = river_pos_layer(river_data, filter = $(this).html());
+	mymap.fitBounds(river_.getBounds());
+})
+
+var drawnItems = new L.FeatureGroup();
+mymap.addLayer(drawnItems);
+var drawControl = new L.Control.Draw({
+	edit: {
+		featureGroup: drawnItems
+	},
+	draw: {
+		polygon: false,
+		rectangle: false,
+		circle: false,
+		featureGroup: drawnItems
+	},
+	position: 'topright' 
+});
+L.drawLocal = {
+	draw: {
+		toolbar: {
+			actions: {
+				title: '取消繪製',
+				text: '取消'
+			},
+			finish: {
+				title: '完成繪製',
+				text: '完成'
+			},
+			undo: {
+				title: '刪除上一個繪製的點',
+				text: '刪除上一點'
+			},
+			buttons: {
+				polyline: '繪製線段',
+				polygon: '繪製多邊形',
+				rectangle: '繪製矩形',
+				circle: '繪製圓形',
+				marker: '繪製標點',
+				circlemarker: '繪製圓形標點'
+			}
+		},
+		handlers: {
+			circle: {
+				tooltip: {
+					start: '壓住左鍵繪製圓形'
+				},
+				radius: '半徑'
+			},
+			circlemarker: {
+				tooltip: {
+					start: '點擊左鍵放置圓形標點'
+				}
+			},
+			marker: {
+				tooltip: {
+					start: '點擊左鍵放置標點'
+				}
+			},
+			polygon: {
+				tooltip: {
+					start: '點擊左鍵開始繪製多邊形',
+					cont: '繼續繪製多邊形',
+					end: '點擊原點以結束繪製多邊形'
+				}
+			},
+			polyline: {
+				error: '<strong>錯誤:</strong> 交錯！',
+				tooltip: {
+					start: '點擊左鍵開始繪製線段',
+					cont: '繼續繪製線段',
+					end: '點擊末點以結束繪製線段'
+				}
+			},
+			rectangle: {
+				tooltip: {
+					start: '壓住左鍵繪製矩形'
+				}
+			},
+			simpleshape: {
+				tooltip: {
+					end: '放開以完成繪製'
+				}
+			}
+		}
+	},
+	edit: {
+		toolbar: {
+			actions: {
+				save: {
+					title: '確認編輯',
+					text: '確認'
+				},
+				cancel: {
+					title: '取消編輯並恢復',
+					text: '取消'
+				},
+				clearAll: {
+					title: '清除所有繪製',
+					text: '清除'
+				}
+			},
+			buttons: {
+				edit: '編輯',
+				editDisabled: '沒有物件可以編輯',
+				remove: '刪除',
+				removeDisabled: '沒有物件可以刪除'
+			}
+		},
+		handlers: {
+			edit: {
+				tooltip: {
+					text: '拖曳錨點進行編輯',
+					subtext: '點擊取消返回上一步'
+				}
+			},
+			remove: {
+				tooltip: {
+					text: '選擇欲刪除的物件'
+				}
+			}
+		}
+	}
+};
+//mymap.addControl(drawControl);
+mymap.on(L.Draw.Event.CREATED, function (e) {
+	var type = e.layerType,
+		layer = e.layer;
+	drawnItems.addLayer(layer);
+});
