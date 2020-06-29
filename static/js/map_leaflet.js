@@ -5,7 +5,7 @@ var satellite = L.tileLayer(MymbUrl, {id: 'ck0x9ai2j5kgb1co36kagohqm',   attribu
 	streets = L.tileLayer(MymbUrl, {id: 'ck0lupyad8k061dmv7zvbvwgv',   attribution: mbAttr});
 
 var share_dict = {"type" : "FeatureCollection","features":[]};
-var api_parm = {};
+var pcc_api_datas = {};
 
 function pcc_icon_style(color) {
 	return `
@@ -22,30 +22,23 @@ function pcc_icon_style(color) {
 	transform: rotate(45deg);`
 }
 
-function filter_pcc_datas(filter_type){
+function show_pcc_api_datas(filter_type){
 	share_dict['features'] = [];
-	rs = L.geoJSON(pcc_datas,{
+	rs = L.geoJSON(pcc_api_datas,{
 		filter: function (feature, layer) {
 			var adv_key = String($('#adv-search').val());
 			if(adv_key.length > 0) {
-				if(!String(feature['properties']['工程名稱']).includes(adv_key))
+				if(!String(feature['properties']['title']).includes(adv_key))
 					return false;
 			}
-				
-			var year_start = year_end = Number(feature['properties']['年份']);
-			var yearS = String(feature['properties']['年份']);
-			if(yearS.includes("-")){
-				var temp = yearS.split("-");
-				year_start = Number(temp[0]);
-				year_end = Number(temp[1]);
-			}
-				
+			year = Number(feature['properties']['date'].substr(0,4)) - 1911;
+			var yearS = String(year);				
 			switch(filter_type) {
 				case 0:
 					return true;
 					break;
 				case 1:
-					if(year_start >= Number($('#year-filter-1-1').val()) && year_end <= Number($('#year-filter-1-2').val()))
+					if(year >= Number($('#year-filter-1-1').val()) && year <= Number($('#year-filter-1-2').val()))
 						return true;
 					break;
 				case 2:
@@ -61,10 +54,13 @@ function filter_pcc_datas(filter_type){
 					var properties = e['sourceTarget']['feature']['properties'];
 					$("#pcc-list-detail .scroll-style").html("");
 					for(var key in properties){
-						$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
-						console.log(key+": "+properties[key]+"\n");
+						if(properties[key].includes("http"))
+							$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);						
+						else
+							$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
+						
 					}
-					var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}">${feature['properties']['工程名稱']}</a>`;
+					var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['title']}">${feature['properties']['title']}</a>`;
 					$("#pcc-list-detail .go-back span").html("");
 					$("#pcc-list-detail .go-back span").append(title);
 					if(!toggle){
@@ -78,54 +74,132 @@ function filter_pcc_datas(filter_type){
 					});
 				},
 			});
-			layer.bindTooltip('['+feature['properties']['年份']+']'+feature['properties']['工程名稱'],{direction: "bottom"});
-			$("#pcc-list").append(`<div class="row"><div class="col-3"><a >${feature['properties']['年份']}年度</a></div><div class="col"><a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}">${feature['properties']['工程名稱']}</a></div></div>`);
+			year = Number(feature['properties']['date'].substr(0,4)) - 1911;
+			layer.bindTooltip('['+year+']'+feature['properties']['title'],{direction: "bottom"});
+			$("#pcc-list").append(`<div class="row"><div class="col-3"><a >${year}年度</a></div><div class="col"><a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['title']}">${feature['properties']['title']}</a></div></div>`);
 		},
 		pointToLayer: function (feature, latlng) {
 			var className = String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1]).replace('.','');
-			switch(filter_type) {
-				case 2:
-					var yearS = String(feature['properties']['年份']);
-					if(yearS.includes($('#year-filter-2-1').val())){
-						return L.marker(latlng, {icon: L.divIcon({
-							className: className,
-							iconAnchor: [0, 24],
-							labelAnchor: [-6, 0],
-							popupAnchor: [0, -36],
-							html: `<span style="${pcc_icon_style("rgb(153,35,0)")}" />`
-						})});
-					}
-					else if(yearS.includes($('#year-filter-2-2').val())){
-						return L.marker(latlng, {icon: L.divIcon({
-							className: className,
-							iconAnchor: [0, 24],
-							labelAnchor: [-6, 0],
-							popupAnchor: [0, -36],
-							html: `<span style="${pcc_icon_style("rgb(255,81,46)")}" />`
-						})});
-					}
-					else if(yearS.includes($('#year-filter-2-3').val())){
-						return L.marker(latlng, {icon: L.divIcon({
-							className: className,
-							iconAnchor: [0, 24],
-							labelAnchor: [-6, 0],
-							popupAnchor: [0, -36],
-							html: `<span style="${pcc_icon_style("rgb(255,181,146)")}" />`
-						})});
-					}
-					break;
-				default:
-					return L.marker(latlng, {icon: L.divIcon({
-						className: className,
-						iconAnchor: [0, 24],
-						labelAnchor: [-6, 0],
-						popupAnchor: [0, -36],
-						html: `<span style="${pcc_icon_style("rgb(252,112,5)")}" />`
-					})});
-					break;
-			}
+			return L.marker(latlng, {icon: L.divIcon({
+				className: className,
+				iconAnchor: [0, 24],
+				labelAnchor: [-6, 0],
+				popupAnchor: [0, -36],
+				html: `<span style="${pcc_icon_style("rgb(252,112,5)")}" />`
+			})});
 		},
 	});
+	return rs;
+}
+
+function filter_pcc_datas(filter_type){
+	share_dict['features'] = [];
+	var rs = null;
+	if(Object.keys(pcc_api_datas).length > 0)
+		rs = show_pcc_api_datas(filter_type);
+	else
+		rs = L.geoJSON(pcc_datas,{
+			filter: function (feature, layer) {
+				var adv_key = String($('#adv-search').val());
+				if(adv_key.length > 0) {
+					if(!String(feature['properties']['工程名稱']).includes(adv_key))
+						return false;
+				}
+					
+				var year_start = year_end = Number(feature['properties']['年份']);
+				var yearS = String(feature['properties']['年份']);
+				if(yearS.includes("-")){
+					var temp = yearS.split("-");
+					year_start = Number(temp[0]);
+					year_end = Number(temp[1]);
+				}
+					
+				switch(filter_type) {
+					case 0:
+						return true;
+						break;
+					case 1:
+						if(year_start >= Number($('#year-filter-1-1').val()) && year_end <= Number($('#year-filter-1-2').val()))
+							return true;
+						break;
+					case 2:
+						if(yearS.includes($('#year-filter-2-1').val()) || yearS.includes($('#year-filter-2-2').val()) || yearS.includes($('#year-filter-2-3').val()))
+							return true;
+						break;				
+				}
+			},
+			onEachFeature: function (feature, layer) {			
+				share_dict['features'].push(feature);	
+				layer.on({
+					click: function pccClicked(e) {
+						var properties = e['sourceTarget']['feature']['properties'];
+						$("#pcc-list-detail .scroll-style").html("");
+						for(var key in properties){
+							$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
+							console.log(key+": "+properties[key]+"\n");
+						}
+						var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}">${feature['properties']['工程名稱']}</a>`;
+						$("#pcc-list-detail .go-back span").html("");
+						$("#pcc-list-detail .go-back span").append(title);
+						if(!toggle){
+							$('#toggle-detail').trigger('click');
+						}
+						$("#pcc-list-detail").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+							var className = String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1]).replace('.','');
+							$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
+							$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
+							next();
+						});
+					},
+				});
+				layer.bindTooltip('['+feature['properties']['年份']+']'+feature['properties']['工程名稱'],{direction: "bottom"});
+				$("#pcc-list").append(`<div class="row"><div class="col-3"><a >${feature['properties']['年份']}年度</a></div><div class="col"><a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}">${feature['properties']['工程名稱']}</a></div></div>`);
+			},
+			pointToLayer: function (feature, latlng) {
+				var className = String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1]).replace('.','');
+				switch(filter_type) {
+					case 2:
+						var yearS = String(feature['properties']['年份']);
+						if(yearS.includes($('#year-filter-2-1').val())){
+							return L.marker(latlng, {icon: L.divIcon({
+								className: className,
+								iconAnchor: [0, 24],
+								labelAnchor: [-6, 0],
+								popupAnchor: [0, -36],
+								html: `<span style="${pcc_icon_style("rgb(153,35,0)")}" />`
+							})});
+						}
+						else if(yearS.includes($('#year-filter-2-2').val())){
+							return L.marker(latlng, {icon: L.divIcon({
+								className: className,
+								iconAnchor: [0, 24],
+								labelAnchor: [-6, 0],
+								popupAnchor: [0, -36],
+								html: `<span style="${pcc_icon_style("rgb(255,81,46)")}" />`
+							})});
+						}
+						else if(yearS.includes($('#year-filter-2-3').val())){
+							return L.marker(latlng, {icon: L.divIcon({
+								className: className,
+								iconAnchor: [0, 24],
+								labelAnchor: [-6, 0],
+								popupAnchor: [0, -36],
+								html: `<span style="${pcc_icon_style("rgb(255,181,146)")}" />`
+							})});
+						}
+						break;
+					default:
+						return L.marker(latlng, {icon: L.divIcon({
+							className: className,
+							iconAnchor: [0, 24],
+							labelAnchor: [-6, 0],
+							popupAnchor: [0, -36],
+							html: `<span style="${pcc_icon_style("rgb(252,112,5)")}" />`
+						})});
+						break;
+				}
+			},
+		});
 	return rs;
 }
 
@@ -248,7 +322,7 @@ var pcc_group;
 var river_choosed = new L.FeatureGroup();
 pcc_group = L.markerClusterGroup({
 	maxClusterRadius: 30,	
-	disableClusteringAtZoom: 11,
+	//disableClusteringAtZoom: 11,
 });
 pcc_group.addLayer(filter_pcc_datas(1));
 pcc_group.addTo(mymap);
@@ -264,6 +338,7 @@ $('#detail-pcc input, #adv-search').change(function(){
 		pcc_group.addLayer(filter_pcc_datas(0));
 	pcc_group.addTo(mymap);				
 });
+
 $("#pcc-list").on('click', '.list-title', function() {
 	var latlng = $(this).attr('latlng').split(',');
 	var className = String(Number(latlng[0])+Number(latlng[1])).replace('.','');
@@ -310,7 +385,26 @@ $("#search-river").submit(function(){
 			$("#search-list").html("<p><a>查無此溪流</a></p>");	
 		}
 	});
+	
+	$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
+		rivername: rivername
+	}, function(cb) {
+		if(cb['features'].length>0){
+			$("#on-load").css("display","none");
+			pcc_api_datas = cb;
+			$('#pcc-list').html("");
+			pcc_group.removeFrom(mymap);
+			pcc_group.clearLayers();
+			pcc_group.addLayer(show_pcc_api_datas(0));
+			pcc_group.addTo(mymap);		
+		}
+		else {
+			$("#on-load").css("display","none");		
+			$("#search-list").html("<p><a>查無相關標案</a></p>");	
+		}
+	});
 })
+
 $("#search-list").on('click','.river-pos', function() {
 	var river_ = river_pos_layer(river_data, filter = $(this).html());
 	mymap.fitBounds(river_.getBounds());

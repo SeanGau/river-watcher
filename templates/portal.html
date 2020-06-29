@@ -24,9 +24,7 @@
 			</div>	
 			<div class="col-md-4 portal-news scroll-style">
 				<h5 style="margin: 2% 10%;">最新消息</h5>
-				<div>
-					<!--p><a href="https://www.facebook.com/events/2433713673533097/" target="_blank" title="g0v Year-End Banquet | 公民科技創新獎助金 2019 成果發表會暨社群忘年會">2019-11-01　g0v Year-End Banquet | 公民科技創新獎助金 2019 成果發表會暨社群忘年會</a></p-->
-					
+				<div>					
 					{%for row in news%}
 						<p><a href="{{row['data']['url']}}" target="_blank" title="{{row['data']['text']}}">{{row['date']}}　{{row['data']['text']}}</a></p>
 					{%endfor%}

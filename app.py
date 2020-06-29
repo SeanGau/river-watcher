@@ -285,7 +285,18 @@ def getriver():
 
 @app.route('/api/getpcc')
 def getpcc():
-	return ""
+	rivername = flask.request.args.get('rivername', None)
+	year1 = flask.request.args.get('year1', None)
+	year2 = flask.request.args.get('year2', None)
+	year3 = flask.request.args.get('year3', None)
+	
+	with gisdb_engine.connect() as con:
+		rs = con.execute(f"select ST_AsGeoJSON(geom),data from pccgis where data ->> 'river' LIKE '{rivername}%%' ORDER BY data ->> 'date' DESC")
+		dict = {"type" : "FeatureCollection","features":[]}
+		for row in rs:
+			d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
+			dict['features'].append(d)	
+	return dict
 
 @app.route('/api/addmail',methods=['POST'])
 def addmail():	
@@ -307,6 +318,7 @@ def addmail():
 				mail.send(msg)
 		titlelist += " @channel "
 		mmsend(titlelist, fpath=content["filename"])
+		adj_news(func.now(),f'{content["date"]} 有 {content["num_datas"]}筆 標案資料',f'/static/pcc/out/{os.path.basename(content["filename"])}')
 	else:
 		mmsend(f'{content["date"]} 目前沒有資料')
 	return "OK"

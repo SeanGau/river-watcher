@@ -148,7 +148,7 @@ input[type=number] {
 
 #detail-box {
 	z-index: 1000;
-	display: flex;
+	display: block;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -160,7 +160,8 @@ input[type=number] {
 	color: white;
 }
 #adv-search {
-	margin: 1em;
+	padding: 1em;
+	width: 100%;
 	background-color: rgba(0,0,0,0);
 	border-width: 0;
 	color: white;
@@ -250,7 +251,7 @@ input[type=number] {
 	height: 100%;
 }
 #pcc-list-box {
-	height: 100%;
+	height: calc(100% - 15em);
 }
 
 #pcc-list {
