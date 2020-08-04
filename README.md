@@ -1,5 +1,9 @@
 # 大河小溪全民齊督工
 
+:::info
+網頁架構使用flask + jinja2
+爬蟲使用python3.7位於/static/pcc
+:::
 
 >[網站平台](https://river-watcher.bambooculture.tw/)
 >
