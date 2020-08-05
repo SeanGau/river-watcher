@@ -275,7 +275,8 @@ def getriver():
 	rivername = flask.request.args.get('rivername', '')
 	if(len(rivername)<2):
 		return "error"
-    dict = {"type" : "FeatureCollection","features":[]}
+
+	dict = {"type" : "FeatureCollection","features":[]}
 	#with gisdb_engine.connect() as con:
 	#	rs = con.execute(f"select ST_AsGeoJSON(geom),data from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
 	#	for row in rs:
