@@ -17,4 +17,4 @@ SQLALCHEMY_ENGINE_OPTIONS = {'encoding': 'utf-8', 'json_serializer': lambda obj:
 SQLALCHEMY_ECHO = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = 'postgresql://:@localhost/riverwatcher'
-gisdb_engine = create_engine('postgresql://:@localhost/gisdb', encoding= 'utf-8', json_serializer= lambda obj: obj)
+#gisdb_engine = create_engine('postgresql://:@localhost/gisdb', encoding= 'utf-8', json_serializer= lambda obj: obj)

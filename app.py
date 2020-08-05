@@ -1,7 +1,7 @@
 import flask
 import requests, hashlib, json, csv, os, random, string
 import urllib.parse
-from config import mmConfig, gisdb_engine
+from config import mmConfig
 from flask_mail import Mail, Message
 from models import db, Users, Resetpw, News
 from sqlalchemy.sql import func
@@ -32,7 +32,7 @@ def mmsend(message, fpath = None): #傳訊息至mattermost
 		CHANNEL_ID = mmConfig['test_channel_id']
 		print(fpath)
 		#print(message)
-	
+
 	if len(message)>14000:
 		end_pos = 14000
 		while(1):
@@ -42,7 +42,7 @@ def mmsend(message, fpath = None): #傳訊息至mattermost
 				end_pos += 1
 		message = message[:end_pos+1]
 		message += '\r\n.\r\n.\r\n.\r\n下載檔案觀看完整爬蟲紀錄'
-		
+
 	mmKey = mmConfig['token']
 	s = requests.Session()
 	s.headers.update({"Authorization": "Bearer "+mmKey})
@@ -53,7 +53,7 @@ def mmsend(message, fpath = None): #傳訊息至mattermost
 			"files": (os.path.basename(fpath), open(fpath, 'rb')),
 		}
 		r = s.post(SERVER_URL + '/api/v4/files', files=form_data)
-		FILE_ID = r.json()["file_infos"][0]["id"]		
+		FILE_ID = r.json()["file_infos"][0]["id"]
 		p = s.post(SERVER_URL + '/api/v4/posts', data=json.dumps({
 		   "channel_id": CHANNEL_ID,
 			"message": message,
@@ -63,7 +63,7 @@ def mmsend(message, fpath = None): #傳訊息至mattermost
 		p = s.post(SERVER_URL + '/api/v4/posts', data=json.dumps({
 		   "channel_id": CHANNEL_ID,
 			"message": message
-		}))	
+		}))
 
 def getnews(limit_n=5):
 	result_set = db.session.query(News).order_by(News.date.desc()).limit(limit_n).all()
@@ -71,7 +71,7 @@ def getnews(limit_n=5):
 	for row in result_set:
 		news.append({"data": row.data,"date": row.date, "id": row.id})
 	return news
-	
+
 def adj_news(date,text,url,id=None):
 	if id==None:
 		new_news = News(
@@ -83,7 +83,7 @@ def adj_news(date,text,url,id=None):
 	else:
 		db.session.query(News).filter_by(id=id).delete()
 		db.session.commit()
-	
+
 def getusers(email = None): #取得使用者資料庫
 	users={}
 	result_set = {}
@@ -96,7 +96,7 @@ def getusers(email = None): #取得使用者資料庫
 		users[row.email]={
 		"id": row.username,
 		"password": row.password}
-	return users	
+	return users
 
 def update_resets(token, email=None, pw=None):
 	if token == "null":
@@ -104,7 +104,7 @@ def update_resets(token, email=None, pw=None):
 	elif pw == None: #更新token
 		reset_user = db.session.query(Resetpw).filter_by(email = email).first()
 		if reset_user != None:
-			reset_user.token = token				
+			reset_user.token = token
 		else:
 			reset_user=Resetpw(
 				email = email,
@@ -122,7 +122,7 @@ def update_resets(token, email=None, pw=None):
 			db.session.merge(reset_user)
 			db.session.commit()
 		return True
-		
+
 def adj_subscribe(result_set,riverid,type):
 	temp = riverid.split("(")
 	temp[1] = temp[1].replace(")","")
@@ -135,12 +135,12 @@ def adj_subscribe(result_set,riverid,type):
 	else:
 		if not temp_sub.get(temp[0]):
 			temp_sub[temp[0]] = []
-		temp_sub[temp[0]].append(temp[1])		
+		temp_sub[temp[0]].append(temp[1])
 	user.subscribe = json.dumps(temp_sub, ensure_ascii=False).replace('\'','\"')
 	print("updated"+user.subscribe)
 	db.session.commit()
 	return "ok"
-	
+
 def get_subscribe(email = None, riverid = None):
 	if email != None:
 		user = db.session.query(Users).filter_by(email = email).first()
@@ -160,7 +160,7 @@ def get_subscribe(email = None, riverid = None):
 		return result_set
 	else:
 		return False
-	
+
 def get_rivers_list():
 	rivers_data = []
 	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/static/pcc/rivers20191017_small.csv', newline='' ,encoding='utf-8-sig')
@@ -181,8 +181,8 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if flask.request.method == 'GET':
-		return  flask.render_template('login.html')	
-	
+		return  flask.render_template('login.html')
+
 	email = flask.request.form["email"]
 	users = getusers(email)
 	if email in users:
@@ -203,13 +203,13 @@ def logout():
 @app.route('/forget', methods=['GET', 'POST'])
 def forget_pw():
 	if flask.request.method == 'GET':
-		return flask.render_template('forget.html')	
+		return flask.render_template('forget.html')
 	email = flask.request.form["email"]
 	users = getusers(email)
 	if email in users:
 		if users[email].get('id','') != flask.request.form["username"]:
 			return alert('使用者名稱或email錯誤！', flask.url_for('forget_pw'))
-		else:			
+		else:
 			salt = ''.join(random.sample(string.ascii_letters, 16))
 			token = gethashed(email+salt)
 			if update_resets(token, email = email):
@@ -225,9 +225,9 @@ def forget_pw():
 
 @app.route('/reset', methods=['GET', 'POST'])
 def reset_pw():
-	token = flask.request.args.get('token', False)	
+	token = flask.request.args.get('token', False)
 	if flask.request.method == 'GET':
-		return flask.render_template('resetpw.html', token = token)	
+		return flask.render_template('resetpw.html', token = token)
 	elif flask.request.form["password"] != flask.request.form["password2"]:
 		return alert('確認密碼錯誤！', flask.url_for('reset_pw', token = token))
 	else:
@@ -237,7 +237,7 @@ def reset_pw():
 			return alert('重設密碼失敗！', flask.url_for('index')+"#login-page")
 
 @app.route("/admin", methods=['GET', 'POST']) #管理員頁面
-def admin():		
+def admin():
 	if flask.session.get("email") not in mmConfig['admin_id']:
 		return flask.abort(403)
 	if flask.request.method == 'GET':
@@ -248,7 +248,7 @@ def admin():
 		elif(flask.request.form.get('rmnews')):
 			adj_news(None,None,None,id=flask.request.form.get('id'))
 		return flask.render_template('admin.html', users=getusers(), news=getnews(limit_n=9999))
-		
+
 @app.route("/portal") #主要使用者頁面
 def portal():
 	isAdmin = flask.session.get("email") in mmConfig['admin_id']
@@ -275,12 +275,12 @@ def getriver():
 	rivername = flask.request.args.get('rivername', '')
 	if(len(rivername)<2):
 		return "error"
-	with gisdb_engine.connect() as con:
-		rs = con.execute(f"select ST_AsGeoJSON(geom),data from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
-		dict = {"type" : "FeatureCollection","features":[]}
-		for row in rs:
-			d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
-			dict['features'].append(d)	
+    dict = {"type" : "FeatureCollection","features":[]}
+	#with gisdb_engine.connect() as con:
+	#	rs = con.execute(f"select ST_AsGeoJSON(geom),data from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
+	#	for row in rs:
+	#		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
+	#		dict['features'].append(d)
 	return dict
 
 @app.route('/api/getpcc')
@@ -289,18 +289,18 @@ def getpcc():
 	year1 = flask.request.args.get('year1', None)
 	year2 = flask.request.args.get('year2', None)
 	year3 = flask.request.args.get('year3', None)
-	
-	with gisdb_engine.connect() as con:
-		rs = con.execute(f"select ST_AsGeoJSON(geom),data from pccgis where data ->> 'river' LIKE '{rivername}%%' ORDER BY data ->> 'date' DESC")
-		dict = {"type" : "FeatureCollection","features":[]}
-		for row in rs:
-			d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
-			dict['features'].append(d)	
+
+	dict = {"type" : "FeatureCollection","features":[]}
+	#with gisdb_engine.connect() as con:
+	#	rs = con.execute(f"select ST_AsGeoJSON(geom),data from pccgis where data ->> 'river' LIKE '{rivername}%%' ORDER BY data ->> 'date' DESC")
+	#	for row in rs:
+	#		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
+	#		dict['features'].append(d)
 	return dict
 
 @app.route('/api/addmail',methods=['POST'])
-def addmail():	
-	content = flask.request.json	
+def addmail():
+	content = flask.request.json
 	titlelist = content['date']+ " 有"+ str(content['num_datas'])+"筆資料\r\n"
 	if content['num_datas']>0:
 		#titlelist += f'[檔案連結\r\n]({content["filename"].replace("/var/www/riverwatcher/","https://river-watcher.bambooculture.tw/")})'
@@ -308,7 +308,7 @@ def addmail():
 			titlelist += river + "\r\n"
 			sub_list = []
 			sub_list = get_subscribe(riverid = river)
-			msg = Message(f'大河小溪全民齊督工─{content["date"]} {river} 標案通知!!', recipients=sub_list)			
+			msg = Message(f'大河小溪全民齊督工─{content["date"]} {river} 標案通知!!', recipients=sub_list)
 			msg.html = str("")
 			#print(msg)
 			for pccs in content['records'][river]:
@@ -326,21 +326,21 @@ def addmail():
 @app.route('/test', methods=['GET'])
 def test():
 	if app.debug:
-		msg = Message('test!', recipients=['sean@bambooculture.com'])			
+		msg = Message('test!', recipients=['sean@bambooculture.com'])
 		msg.html = str("TEST!")
 		mail.send(msg)
 		return "SEND"
 	else:
 		return "X", 404
-"""		
+"""
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
 def reg():
 	if flask.request.method == 'GET':
-		return flask.render_template('register.html')	
+		return flask.render_template('register.html')
 	email = flask.request.form["email"]
 	users = getusers(email)
-	password = gethashed(flask.request.form['password']+email)	
-	users = getusers() 
+	password = gethashed(flask.request.form['password']+email)
+	users = getusers()
 	if '@' not in email or len(email)<8 or len(flask.request.form['password'])<8:
 		return alert('無效的email或密碼！', flask.url_for('reg'))
 	elif email in users:
@@ -360,11 +360,11 @@ def reg():
 def map():
 	rivers_data = get_rivers_list()
 	return flask.render_template('map.html', rivers_data = rivers_data)
-	
+
 @app.route('/link')
 def link():
 	return flask.render_template('ext.html')
-	
+
 if __name__ == "__main__":
 	app.debug = True
 	app.run(host = "0.0.0.0", port = 80)
