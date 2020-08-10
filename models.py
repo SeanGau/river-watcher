@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy.sql import func
+from geoalchemy2 import Geometry
 
 db = SQLAlchemy()
 
@@ -70,4 +71,44 @@ class News(db.Model):
 			'id': self.id,
 			'data': self.data,
 			'date': self.date
+		}
+
+class Rivergis(db.Model):
+	__tablename__ = 'rivergis'
+	id = db.Column(db.Integer, primary_key=True)
+	data = db.Column(JSONB, default={})
+	geom = db.Column(Geometry('GEOMETRY'))
+
+	def __init__(self, data, geom):
+		self.data = data
+		self.geom = geom
+
+	def __repr__(self):
+		return '<id {}>'.format(self.id)
+
+	def serialize(self):
+		return {
+			'id': self.id,
+			'data': self.data,
+			'geom': self.geom
+		}
+
+class Pccgis(db.Model):
+	__tablename__ = 'pccgis'
+	id = db.Column(db.Integer, primary_key=True)
+	data = db.Column(JSONB, default={})
+	geom = db.Column(Geometry('GEOMETRY'))
+
+	def __init__(self, data, geom):
+		self.data = data
+		self.geom = geom
+
+	def __repr__(self):
+		return '<id {}>'.format(self.id)
+
+	def serialize(self):
+		return {
+			'id': self.id,
+			'data': self.data,
+			'geom': self.geom
 		}

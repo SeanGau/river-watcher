@@ -277,11 +277,10 @@ def getriver():
 		return "error"
 
 	dict = {"type" : "FeatureCollection","features":[]}
-	#with gisdb_engine.connect() as con:
-	#	rs = con.execute(f"select ST_AsGeoJSON(geom),data from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
-	#	for row in rs:
-	#		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
-	#		dict['features'].append(d)
+	rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from rivergis where data ->> 'RIVER_NAME' = '{rivername}'")
+	for row in rs:
+		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
+		dict['features'].append(d)
 	return dict
 
 @app.route('/api/getpcc')
@@ -292,11 +291,10 @@ def getpcc():
 	year3 = flask.request.args.get('year3', None)
 
 	dict = {"type" : "FeatureCollection","features":[]}
-	#with gisdb_engine.connect() as con:
-	#	rs = con.execute(f"select ST_AsGeoJSON(geom),data from pccgis where data ->> 'river' LIKE '{rivername}%%' ORDER BY data ->> 'date' DESC")
-	#	for row in rs:
-	#		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
-	#		dict['features'].append(d)
+	rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where data ->> 'river' LIKE '{rivername}%%' ORDER BY data ->> 'date' DESC")
+	for row in rs:
+		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
+		dict['features'].append(d)
 	return dict
 
 @app.route('/api/addmail',methods=['POST'])
