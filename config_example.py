@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 SECRET_KEY = ""
 MAIL_SERVER = '127.0.0.1'
 MAIL_PORT = 25
+DEBUG = True
 MAIL_DEFAULT_SENDER = '"大河小溪全民齊督工" <riverwatcher@bambooculture.com>'
 
 mmConfig = {
