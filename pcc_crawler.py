@@ -95,7 +95,6 @@ def pcc_crawler():
 								write_ok = True
 
 					if outdata['key'] not in river_list and write_ok:
-						w.writerow(outdata.values())
 						result+= 1
 						river_list.append(f'{keyword}({pccpos})')
 						with engine.connect() as con:
@@ -171,25 +170,22 @@ def pcc_crawler():
 	pcc_dict = {"date": date_b.strftime("%Y%m%d")+"~"+date_a.strftime("%Y%m%d"),"records": {}}
 	total_count = 0
 
-	with codecs.open(foname, "w",'utf_8_sig') as fo:
-		w = csv.writer(fo, dialect='excel')
-		w.writerow(['標案日期','招標單位','標案狀態','標案名稱','標案連結','標案類別','預算金額','標案地點','相關河流'])
-		while delta_days<=0:
-			num_datas = 0
-			date_str = (date_a + datetime.timedelta(days=delta_days)).strftime(date_format)
-			delta_days+=1
-			dated_url = date_api_url+date_str
-			print(dated_url)
-			with urllib.request.urlopen(dated_url) as url:
-				data = json.loads(url.read().decode())
-				if len(data)>0:
-					for p in reversed(data['records']):
-						result, river_list = searchbykey(p)
-						itemurl = p['tender_api_url'].replace("unit_id=&","unit_id="+p['unit_id']+"&").replace("pcc.g0v.ronny.tw/api/tender?","ronnywang.github.io/pcc-viewer/tender.html?")
-						if result> 0:
-							num_datas+=result
-			print(date_str+" has_datas: "+ str(num_datas))
-			total_count += num_datas
+	while delta_days<=0:
+		num_datas = 0
+		date_str = (date_a + datetime.timedelta(days=delta_days)).strftime(date_format)
+		delta_days+=1
+		dated_url = date_api_url+date_str
+		print(dated_url)
+		with urllib.request.urlopen(dated_url) as url:
+			data = json.loads(url.read().decode())
+			if len(data)>0:
+				for p in reversed(data['records']):
+					result, river_list = searchbykey(p)
+					itemurl = p['tender_api_url'].replace("unit_id=&","unit_id="+p['unit_id']+"&").replace("pcc.g0v.ronny.tw/api/tender?","ronnywang.github.io/pcc-viewer/tender.html?")
+					if result> 0:
+						num_datas+=result
+		print(date_str+" has_datas: "+ str(num_datas))
+		total_count += num_datas
 
 	with engine.connect() as con:
 		title = f"{pcc_dict['date']} 有 {total_count}筆 標案資料"
