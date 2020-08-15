@@ -1,5 +1,5 @@
 import flask
-import requests, hashlib, json, csv, os, random, string
+import requests, hashlib, json, csv, os, random, string, datetime
 import urllib.parse
 from config import mmConfig
 from flask_mail import Mail, Message
@@ -285,16 +285,19 @@ def getriver():
 
 @app.route('/api/getpcc')
 def getpcc():
-	rivername = flask.request.args.get('rivername', None)
-	year1 = flask.request.args.get('year1', None)
-	year2 = flask.request.args.get('year2', None)
-	year3 = flask.request.args.get('year3', None)
+	since = flask.request.args.get('sinceDate', datetime.datetime.today().strftime("%Y%m%d"))
+	to = flask.request.args.get('toDate', datetime.datetime.today().strftime("%Y%m%d"))
 
 	dict = {"type" : "FeatureCollection","features":[]}
-	rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where data ->> 'river' LIKE '{rivername}%%' ORDER BY data ->> 'date' DESC")
+	rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to}")
 	for row in rs:
-		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
+		d = {"type": "Feature", "geometry": {}, "properties": {}}
+		if row['st_asgeojson'] is not None:
+			d['geometry'] = json.loads(row['st_asgeojson'])
+		if row['data'] is not None:
+			d['properties'] = row['data']
 		dict['features'].append(d)
+		print(row)
 	return dict
 
 @app.route('/api/addmail',methods=['POST'])

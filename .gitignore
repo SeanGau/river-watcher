@@ -4,3 +4,4 @@ ENV/
 **/static/pcc/out/
 **/__pycache__/
 dev/
+migrations/versions/
