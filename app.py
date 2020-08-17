@@ -287,7 +287,6 @@ def getriver():
 def getpcc():
 	since = flask.request.args.get('sinceDate', datetime.datetime.today().strftime("%Y%m%d"))
 	to = flask.request.args.get('toDate', datetime.datetime.today().strftime("%Y%m%d"))
-
 	dict = {"type" : "FeatureCollection","features":[]}
 	rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to}")
 	for row in rs:
@@ -297,7 +296,6 @@ def getpcc():
 		if row['data'] is not None:
 			d['properties'] = row['data']
 		dict['features'].append(d)
-		print(row)
 	return dict
 
 @app.route('/api/addmail',methods=['POST'])
@@ -366,6 +364,6 @@ def link():
 
 if __name__ == "__main__":
 	if(app.testing == True):
-		app.run(ssl_context='adhoc', host = "0.0.0.0", port = 5000)
+		app.run(host = "0.0.0.0", port = 5000)
 	else:
 		app.run(host = "0.0.0.0", port = 80)

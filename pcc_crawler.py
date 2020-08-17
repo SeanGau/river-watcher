@@ -95,6 +95,7 @@ def pcc_crawler():
 								write_ok = True
 
 					if outdata['key'] not in river_list and write_ok:
+						print(itemurl)
 						result+= 1
 						river_list.append(f'{keyword}({pccpos})')
 						with engine.connect() as con:
@@ -153,19 +154,19 @@ def pcc_crawler():
 			date_input = sys.argv[1]
 		else:
 			if "weekly" in sys.argv:
-				date_b = date_b + datetime.timedelta(days=-6)
+				date_b = date_b + datetime.timedelta(days=-7)
 			elif "last" in sys.argv:
 				with engine.connect() as con:
 					rs = con.execute(f"select ST_AsGeoJSON(geom),data from pccgis ORDER BY ID DESC LIMIT 1")
-					date_b = datetime.datetime.strptime(str(rs.first()['data']['date']), "%Y%m%d") + datetime.timedelta(days=1)
+					date_b = datetime.datetime.strptime(str(rs.first()['data']['date']), "%Y%m%d")
 			elif "today" not in sys.argv:
 				date_input = input("參數錯誤！輸入起始日期 (6碼日期YYYYMMDD): ")
-				date_b = datetime.datetime.strptime(date_input, date_format) + datetime.timedelta(days=1)
+				date_b = datetime.datetime.strptime(date_input, date_format)
 	else:
 		date_input = input("輸入起始日期 (6碼日期YYYYMMDD): ")
-		date_b = datetime.datetime.strptime(date_input, date_format) + datetime.timedelta(days=1)
+		date_b = datetime.datetime.strptime(date_input, date_format)
 
-	delta_days = (date_b - date_a).days
+	delta_days = (date_b - date_a).days + 1
 	foname = dir_path + "/data/pcc/out/pcc_" + date_b.strftime("%Y%m%d")+"_to_"+date_a.strftime("%Y%m%d")+".csv"
 	pcc_dict = {"date": date_b.strftime("%Y%m%d")+"~"+date_a.strftime("%Y%m%d"),"records": {}}
 	total_count = 0
@@ -189,8 +190,8 @@ def pcc_crawler():
 
 	with engine.connect() as con:
 		title = f"{pcc_dict['date']} 有 {total_count}筆 標案資料"
-		news_data = {"url": f"/api/getpcc?sinceDate={date_b.strftime('%Y%m%d')}&toDate={date_a.strftime('%Y%m%d')}", "text": title}
-		con.execute(f"INSERT INTO news (data, date) VALUES(\'{news_data}\',{datetime.datetime.today()});")
+		news_data = json.dumps({"url": f"/api/getpcc?sinceDate={date_b.strftime('%Y%m%d')}&toDate={date_a.strftime('%Y%m%d')}", "text": title}, ensure_ascii=False).replace('\'','\"')
+		con.execute(f"INSERT INTO news (data, date) VALUES(\'{news_data}\',\'{datetime.datetime.today()}\');")
 
 if __name__ == "__main__":
 	pcc_crawler()
