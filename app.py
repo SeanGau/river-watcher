@@ -285,10 +285,15 @@ def getriver():
 
 @app.route('/api/getpcc')
 def getpcc():
+	rivername = flask.request.args.get('rivername',None)
 	since = flask.request.args.get('sinceDate', datetime.datetime.today().strftime("%Y%m%d"))
 	to = flask.request.args.get('toDate', datetime.datetime.today().strftime("%Y%m%d"))
 	dict = {"type" : "FeatureCollection","features":[]}
-	rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to}")
+	rs = None
+	if rivername is not None:
+		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to}")
+	else:
+		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to}")
 	for row in rs:
 		d = {"type": "Feature", "geometry": {}, "properties": {}}
 		if row['st_asgeojson'] is not None:
