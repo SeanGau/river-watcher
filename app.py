@@ -163,7 +163,7 @@ def get_subscribe(email = None, riverid = None):
 
 def get_rivers_list():
 	rivers_data = []
-	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/static/pcc/rivers20191017_small.csv', newline='' ,encoding='utf-8-sig')
+	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/data/pcc/rivers20191017_small.csv', newline='' ,encoding='utf-8-sig')
 	csv_reader = csv.DictReader(query_rivers)
 	for row in csv_reader:
 		rivers_data.append(row)
@@ -324,17 +324,14 @@ def addmail():
 	else:
 		mmsend(f'{content["date"]} 目前沒有資料')
 	return "OK"
-"""
+
 @app.route('/test', methods=['GET'])
 def test():
-	if app.debug:
-		msg = Message('test!', recipients=['sean@bambooculture.com'])
-		msg.html = str("TEST!")
-		mail.send(msg)
-		return "SEND"
-	else:
-		return "X", 404
-"""
+	msg = Message('test!', recipients=['rrtw0627@gmail.com'])
+	msg.html = str("TEST!")
+	mail.send(msg)
+	return "SEND"
+
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
 def reg():
 	if flask.request.method == 'GET':
@@ -369,6 +366,6 @@ def link():
 
 if __name__ == "__main__":
 	if(app.testing == True):
-		app.run(host = "0.0.0.0", port = 5000)
+		app.run(ssl_context='adhoc', host = "0.0.0.0", port = 5000)
 	else:
 		app.run(host = "0.0.0.0", port = 80)
