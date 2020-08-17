@@ -163,7 +163,7 @@ def get_subscribe(email = None, riverid = None):
 
 def get_rivers_list():
 	rivers_data = []
-	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/data/pcc/rivers20191017_small.csv', newline='' ,encoding='utf-8-sig')
+	query_rivers = open(os.path.dirname(os.path.realpath(__file__))+'/data/pcc/rivers20191112_small.csv', newline='' ,encoding='utf-8-sig')
 	csv_reader = csv.DictReader(query_rivers)
 	for row in csv_reader:
 		rivers_data.append(row)
