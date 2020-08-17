@@ -291,15 +291,19 @@ def getpcc():
 	dict = {"type" : "FeatureCollection","features":[]}
 	rs = None
 	if rivername is not None:
-		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to}")
+		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') ASC")
 	else:
-		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to}")
+		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') ASC")
 	for row in rs:
 		d = {"type": "Feature", "geometry": {}, "properties": {}}
 		if row['st_asgeojson'] is not None:
 			d['geometry'] = json.loads(row['st_asgeojson'])
+		else:
+			continue
 		if row['data'] is not None:
 			d['properties'] = row['data']
+		else:
+			continue
 		dict['features'].append(d)
 	return dict
 

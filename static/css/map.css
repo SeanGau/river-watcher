@@ -34,12 +34,12 @@ input[type=number] {
 }
 
 .marker-cluster span {
-	color: black;	
+	color: black;
 	font-family: 'Noto Sans TC', sans-serif;
 }
 
 .leaflet-control-layers {
-	background-color: rgba(0,0,0,0);	
+	background-color: rgba(0,0,0,0);
 	color: white;
 }
 
@@ -116,10 +116,10 @@ input[type=number] {
 	background-repeat: no-repeat;
 	filter: invert(71%) sepia(0%) saturate(0%) hue-rotate(333deg) brightness(98%) contrast(84%);
 }
-#search-river button:hover {	
+#search-river button:hover {
 	filter: invert(73%) sepia(23%) saturate(6237%) hue-rotate(138deg) brightness(98%) contrast(88%);
 }
-#search-river button:active {	
+#search-river button:active {
   transform: translateY(2px);
 }
 #search-list {
@@ -199,7 +199,7 @@ input[type=number] {
 #detail-pcc .nav a{
 	font-size: 1em;
 	padding: 0 0.5em;
-} 
+}
 #detail-pcc .nav a.active{
 	border-bottom: 3px solid white;
 }
@@ -226,9 +226,6 @@ input[type=number] {
 	height: 1.5em;
 	color: #AAA;
 }
-.row a{	
-	color: #AAA;
-}
 .row .col, .row .col-4 {
 	overflow: hidden;
 	white-space: nowrap;
@@ -239,7 +236,7 @@ input[type=number] {
 
 .scroll-list {
 	height: calc(100% - 1em);
-	background-color: #29323b;	
+	background-color: #29323b;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding: 0.8em;
@@ -269,7 +266,7 @@ input[type=number] {
 	padding: 0 0 0 1em;
 }
 #pcc-list div.row:hover a {
-	color: rgb(15,201,220);	
+	color: rgb(15,201,220);
 }
 
 #pcc-list-detail {
@@ -284,7 +281,7 @@ input[type=number] {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	height: 2em !important; 
+	height: 2em !important;
 }
 #pcc-list-detail .go-back a {
 	color: white;
@@ -317,12 +314,12 @@ input[type=number] {
 }
 
 
-.hovered-marker {	
-	background-color: rgb(15,201,220) !important;	
+.hovered-marker {
+	background-color: rgb(15,201,220) !important;
 }
 
 #detail-news #news-pcc {
-	background-color: #29323b;	
+	background-color: #29323b;
 	padding: 1em;
 }
 #detail-news #news-pcc .nav a{
@@ -337,7 +334,7 @@ input[type=number] {
 	right: -45px;
 }
 
-#toggle-back {	
+#toggle-back {
 	z-index: 1000;
 }
 #toggle-back #toggle-back-dot{
@@ -386,7 +383,7 @@ input[type=number] {
   line-height: 1em;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -464,14 +461,14 @@ input:checked + .slider:before {
 	width: 0.8em;
 	border-radius: 50%;
 	background-color: rgba(0,0,0,0);
-	border: 1px solid #AAA;	
+	border: 1px solid #AAA;
 }
 .radio-style1:hover input ~ .radio-style1-box {
-	border: 1px solid #0FC9DC;	
+	border: 1px solid #0FC9DC;
 }
 .radio-style1 input:checked ~ .radio-style1-box {
-	background-color: #0FC9DC;	
-	border: 1px solid #0FC9DC;	
+	background-color: #0FC9DC;
+	border: 1px solid #0FC9DC;
 }
 
 .nav.custom-nav a span {
@@ -484,15 +481,15 @@ input:checked + .slider:before {
 	width: 0.75em;
 	border-radius: 50%;
 	background-color: rgba(0,0,0,0);
-	border: 1px solid #AAA;		
+	border: 1px solid #AAA;
 }
 .nav.custom-nav a:hover span {
-	border: 1px solid #0FC9DC;		
+	border: 1px solid #0FC9DC;
 }
 .nav.custom-nav a.active span {
-	background-color: #0FC9DC;	
-	border: 1px solid #0FC9DC;		
-} 
+	background-color: #0FC9DC;
+	border: 1px solid #0FC9DC;
+}
 
 
 .scroll-style {
@@ -513,7 +510,7 @@ input:checked + .slider:before {
 
 
 @media (max-width: 768px) {
-	#search-list {		
+	#search-list {
 		max-height: 3em;
 	}
 	#toggle-detail {

@@ -6,7 +6,7 @@ var satellite = L.tileLayer(MymbUrl, {id: 'ck0x9ai2j5kgb1co36kagohqm',   attribu
 
 var share_dict = {"type" : "FeatureCollection","features":[]};
 var pcc_api_datas = {};
-
+var pcc_datas_indexing = {};
 function pcc_icon_style(color) {
 	return `
 	color: black;
@@ -24,7 +24,7 @@ function pcc_icon_style(color) {
 
 function show_pcc_api_datas(filter_type){
 	share_dict['features'] = [];
-	var pcc_url_dict = {};
+	pcc_datas_indexing = {};
 	rs = L.geoJSON(pcc_api_datas,{
 		filter: function (feature, layer) {
 			var adv_key = String($('#adv-search').val());
@@ -33,12 +33,12 @@ function show_pcc_api_datas(filter_type){
 					return false;
 			}
 			year = Number(feature['properties']['date'].substr(0,4)) - 1911;
-			if(pcc_url_dict[feature['properties']['link']] == undefined){
-				pcc_url_dict[feature['properties']['link']] = share_dict['features'].length;
+			if(pcc_datas_indexing[sha256(feature['properties']['link'])] == undefined){
+				pcc_datas_indexing[sha256(feature['properties']['link'])] = share_dict['features'].length;
 				share_dict['features'].push(feature);
 			}
 			else {
-				share_dict['features'][pcc_url_dict[feature['properties']['link']]] = feature;
+				share_dict['features'][pcc_datas_indexing[feature['properties']['link']]] = feature;
 				return false;
 			}
 			var yearS = String(year);
@@ -57,7 +57,7 @@ function show_pcc_api_datas(filter_type){
 			}
 		},
 		onEachFeature: function (feature, layer) {
-			var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['title']+feature['properties']['type']);
+			var className = sha256(feature['properties']['link']);
 
 			layer.on({
 				click: function pccClicked(e) {
@@ -88,7 +88,7 @@ function show_pcc_api_datas(filter_type){
 			$("#pcc-list").append(`<div class="row"><div class="col-3"><a >${year}年度</a></div><div class="col"><a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['title']}" data-class="${className}">${feature['properties']['title']}</a></div></div>`);
 		},
 		pointToLayer: function (feature, latlng) {
-			var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['title']+feature['properties']['type']);
+			var className = sha256(feature['properties']['link']);
 			return L.marker(latlng, {icon: L.divIcon({
 				className: className,
 				iconAnchor: [0, 24],
@@ -98,7 +98,7 @@ function show_pcc_api_datas(filter_type){
 			})});
 		},
 	});
-	console.log(pcc_url_dict);
+	console.log(pcc_datas_indexing);
 	return rs;
 }
 
@@ -139,7 +139,7 @@ function filter_pcc_datas(filter_type){
 				}
 			},
 			onEachFeature: function (feature, layer) {
-				var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['title']+feature['properties']['type']);
+				var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['工程名稱']+feature['properties']['Google Map超連結']);
 
 				share_dict['features'].push(feature);
 				layer.on({
@@ -167,7 +167,7 @@ function filter_pcc_datas(filter_type){
 				$("#pcc-list").append(`<div class="row"><div class="col-3"><a >${feature['properties']['年份']}年度</a></div><div class="col"><a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}" data-class="${className}">${feature['properties']['工程名稱']}</a></div></div>`);
 			},
 			pointToLayer: function (feature, latlng) {
-				var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['title']+feature['properties']['type']);
+				var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['工程名稱']+feature['properties']['Google Map超連結']);
 				switch(filter_type) {
 					case 2:
 						var yearS = String(feature['properties']['年份']);
@@ -333,10 +333,31 @@ var pcc_group;
 var river_choosed = new L.FeatureGroup();
 pcc_group = L.markerClusterGroup({
 	maxClusterRadius: 30,
-	//disableClusteringAtZoom: 11,
+	//disableClusteringAtZoom: 14,
+	//spiderfyOnMaxZoom: true
 });
+/*
 pcc_group.addLayer(filter_pcc_datas(1));
-pcc_group.addTo(mymap);
+pcc_group.addTo(mymap);*/
+
+$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
+	sinceDate: 20190101
+}, function(cb) {
+	if(cb['features'].length>0){
+		$("#on-load").css("display","none");
+		pcc_api_datas = cb;
+		$('#pcc-list').html("");
+		pcc_group.removeFrom(mymap);
+		pcc_group.clearLayers();
+		pcc_group.addLayer(show_pcc_api_datas(0));
+		pcc_group.addTo(mymap);
+	}
+	else {
+		$("#on-load").css("display","none");
+		$("#search-list").html("<p><a>查無相關標案</a></p>");
+	}
+});
+
 $('#detail-pcc input, #adv-search').change(function(){
 	$('#pcc-list').html("");
 	pcc_group.removeFrom(mymap);
@@ -354,7 +375,31 @@ $("#pcc-list").on('click', '.list-title', function() {
 	var latlng = $(this).attr('latlng').split(',');
 	var className = $(this).attr('data-class');
 	mymap.setView([latlng[1],latlng[0]],15);
-	$(`.leaflet-marker-pane .${className} span`).trigger('click');
+	if(Object.keys(pcc_datas_indexing).length > 0) {
+		var feature = share_dict['features'][pcc_datas_indexing[className]];
+		var properties = feature['properties'];
+		$("#pcc-list-detail .scroll-style").html("");
+		for(var key in properties){
+			if(properties[key].includes("http"))
+				$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
+			else
+				$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
+		}
+		var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['title']}" data-class="${className}">${feature['properties']['title']}</a>`;
+		$("#pcc-list-detail .go-back span").html("");
+		$("#pcc-list-detail .go-back span").append(title);
+		if(!toggle){
+			$('#toggle-detail').trigger('click');
+		}
+		$("#pcc-list-detail").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+			$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
+			$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
+			next();
+		});
+	}
+	else {
+		$(`.leaflet-marker-pane .${className} span`).trigger('click');
+	}
 });
 
 $("#pcc-list").on('mouseover','.list-title', function(){
@@ -377,7 +422,7 @@ $("#search-river").submit(function(){
 	$("#search-list").html("");
 	var rivername = $("#search-river input").val();
 	//console.log(rivername);
-	$("#adv-search").val(rivername);
+	$("#adv-search").val("");
 	$("#adv-search").trigger("change");
 	$.getJSON($SCRIPT_ROOT + '/api/getriver', {
 		rivername: rivername
