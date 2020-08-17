@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="{{url_for('static', filename='css/leaflet-gps.css')}}">
 	</head>
 	<body>
-		<div class="container-fluid m-0 p-0" id="map">			
+		<div class="container-fluid m-0 p-0" id="map">
 		</div>
 		<form id="search-river" action="javascript:void(0);">
 			<div id="search-list" class="scroll-style">
@@ -26,7 +26,7 @@
 		</form>
 		<div id="detail-box">
 			<img id="toggle-detail" src="{{url_for('static', filename='img/right_arrow.svg')}}"/>
-			<div class="text-center m-0 p-0 h-100 w-100" id="detail-index">	
+			<div class="text-center m-0 p-0 h-100 w-100" id="detail-index">
 				<input id="adv-search" type="text" placeholder="搜尋關鍵字" name="adv-search"/>
 				<div class="nav nav-tabs" style="">
 					<a data-toggle="tab" href="#detail-pcc" class="active">標案檢索</a>
@@ -37,7 +37,7 @@
 					<div id="detail-pcc" class="tab-pane fade active show">
 						<div class="nav nav-tabs">
 							<a data-toggle="tab" href="#pcc-years" class="active">年份</a>
-							<a data-toggle="tab" href="#pcc-img" disabled>鄉鎮市區</a>					
+							<a data-toggle="tab" href="#pcc-img" disabled>鄉鎮市區</a>
 						</div>
 						<div class="tab-content m-0">
 							<div id="pcc-years" class="tab-pane fade active show d-flex flex-column">
@@ -50,8 +50,8 @@
 									<label class="radio-style1" for="year-filter-2">
 										<p>民國<input type="number" min="50" max="150" value="106" placeholder="--" style="color: rgb(153,35,0)" id="year-filter-2-1"/>年及<input type="number" min="50" max="150" value="107" placeholder="--" style="color: rgb(255,81,46)" id="year-filter-2-2"/>年及<input type="number" min="50" max="150" value="108" placeholder="--" style="color: rgb(255,181,146)" id="year-filter-2-3"/>年</p>
 									<input type="radio" name="year-filter" id="year-filter-2"/><span class="radio-style1-box"></span></label>
-								</div>									
-								<div style="text-align:center; margin: 5% 2% 2% 2%;"> 
+								</div>
+								<div style="text-align:center; margin: 5% 2% 2% 2%;">
 									<a style="float: left; font-size: 1.2em; border-bottom: 3px solid white;">標案類型</a>
 									<!-- a class="label-toggle active">已決標</a>
 									<label class="switch" for="toggle-isdone">
@@ -59,10 +59,10 @@
 										<span class="slider round"></span>
 									</label>
 									<a class="label-toggle active">未決標</a -->
-								</div>	
+								</div>
 								<div id="pcc-list-box" class="p-0 m-0" style="position: relative;">
 									<div id="pcc-list" class="scroll-style scroll-list">
-									</div>	
+									</div>
 									<div id="pcc-list-detail" class="scroll-list">
 										<div class="go-back p-0 m-0">
 											<a href="javascript:void(0)" class="back-arrow"><img src="{{url_for('static', filename='img/left_arrow.svg')}}"></a>
@@ -70,7 +70,7 @@
 										</div>
 										<div class="scroll-style p-0 m-0">
 										</div>
-									</div>		
+									</div>
 								</div>
 							</div>
 						</div>
@@ -79,7 +79,7 @@
 						<div id="news-pcc">
 							<div class="nav nav-tabs text-center custom-nav" style="border-bottom: 1px solid #AAA;">
 								<a data-toggle="tab" href="#news-newest" class="active"><span></span>最新標案公告</a>
-								<a data-toggle="tab" href="#news-last"><span></span>最後決標公告</a>					
+								<a data-toggle="tab" href="#news-last"><span></span>最後決標公告</a>
 							</div>
 							<div class="tab-content">
 								<div id="news-newest" class="tab-pane fade active show scroll-style scroll-list">
@@ -110,15 +110,15 @@
 				<div id="toggle-back-index"><a href="{{url_for('portal')}}">個人主頁</a><a href="#">動態說明</a></div>
 			</div>
 		</div>
-		
+
 		<!-- ----------------------------------------- -->
-		
+
 		<!--script src="{{url_for('static', filename='pcc/rivers20191022.geojson')}}"></script-->
 		<script src="{{url_for('static', filename='pcc/allpcc.js')}}"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
-    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.1/velocity.min.js"></script>
-		<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>		
+		<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
 		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
 		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 		<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
@@ -129,7 +129,7 @@
 			$(window).ready(function(){
 				$("body").height(window.innerHeight);
 			});
-			
+
 			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 			var toggle=false;
 			$('#toggle-detail').click(function(){
@@ -162,7 +162,7 @@
 					$("#detail-box").removeClass("show");
 				}
 			});
-			$('#pcc-list-detail .back-arrow').click(function(){				
+			$('#pcc-list-detail .back-arrow').click(function(){
 				$("#pcc-list-detail").velocity({left: "-420px"}, {duration:300, loop:false, easing:"easeOutSine"});
 				$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 			});

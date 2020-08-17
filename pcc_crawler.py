@@ -5,7 +5,6 @@ from sqlalchemy import create_engine
 from config import SQLALCHEMY_DATABASE_URI
 engine = create_engine(SQLALCHEMY_DATABASE_URI, encoding= 'utf-8', json_serializer= lambda obj: obj)
 
-
 def pcc_crawler():
 	date_api_url = "https://pcc.g0v.ronny.tw/api/listbydate?date="
 	query_api_url = "https://pcc.g0v.ronny.tw/api/searchbytitle?query="
@@ -108,16 +107,16 @@ def pcc_crawler():
 							county_name = location.split('－')[0]
 							if '－' in location:
 								town_name = location.split('－')[1]
-							#print(f"{river_name}  county: {county_name}, town: {town_name}")
+							print(f"'{river_name}'  county: '{county_name}', town: '{town_name}'")
 							rs = con.execute(f"SELECT ST_AsGeoJSON(geom) FROM rivergis where data->>\'RIVER_NAME\' = \'{river_name}\' and data->>\'COUNTYNAME\' = \'{county_name}\' and data->>\'TOWNNAME\' LIKE \'{town_name}_\'")
 
 							if rs.rowcount<1:
 								county_name = location.split('－')[0].split('(')[0]
 								rs = con.execute(f"SELECT ST_AsGeoJSON(geom) FROM rivergis where data->>\'RIVER_NAME\' = \'{river_name}\' and data->>\'COUNTYNAME\' = \'{county_name}\'")
-
+								print("no river in town")
 							if rs.rowcount<1:
 								rs = con.execute(f"SELECT ST_AsGeoJSON(geom) FROM rivergis where data->>\'RIVER_NAME\' = \'{river_name}\'")
-
+								print("no river in county")
 							properties = json.dumps(outdata, ensure_ascii=False).replace('\'','\"')
 							if rs.rowcount>0:
 								for row2 in rs:
