@@ -288,12 +288,14 @@ def getpcc():
 	rivername = flask.request.args.get('rivername',None)
 	since = flask.request.args.get('sinceDate', datetime.datetime.today().strftime("%Y%m%d"))
 	to = flask.request.args.get('toDate', datetime.datetime.today().strftime("%Y%m%d"))
+	order = flask.request.args.get('order', "DESC")
+	limit = flask.request.args.get('limit', "10000")
 	dict = {"type" : "FeatureCollection","features":[]}
 	rs = None
 	if rivername is not None:
-		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') ASC")
+		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
 	else:
-		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') ASC")
+		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
 	for row in rs:
 		d = {"type": "Feature", "geometry": {}, "properties": {}}
 		if row['st_asgeojson'] is not None:

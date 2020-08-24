@@ -21,8 +21,26 @@ function pcc_icon_style(color) {
 	border: 1px solid rgba(50,50,50,0.5);
 	transform: rotate(45deg);`
 }
+function show_pcc_datas(cb) {
+	if(cb['features'].length>0){
+		if(cb['features'].length>=1000){
+			console.log(cb['features'].length + ">=1000");
+		}
+		$("#on-load").css("display","none");
+		pcc_api_datas = cb;
+		$('#pcc-list').html("");
+		pcc_group.removeFrom(mymap);
+		pcc_group.clearLayers();
+		pcc_group.addLayer(filter_pcc_api_datas(0));
+		pcc_group.addTo(mymap);
+	}
+	else {
+		$("#on-load").css("display","none");
+		$("#search-list").html("<p><a>查無相關標案</a></p>");
+	}
+}
 
-function show_pcc_api_datas(filter_type){
+function filter_pcc_api_datas(filter_type){
 	share_dict['features'] = [];
 	pcc_datas_indexing = {};
 	rs = L.geoJSON(pcc_api_datas,{
@@ -38,7 +56,7 @@ function show_pcc_api_datas(filter_type){
 				share_dict['features'].push(feature);
 			}
 			else {
-				share_dict['features'][pcc_datas_indexing[feature['properties']['link']]] = feature;
+				//share_dict['features'][pcc_datas_indexing[feature['properties']['link']]] = feature;
 				return false;
 			}
 			var yearS = String(year);
@@ -106,7 +124,7 @@ function filter_pcc_datas(filter_type){
 	share_dict['features'] = [];
 	var rs = null;
 	if(Object.keys(pcc_api_datas).length > 0)
-		rs = show_pcc_api_datas(filter_type);
+		rs = filter_pcc_api_datas(filter_type);
 	else
 		rs = L.geoJSON(pcc_datas,{
 			filter: function (feature, layer) {
@@ -341,22 +359,8 @@ pcc_group.addLayer(filter_pcc_datas(1));
 pcc_group.addTo(mymap);*/
 
 $.getJSON($SCRIPT_ROOT + '/api/getpcc', {
-	sinceDate: 20190101
-}, function(cb) {
-	if(cb['features'].length>0){
-		$("#on-load").css("display","none");
-		pcc_api_datas = cb;
-		$('#pcc-list').html("");
-		pcc_group.removeFrom(mymap);
-		pcc_group.clearLayers();
-		pcc_group.addLayer(show_pcc_api_datas(0));
-		pcc_group.addTo(mymap);
-	}
-	else {
-		$("#on-load").css("display","none");
-		$("#search-list").html("<p><a>查無相關標案</a></p>");
-	}
-});
+	sinceDate: 20100101
+}, show_pcc_datas);
 
 $('#detail-pcc input, #adv-search').change(function(){
 	$('#pcc-list').html("");
@@ -445,21 +449,7 @@ $("#search-river").submit(function(){
 	$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
 		rivername: rivername,
 		sinceDate: 20100101
-	}, function(cb) {
-		if(cb['features'].length>0){
-			$("#on-load").css("display","none");
-			pcc_api_datas = cb;
-			$('#pcc-list').html("");
-			pcc_group.removeFrom(mymap);
-			pcc_group.clearLayers();
-			pcc_group.addLayer(show_pcc_api_datas(0));
-			pcc_group.addTo(mymap);
-		}
-		else {
-			$("#on-load").css("display","none");
-			$("#search-list").html("<p><a>查無相關標案</a></p>");
-		}
-	});
+	}, show_pcc_datas);
 })
 
 $("#search-list").on('click','.river-pos', function() {
