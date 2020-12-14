@@ -117,11 +117,12 @@ def pcc_crawler():
 							if rs.rowcount<1:
 								rs = con.execute(f"SELECT ST_AsGeoJSON(geom) FROM rivergis where data->>\'RIVER_NAME\' = \'{river_name}\'")
 								print("no river in county")
-							properties = json.dumps(outdata, ensure_ascii=False).replace('\'','\"')
+							properties = json.dumps(outdata, ensure_ascii=False).replace('\'','\"').replace('%','%%')
 
 							rs_update_check = con.execute(f"SELECT id,geom FROM pccgis where data->>\'link\' = \'{outdata['link']}\'")
 
 							if rs_update_check.rowcount>0:
+								print("update",properties)
 								if rs.rowcount>0:
 									for row2 in rs:
 										gistr = str(json.loads(row2['st_asgeojson'])).replace('\'','\"')
@@ -134,8 +135,9 @@ def pcc_crawler():
 											rs = con.execute(f"UPDATE pccgis SET data=\'{properties}\', geom=\'{row_check['geom']}\' WHERE id={row_check['id']};")
 										else:
 											rs = con.execute(f"UPDATE pccgis SET data=\'{properties}\', geom=NULL WHERE id={row_check['id']};")
-								print("update",outdata)
+
 							else:
+								print("insert",properties)
 								if rs.rowcount>0:
 									for row2 in rs:
 										gistr = str(json.loads(row2['st_asgeojson'])).replace('\'','\"')
@@ -143,7 +145,6 @@ def pcc_crawler():
 										break;
 								else:
 									rs = con.execute(f"INSERT INTO pccgis (data,geom) VALUES (\'{properties}\',NULL);")
-								print("insert",outdata)
 		else: #try except
 			print("somthing wrong")
 			return result
