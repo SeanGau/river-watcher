@@ -290,18 +290,26 @@ def getpcc():
 	to = flask.request.args.get('toDate', datetime.datetime.today().strftime("%Y%m%d"))
 	order = flask.request.args.get('order', "DESC")
 	limit = flask.request.args.get('limit', "5000")
+	check_geom = flask.request.args.get('requireGeom',False)
+
 	dict = {"type" : "FeatureCollection","features":[]}
 	rs = None
-	if rivername is not None:
-		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+
+	if check_geom is not False:
+		if rivername is not None:
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+		else:
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
 	else:
-		rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+		if rivername is not None:
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+		else:
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+
 	for row in rs:
 		d = {"type": "Feature", "geometry": {}, "properties": {}}
 		if row['st_asgeojson'] is not None:
 			d['geometry'] = json.loads(row['st_asgeojson'])
-		else:
-			continue
 		if row['data'] is not None:
 			d['properties'] = row['data']
 		else:

@@ -359,7 +359,8 @@ pcc_group.addLayer(filter_pcc_datas(1));
 pcc_group.addTo(mymap);*/
 
 $.getJSON($SCRIPT_ROOT + '/api/getpcc', {
-	sinceDate: 20100101
+	sinceDate: 20100101,
+	requireGeom: "True"
 }, show_pcc_datas);
 
 $('#detail-pcc input, #adv-search').change(function(){
@@ -449,6 +450,7 @@ $("#search-river").submit(function(){
 
 	$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
 		rivername: rivername,
+		requireGeom: "True",
 		sinceDate: 20100101
 	}, show_pcc_datas);
 })
