@@ -50,7 +50,7 @@ def pcc_crawler():
 						for datamoreN in datamore['records']:
 							if datamoreN['date'] != p['date']: #以日期尋找本次標案
 								continue
-							outdata['date']=datamoreN['date']
+							outdata['date']=str(datamoreN['date'])
 							outdata['unit']=datamore['unit_name']
 							outdata['type']=datamoreN['brief']['type']
 							outdata['title']=datamoreN['brief']['title']
