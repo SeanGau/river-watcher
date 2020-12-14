@@ -94,7 +94,8 @@ function filter_pcc_api_datas(filter_type){
 					if(!toggle){
 						$('#toggle-detail').trigger('click');
 					}
-					$("#pcc-detail-box").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+					$("#pcc-list-box").addClass("d-none");
+					$("#pcc-detail-box").removeClass("d-none").queue(function(next){
 						$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 						$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
 						next();
@@ -174,7 +175,8 @@ function filter_pcc_datas(filter_type){
 						if(!toggle){
 							$('#toggle-detail').trigger('click');
 						}
-						$("#pcc-detail-box").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+						$("#pcc-list-box").addClass("d-none");
+						$("#pcc-detail-box").removeClass("d-none").queue(function(next){
 							$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 							$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
 							next();
