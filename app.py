@@ -289,7 +289,7 @@ def getpcc():
 	since = flask.request.args.get('sinceDate', datetime.datetime.today().strftime("%Y%m%d"))
 	to = flask.request.args.get('toDate', datetime.datetime.today().strftime("%Y%m%d"))
 	order = flask.request.args.get('order', "DESC")
-	limit = flask.request.args.get('limit', "10000")
+	limit = flask.request.args.get('limit', "5000")
 	dict = {"type" : "FeatureCollection","features":[]}
 	rs = None
 	if rivername is not None:

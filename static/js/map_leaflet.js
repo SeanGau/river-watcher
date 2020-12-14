@@ -26,16 +26,16 @@ function show_pcc_datas(cb) {
 		if(cb['features'].length>=1000){
 			console.log(cb['features'].length + ">=1000");
 		}
-		$("#on-load").css("display","none");
 		pcc_api_datas = cb;
 		$('#pcc-list').html("");
 		pcc_group.removeFrom(mymap);
 		pcc_group.clearLayers();
 		pcc_group.addLayer(filter_pcc_api_datas(0));
 		pcc_group.addTo(mymap);
+		$("body").removeClass("loading");
 	}
 	else {
-		$("#on-load").css("display","none");
+		$("body").removeClass("loading");
 		$("#search-list").html("<p><a>查無相關標案</a></p>");
 	}
 }
@@ -80,21 +80,21 @@ function filter_pcc_api_datas(filter_type){
 			layer.on({
 				click: function pccClicked(e) {
 					var properties = e['sourceTarget']['feature']['properties'];
-					$("#pcc-list-detail .scroll-style").html("");
+					$("#pcc-detail-box .scroll-data").html("");
 					for(var key in properties){
 						if(properties[key].includes("http"))
-							$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
+							$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
 						else
-							$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
+							$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
 
 					}
 					var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['title']}" data-class="${className}">${feature['properties']['title']}</a>`;
-					$("#pcc-list-detail .go-back span").html("");
-					$("#pcc-list-detail .go-back span").append(title);
+					$("#pcc-detail-box .go-back span").html("");
+					$("#pcc-detail-box .go-back span").append(title);
 					if(!toggle){
 						$('#toggle-detail').trigger('click');
 					}
-					$("#pcc-list-detail").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+					$("#pcc-detail-box").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
 						$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 						$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
 						next();
@@ -163,18 +163,18 @@ function filter_pcc_datas(filter_type){
 				layer.on({
 					click: function pccClicked(e) {
 						var properties = e['sourceTarget']['feature']['properties'];
-						$("#pcc-list-detail .scroll-style").html("");
+						$("#pcc-detail-box .scroll-data").html("");
 						for(var key in properties){
-							$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
+							$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
 							console.log(key+": "+properties[key]+"\n");
 						}
 						var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}" data-class="${className}">${feature['properties']['工程名稱']}</a>`;
-						$("#pcc-list-detail .go-back span").html("");
-						$("#pcc-list-detail .go-back span").append(title);
+						$("#pcc-detail-box .go-back span").html("");
+						$("#pcc-detail-box .go-back span").append(title);
 						if(!toggle){
 							$('#toggle-detail').trigger('click');
 						}
-						$("#pcc-list-detail").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+						$("#pcc-detail-box").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
 							$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 							$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
 							next();
@@ -382,20 +382,21 @@ $("#pcc-list").on('click', '.list-title', function() {
 	if(Object.keys(pcc_datas_indexing).length > 0) {
 		var feature = share_dict['features'][pcc_datas_indexing[className]];
 		var properties = feature['properties'];
-		$("#pcc-list-detail .scroll-style").html("");
+		$("#pcc-detail-box .scroll-data").html("");
 		for(var key in properties){
 			if(properties[key].includes("http"))
-				$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
+				$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
 			else
-				$("#pcc-list-detail .scroll-style").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
+				$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
 		}
 		var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['title']}" data-class="${className}">${feature['properties']['title']}</a>`;
-		$("#pcc-list-detail .go-back span").html("");
-		$("#pcc-list-detail .go-back span").append(title);
+		$("#pcc-detail-box .go-back span").html("");
+		$("#pcc-detail-box .go-back span").append(title);
 		if(!toggle){
 			$('#toggle-detail').trigger('click');
 		}
-		$("#pcc-list-detail").velocity({left: "0px"}, {duration:300, loop:false, easing:"easeOutSine"}).queue(function(next){
+		$("#pcc-list-box").addClass("d-none");
+		$("#pcc-detail-box").removeClass("d-none").queue(function(next){
 			$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 			$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
 			next();
@@ -422,7 +423,7 @@ $("#pcc-list").on('mouseout','.list-title', function(){
 
 river_data = {};
 $("#search-river").submit(function(){
-	$("#on-load").css("display","block");
+	$("body").addClass("loading");
 	$("#search-list").html("");
 	var rivername = $("#search-river input").val();
 	//console.log(rivername);
@@ -432,7 +433,7 @@ $("#search-river").submit(function(){
 		rivername: rivername
 	}, function(cb) {
 		if(cb['features'].length>0){
-			$("#on-load").css("display","none");
+			$("body").removeClass("loading");
 			river_data = cb;
 			var river_ = river_pos_layer(river_data);
 			river_choosed.clearLayers();
@@ -441,7 +442,7 @@ $("#search-river").submit(function(){
 			mymap.fitBounds(river_.getBounds());
 		}
 		else {
-			$("#on-load").css("display","none");
+			$("body").removeClass("loading");
 			$("#search-list").html("<p><a>查無此溪流</a></p>");
 		}
 	});

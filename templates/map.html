@@ -15,6 +15,9 @@
 		<link rel="stylesheet" href="{{url_for('static', filename='css/leaflet-gps.css')}}">
 	</head>
 	<body>
+		<div id="loading">
+  		<img src="{{url_for('static', filename='img/loading.svg')}}">
+		</div>
 		<div class="container-fluid m-0 p-0" id="map">
 		</div>
 		<form id="search-river" action="javascript:void(0);">
@@ -60,15 +63,20 @@
 									</label>
 									<a class="label-toggle active">未決標</a -->
 								</div>
-								<div id="pcc-list-box" class="p-0 m-0" style="position: relative;">
-									<div id="pcc-list" class="scroll-style scroll-list">
-									</div>
-									<div id="pcc-list-detail" class="scroll-list">
-										<div class="go-back p-0 m-0">
-											<a href="javascript:void(0)" class="back-arrow"><img src="{{url_for('static', filename='img/left_arrow.svg')}}"></a>
-											<span></span>
+								<div id="pcc-box" class="p-0 m-0">
+									<div id="pcc-list-box" class="scroll-style scroll-list">
+										<div id="pcc-list" class="scroll-data">
 										</div>
-										<div class="scroll-style p-0 m-0">
+									</div>
+									<div id="pcc-detail-box" class="scroll-style scroll-list d-none">
+										<div>
+											<div class="go-back p-0 m-0">
+												<a href="javascript:void(0)" class="back-arrow"><img src="{{url_for('static', filename='img/left_arrow.svg')}}"></a>
+												<span></span>
+											</div>
+											<hr>
+											<div class="scroll-data">
+											</div>
 										</div>
 									</div>
 								</div>
@@ -127,9 +135,11 @@
 		<script src="{{url_for('static', filename='js/leaflet-gps.min.js')}}"></script>
 		<script>
 			//detail box
-			$(window).ready(function(){
+		  $("body").addClass("loading");
+
+	    window.onload = function() {
 				$("body").height(window.innerHeight);
-			});
+	    }
 
 			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 			var toggle=false;
@@ -163,8 +173,9 @@
 					$("#detail-box").removeClass("show");
 				}
 			});
-			$('#pcc-list-detail .back-arrow').click(function(){
-				$("#pcc-list-detail").velocity({left: "-420px"}, {duration:300, loop:false, easing:"easeOutSine"});
+			$('#pcc-detail-box .back-arrow').click(function(){
+				$("#pcc-list-box").removeClass("d-none");
+				$("#pcc-detail-box").addClass("d-none");
 				$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 			});
 		</script>

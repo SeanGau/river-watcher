@@ -2,6 +2,35 @@ body {
 	color: #AAA;
 	height: 100vh;
 }
+
+.loading {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+#loading {
+  display: none;
+}
+.loading #loading {
+  display: block;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 999999999999999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+}
+#loading img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8em;
+  height: 8em;
+  margin-left: -4em;
+  margin-top: -4em;
+}
+
 #map {
 	height: 100%;
 	color: #AAA;
@@ -17,10 +46,6 @@ a, p, h1, h2, h3, h4, h5, input, label {
 }
 input:focus, button:focus{
 	outline: none;
-}
-a:hover, #pcc-list a:hover, #search-list a:hover{
-	text-decoration: none;
-	color: rgb(15,201,220);
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -145,7 +170,6 @@ input[type=number] {
 	color: #AAA;
 }
 
-
 #detail-box {
 	z-index: 1000;
 	display: block;
@@ -222,11 +246,50 @@ input[type=number] {
 	line-height: 1em;
 }
 
-.row {
+.scroll-list {
+	background-color: #29323b;
+	padding: 0.8em;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+
+#pcc-years {
+	height: 100%;
+}
+
+#pcc-box {
+	display: flex;
+	overflow: auto;
+	flex: 1;
+}
+#pcc-box a {
+	color: #AAA;
+}
+#pcc-box a:link:hover, #pcc-box a:visited:hover {
+	text-decoration: none;
+	color: rgb(15,201,220);　
+}
+
+.scroll-list .scroll-data {
+	display: block;
+	position: static;
+}
+.scroll-list .scroll-data a{
+	line-height: 2em;
+	color: #AAA;
+}
+.scroll-list .scroll-data .col-3 {
+	white-space: normal;
+	text-overflow: clip;
+	padding: 0 0 0 1em;
+}
+
+#pcc-list .row {
 	height: 1.5em;
 	color: #AAA;
 }
-.row .col, .row .col-4 {
+#pcc-list .row .col, .row .col-4 {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -234,85 +297,29 @@ input[type=number] {
 	word-break: break-all;
 }
 
-.scroll-list {
-	height: calc(100% - 1em);
-	background-color: #29323b;
-	overflow-y: scroll;
-	overflow-x: hidden;
-	padding: 0.8em;
-	margin-top: 1em;
-}
-
-
-#pcc-years {
-	height: 100%;
-}
-#pcc-list-box {
-	height: calc(100% - 15em);
-}
-
-#pcc-list {
-	display: block;
-	position: static;
-	flex: 1 1 auto;
-}
-#pcc-list a{
-	line-height: 1em;
-	color: #AAA;
-}
-#pcc-list .col-3 {
-	white-space: nowrap;
-	text-align: left;
-	padding: 0 0 0 1em;
-}
-#pcc-list div.row:hover a {
-	color: rgb(15,201,220);
-}
-
-#pcc-list-detail {
-	overflow: hidden;
-	display: block;
+#pcc-detail-box {
 	width: 100%;
-	position: absolute;
-	top: 0;
-	left: -420px;
 }
-#pcc-list-detail .go-back {
+#pcc-detail-box .go-back {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	height: 2em !important;
 }
-#pcc-list-detail .go-back a {
+#pcc-detail-box .go-back a {
 	color: white;
 }
-#pcc-list-detail .back-arrow img:hover {
+#pcc-detail-box .back-arrow img:hover {
 	filter: invert(59%) sepia(73%) saturate(1538%) hue-rotate(140deg) brightness(101%) contrast(88%);
 }
-#pcc-list-detail .back-arrow img {
+#pcc-detail-box .back-arrow img {
 	vertical-align: middle;
 	height: 1.5em;
 	width: 1.5em;
 }
-
-#pcc-list-detail .scroll-style {
-	height: calc( 100% - 2em );
-	width: 100%;
-}
-#pcc-list-detail .row:hover {
-	height: auto;
-	margin: 0.5em 0;
-	padding: 0.25em 0;
+#pcc-detail-box .row:hover {
 	background-color: rgba(100,100,100,0.3);
 }
-#pcc-list-detail .row:hover a {
-	line-height: 1.5em;
-}
-#pcc-list-detail .row:hover .col, #pcc-list-detail .row:hover .col-4 {
-	white-space: normal;
-	text-overflow: clip;
-}
-
 
 .hovered-marker {
 	background-color: rgb(15,201,220) !important;
