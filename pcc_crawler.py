@@ -51,10 +51,10 @@ def pcc_crawler():
 							if datamoreN['date'] != p['date']: #以日期尋找本次標案
 								continue
 							outdata['date']=datamoreN['date']
-							outdata['unit_name']=datamore['unit_name']
+							outdata['unit']=datamore['unit_name']
 							outdata['type']=datamoreN['brief']['type']
 							outdata['title']=datamoreN['brief']['title']
-							outdata['url']=itemurl.replace("pcc.g0v.ronny.tw/api/tender?","ronnywang.github.io/pcc-viewer/tender.html?")
+							outdata['link']=itemurl.replace("pcc.g0v.ronny.tw/api/tender?","ronnywang.github.io/pcc-viewer/tender.html?")
 							if 'category' in datamoreN['brief']:
 								outdata['category']=datamoreN['brief']['category']
 							elif '採購資料:標的分類' in datamoreN['detail']:
@@ -62,10 +62,10 @@ def pcc_crawler():
 							else:
 								outdata['category']=datamoreN['detail'].get('已公告資料:標的分類',"N/A")
 							if '採購資料:預算金額' in datamoreN['detail']:
-								outdata['funding']=datamoreN['detail']['採購資料:預算金額']
+								outdata['budget']=datamoreN['detail']['採購資料:預算金額']
 							else:
-								outdata['funding']=datamoreN['detail'].get('已公告資料:預算金額',"N/A")
-							outdata['funding']=outdata['funding'].strip('元')
+								outdata['budget']=datamoreN['detail'].get('已公告資料:預算金額',"N/A")
+							outdata['budget']=outdata['budget'].strip('元')
 							if '其他:履約地點' in datamoreN['detail']:
 								outdata['location']=datamoreN['detail']['其他:履約地點']
 							elif '採購資料:履約地點（含地區）' in datamoreN['detail']:
@@ -79,7 +79,7 @@ def pcc_crawler():
 									break_flag = True
 									break
 
-							outdata['key']=f'{keyword}({pccpos})'
+							outdata['river']=f'{keyword}({pccpos})'
 							#print(itemurl)
 					if break_flag:
 						continue #下一個關鍵字
@@ -93,7 +93,7 @@ def pcc_crawler():
 							if m[0] in cata_list: #確定標案類別為白名單內類別
 								write_ok = True
 
-					if outdata['key'] not in river_list and write_ok:
+					if outdata['river'] not in river_list and write_ok:
 						print(itemurl)
 						result+= 1
 						river_list.append(f'{keyword}({pccpos})')
@@ -118,13 +118,32 @@ def pcc_crawler():
 								rs = con.execute(f"SELECT ST_AsGeoJSON(geom) FROM rivergis where data->>\'RIVER_NAME\' = \'{river_name}\'")
 								print("no river in county")
 							properties = json.dumps(outdata, ensure_ascii=False).replace('\'','\"')
-							if rs.rowcount>0:
-								for row2 in rs:
-									gistr = str(json.loads(row2['st_asgeojson'])).replace('\'','\"')
-									rs = con.execute(f"INSERT INTO pccgis (data,geom) VALUES (\'{properties}\',ST_Centroid(ST_GeomFromGeoJSON(\'{gistr}\')));")
-									break;
+
+							rs_update_check = con.execute(f"SELECT id,geom FROM pccgis where data->>\'link\' = \'{outdata['link']}\'")
+
+							if rs_update_check.rowcount>0:
+								if rs.rowcount>0:
+									for row2 in rs:
+										gistr = str(json.loads(row2['st_asgeojson'])).replace('\'','\"')
+										for row_check in rs_update_check:
+											rs = con.execute(f"UPDATE pccgis SET data=\'{properties}\', geom=ST_Centroid(ST_GeomFromGeoJSON(\'{gistr}\')) WHERE id={row_check['id']};")
+										break;
+								else:
+									for row_check in rs_update_check:
+										if row_check['geom'] is not None:
+											rs = con.execute(f"UPDATE pccgis SET data=\'{properties}\', geom=\'{row_check['geom']}\' WHERE id={row_check['id']};")
+										else:
+											rs = con.execute(f"UPDATE pccgis SET data=\'{properties}\', geom=NULL WHERE id={row_check['id']};")
+								print("update",outdata)
 							else:
-								rs = con.execute(f"INSERT INTO pccgis (data,geom) VALUES (\'{properties}\',NULL);")
+								if rs.rowcount>0:
+									for row2 in rs:
+										gistr = str(json.loads(row2['st_asgeojson'])).replace('\'','\"')
+										rs = con.execute(f"INSERT INTO pccgis (data,geom) VALUES (\'{properties}\',ST_Centroid(ST_GeomFromGeoJSON(\'{gistr}\')));")
+										break;
+								else:
+									rs = con.execute(f"INSERT INTO pccgis (data,geom) VALUES (\'{properties}\',NULL);")
+								print("insert",outdata)
 		else: #try except
 			print("somthing wrong")
 			return result

@@ -217,7 +217,7 @@ def forget_pw():
 				msg.html = f'''
 				<p>{flask.request.form["username"]} 您好，</p>
 				<p>大河小溪全民齊督工平台收到 重設密碼 請求<p>
-				<p><a href="http://river-watcher.bambooculture.tw/reset?token={token}">點此重設密碼</a></p>
+				<p><a href="https://river-watcher.bambooculture.tw/reset?token={token}">點此重設密碼</a></p>
 				'''
 				mail.send(msg)
 				return alert('請至信箱收信', flask.url_for('index')+"#login-page")
@@ -314,7 +314,7 @@ def addmail():
 	content = flask.request.json
 	titlelist = content['date']+ " 有"+ str(content['num_datas'])+"筆資料\r\n"
 	if content['num_datas']>0:
-		#titlelist += f'[檔案連結\r\n]({content["filename"].replace("/var/www/riverwatcher/","https://river-watcher.bambooculture.tw/")})'
+		#titlelist += f'[檔案連結\r\n]({content["filename"].replace("/var/www/riverwatcher/","httpss://river-watcher.bambooculture.tw/")})'
 		for river in content['records'].keys():
 			titlelist += river + "\r\n"
 			sub_list = []
@@ -336,10 +336,12 @@ def addmail():
 
 @app.route('/test', methods=['GET'])
 def test():
-	msg = Message('test!', recipients=['rrtw0627@gmail.com'])
-	msg.html = str("TEST!")
-	mail.send(msg)
-	return "SEND"
+	if(app.debug == True):
+		msg = Message(subject='test!', recipients=['rrtw0627@gmail.com'], html="<h1>TEST!</h1>")
+		mail.send(msg)
+		return "SEND"
+	else:
+		return flask.abort(400)
 
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
 def reg():
@@ -374,7 +376,7 @@ def link():
 	return flask.render_template('ext.html')
 
 if __name__ == "__main__":
-	if(app.testing == True):
-		app.run(host = "0.0.0.0", port = 5000, debug = True)
+	if(app.debug == True):
+		app.run(host = "0.0.0.0", port = 5000)
 	else:
 		app.run(host = "0.0.0.0", port = 80)
