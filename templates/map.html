@@ -178,6 +178,11 @@
 				$("#pcc-detail-box").addClass("d-none");
 				$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
 			});
+
+
+			{% with limit = pcc_data_limit %}
+			var pcc_data_limit = {{limit}};
+			{% endwith %}
 		</script>
 		<script src="{{url_for('static', filename='js/map_leaflet.js')}}"></script>
 	</body>

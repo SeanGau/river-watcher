@@ -24,7 +24,6 @@ function pcc_icon_style(color) {
 function show_pcc_datas(cb) {
 	if(cb['features'].length>0){
 		console.log(cb['features'].length + "筆資料顯示");
-
 		pcc_api_datas = cb;
 		$('#pcc-list').html("");
 		pcc_group.removeFrom(mymap);
@@ -344,6 +343,7 @@ pcc_group = L.markerClusterGroup({
 });
 
 $.getJSON($SCRIPT_ROOT + '/api/getpcc', {
+	limit: pcc_data_limit,
 	matches: "2000-2099",
 	requireGeom: "True"
 }, show_pcc_datas);
@@ -362,6 +362,7 @@ $('#detail-pcc input, #adv-search').change(function() {
 	else return;
 
 	$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
+		limit: pcc_data_limit,
 		keyword: $('#adv-search').val(),
 		matches: matches,
 		requireGeom: "True"
@@ -440,6 +441,7 @@ $("#search-river").submit(function(){
 	});
 
 	$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
+		limit: pcc_data_limit,
 		keyword: rivername,
 		requireGeom: "True",
 		matches: "2000-2099",

@@ -209,7 +209,7 @@ def pcc_crawler():
 
 	with engine.connect() as con:
 		title = f"{pcc_dict['date']} 有 {total_count}筆 標案資料"
-		news_data = json.dumps({"url": f"/api/getpcc?sinceDate={date_b.strftime('%Y%m%d')}&toDate={date_a.strftime('%Y%m%d')}", "text": title}, ensure_ascii=False).replace('\'','\"')
+		news_data = json.dumps({"url": f"/api/getpcc?matches={date_b.strftime('%Y%m%d')}-{date_a.strftime('%Y%m%d')}&limit=99999", "text": title}, ensure_ascii=False).replace('\'','\"')
 		con.execute(f"INSERT INTO news (data, date) VALUES(\'{news_data}\',\'{datetime.datetime.today()}\');")
 
 if __name__ == "__main__":

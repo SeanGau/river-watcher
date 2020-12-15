@@ -288,7 +288,7 @@ def getpcc():
 	keyword = flask.request.args.get('keyword',"")
 	matches = flask.request.args.get('matches', "2000-2099")
 	order = flask.request.args.get('order', "DESC")
-	limit = flask.request.args.get('limit', "3000")
+	limit = flask.request.args.get('limit', 3000)
 	check_geom = flask.request.args.get('requireGeom',False)
 
 	search_sql = ""
@@ -394,8 +394,10 @@ def reg():
 
 @app.route('/map')
 def map():
+	pcc_data_limit = flask.request.args.get('limit', 3000)
+	print("limit",pcc_data_limit)
 	rivers_data = get_rivers_list()
-	return flask.render_template('map.html', rivers_data = rivers_data)
+	return flask.render_template('map.html', rivers_data = rivers_data, pcc_data_limit = pcc_data_limit)
 
 @app.route('/link')
 def link():
