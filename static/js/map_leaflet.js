@@ -350,6 +350,7 @@ $.getJSON($SCRIPT_ROOT + '/api/getpcc', {
 
 $('#detail-pcc input, #adv-search').change(function() {
 	$("body").addClass("loading");
+	$("#search-list").html("");
 	var matches = "";
 	if($('#year-filter-1:checked').val() == "on")
 	{
