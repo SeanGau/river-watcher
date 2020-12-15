@@ -370,7 +370,7 @@ $('#detail-pcc input, #adv-search').change(function() {
 	}, show_pcc_datas);
 });
 
-$("#pcc-list").on('click', '.list-title', function() {
+$("#pcc-box").on('click', '.list-title', function() {
 	var latlng = $(this).attr('latlng').split(',');
 	var className = $(this).attr('data-class');
 	mymap.setView([latlng[1],latlng[0]],15);
@@ -402,14 +402,14 @@ $("#pcc-list").on('click', '.list-title', function() {
 	}
 });
 
-$("#pcc-list").on('mouseover','.list-title', function(){
+$("#pcc-box").on('mouseover','.list-title', function(){
 	var latlng = $(this).attr('latlng').split(',');
 	var className = $(this).attr('data-class');
 	//console.log(className);
 	$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
 
 })
-$("#pcc-list").on('mouseout','.list-title', function(){
+$("#pcc-box").on('mouseout','.list-title', function(){
 	var latlng = $(this).attr('latlng').split(',');
 	var className = $(this).attr('data-class');
 	//console.log(className);
