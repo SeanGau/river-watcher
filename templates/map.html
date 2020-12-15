@@ -24,21 +24,21 @@
 			<div id="search-list" class="scroll-style">
 			</div>
 			<div>
-				<input type="text" placeholder="搜尋河川" name="search-river" minlength="2"/><button type='submit'></button>
+				<input type="text" placeholder="搜尋河川" name="search-river" minlength="2" value=""/><button type='submit'></button>
 			</div>
 		</form>
 		<div id="detail-box">
 			<img id="toggle-detail" src="{{url_for('static', filename='img/right_arrow.svg')}}"/>
 			<div class="text-center m-0 p-0 h-100 w-100" id="detail-index">
 				<input id="adv-search" type="text" placeholder="搜尋關鍵字" name="adv-search"/>
-				<div class="nav nav-tabs" style="">
+				<div class="nav nav-tabs d-none">
 					<a data-toggle="tab" href="#detail-pcc" class="active">標案檢索</a>
 					<a data-toggle="tab" href="#detail-news_" disabled>最新消息</a>
 					<a data-toggle="tab" href="#detail-group_" disabled>河川社群</a>
 				</div>
 				<div class="tab-content text-left">
 					<div id="detail-pcc" class="tab-pane fade active show">
-						<div class="nav nav-tabs">
+						<div class="nav nav-tabs d-none">
 							<a data-toggle="tab" href="#pcc-years" class="active">年份</a>
 							<a data-toggle="tab" href="#pcc-img" disabled>鄉鎮市區</a>
 						</div>
@@ -46,7 +46,7 @@
 							<div id="pcc-years" class="tab-pane fade active show d-flex flex-column">
 								<div class="pcc-filter" id="year-filter-box1">
 									<label class="radio-style1" for="year-filter-1">
-										<p>民國<input type="number" min="50" max="150" placeholder="--" id="year-filter-1-1"/>年至<input type="number" min="50" max="150" value="108" placeholder="--" id="year-filter-1-2"/>年</p>
+										<p>民國<input type="number" min="50" max="150" placeholder="--" id="year-filter-1-1"/>年至<input type="number" min="50" max="150" value="" placeholder="--" id="year-filter-1-2"/>年</p>
 									<input type="radio" name="year-filter" id="year-filter-1" checked/><span class="radio-style1-box"></span></label>
 								</div>
 								<div class="pcc-filter" id="year-filter-box2">
@@ -55,7 +55,7 @@
 									<input type="radio" name="year-filter" id="year-filter-2"/><span class="radio-style1-box"></span></label>
 								</div>
 								<div style="text-align:center; margin: 5% 2% 2% 2%;">
-									<a style="float: left; font-size: 1.2em; border-bottom: 3px solid white;">標案類型</a>
+									<a style="float: left; font-size: 1.2em; border-bottom: 3px solid white;">標案列表</a>
 									<!-- a class="label-toggle active">已決標</a>
 									<label class="switch" for="toggle-isdone">
 										<input type="checkbox" name="toggle-isdone" id="toggle-isdone" disabled="disabled">
@@ -140,7 +140,7 @@
 	    window.onload = function() {
 				$("body").height(window.innerHeight);
 	    }
-
+			$("#year-filter-1-2").val(new Date().getFullYear() - 1911);
 			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 			var toggle=false;
 			$('#toggle-detail').click(function(){

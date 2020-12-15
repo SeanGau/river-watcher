@@ -23,14 +23,13 @@ function pcc_icon_style(color) {
 }
 function show_pcc_datas(cb) {
 	if(cb['features'].length>0){
-		if(cb['features'].length>=1000){
-			console.log(cb['features'].length + ">=1000");
-		}
+		console.log(cb['features'].length + "筆資料顯示");
+
 		pcc_api_datas = cb;
 		$('#pcc-list').html("");
 		pcc_group.removeFrom(mymap);
 		pcc_group.clearLayers();
-		pcc_group.addLayer(filter_pcc_api_datas(0));
+		pcc_group.addLayer(filter_pcc_api_datas());
 		pcc_group.addTo(mymap);
 		$("body").removeClass("loading");
 	}
@@ -40,7 +39,7 @@ function show_pcc_datas(cb) {
 	}
 }
 
-function filter_pcc_api_datas(filter_type){
+function filter_pcc_api_datas(){
 	share_dict['features'] = [];
 	pcc_datas_indexing = {};
 	rs = L.geoJSON(pcc_api_datas,{
@@ -59,20 +58,7 @@ function filter_pcc_api_datas(filter_type){
 				//share_dict['features'][pcc_datas_indexing[feature['properties']['link']]] = feature;
 				return false;
 			}
-			var yearS = String(year);
-			switch(filter_type) {
-				case 0:
-					return true;
-					break;
-				case 1:
-					if(year >= Number($('#year-filter-1-1').val()) && year <= Number($('#year-filter-1-2').val()))
-						return true;
-					break;
-				case 2:
-					if(yearS.includes($('#year-filter-2-1').val()) || yearS.includes($('#year-filter-2-2').val()) || yearS.includes($('#year-filter-2-3').val()))
-						return true;
-					break;
-			}
+			return true;
 		},
 		onEachFeature: function (feature, layer) {
 			var className = sha256(feature['properties']['link']);
@@ -117,16 +103,16 @@ function filter_pcc_api_datas(filter_type){
 			})});
 		},
 	});
-	console.log(pcc_datas_indexing);
 	return rs;
 }
 
+/*
 function filter_pcc_datas(filter_type){
 	share_dict['features'] = [];
 	var rs = null;
 	if(Object.keys(pcc_api_datas).length > 0)
 		rs = filter_pcc_api_datas(filter_type);
-	else
+	else // depreciate, should all use api data
 		rs = L.geoJSON(pcc_datas,{
 			filter: function (feature, layer) {
 				var adv_key = String($('#adv-search').val());
@@ -233,7 +219,7 @@ function filter_pcc_datas(filter_type){
 		});
 	return rs;
 }
-
+*/
 
 var myStyle = {
 	"fillColor": "#0FC9DC",
@@ -356,26 +342,30 @@ pcc_group = L.markerClusterGroup({
 	//disableClusteringAtZoom: 14,
 	//spiderfyOnMaxZoom: true
 });
-/*
-pcc_group.addLayer(filter_pcc_datas(1));
-pcc_group.addTo(mymap);*/
 
 $.getJSON($SCRIPT_ROOT + '/api/getpcc', {
-	sinceDate: 20100101,
+	matches: "2000-2099",
 	requireGeom: "True"
 }, show_pcc_datas);
 
-$('#detail-pcc input, #adv-search').change(function(){
-	$('#pcc-list').html("");
-	pcc_group.removeFrom(mymap);
-	pcc_group.clearLayers();
+$('#detail-pcc input, #adv-search').change(function() {
+	$("body").addClass("loading");
+	var matches = "";
 	if($('#year-filter-1:checked').val() == "on")
-		pcc_group.addLayer(filter_pcc_datas(1));
+	{
+		matches = `${Number($('#year-filter-1-1').val())+1911}-${Number($('#year-filter-1-2').val())+1911}`;
+	}
 	else	if($('#year-filter-2:checked').val() == "on")
-		pcc_group.addLayer(filter_pcc_datas(2));
-	else
-		pcc_group.addLayer(filter_pcc_datas(0));
-	pcc_group.addTo(mymap);
+	{
+		matches = `${Number($('#year-filter-2-1').val())+1911},${Number($('#year-filter-2-2').val())+1911},${Number($('#year-filter-2-3').val())+1911}`;
+	}
+	else return;
+
+	$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
+		keyword: $('#adv-search').val(),
+		matches: matches,
+		requireGeom: "True"
+	}, show_pcc_datas);
 });
 
 $("#pcc-list").on('click', '.list-title', function() {
@@ -431,7 +421,6 @@ $("#search-river").submit(function(){
 	var rivername = $("#search-river input").val();
 	//console.log(rivername);
 	$("#adv-search").val("");
-	$("#adv-search").trigger("change");
 	$.getJSON($SCRIPT_ROOT + '/api/getriver', {
 		rivername: rivername
 	}, function(cb) {
@@ -451,10 +440,12 @@ $("#search-river").submit(function(){
 	});
 
 	$.getJSON($SCRIPT_ROOT + '/api/getpcc', {
-		rivername: rivername,
+		keyword: rivername,
 		requireGeom: "True",
-		sinceDate: 20100101
+		matches: "2000-2099",
 	}, show_pcc_datas);
+
+	$("#adv-search").val(rivername);
 })
 
 $("#search-list").on('click','.river-pos', function() {

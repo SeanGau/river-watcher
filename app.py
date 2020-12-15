@@ -1,5 +1,5 @@
 import flask
-import requests, hashlib, json, csv, os, random, string, datetime
+import requests, hashlib, json, csv, os, random, string, datetime, re
 import urllib.parse
 from config import mmConfig
 from flask_mail import Mail, Message
@@ -285,29 +285,46 @@ def getriver():
 
 @app.route('/api/getpcc')
 def getpcc():
-	rivername = flask.request.args.get('rivername',None)
-	since = flask.request.args.get('sinceDate', datetime.datetime.today().strftime("%Y%m%d"))
-	to = flask.request.args.get('toDate', datetime.datetime.today().strftime("%Y%m%d"))
+	keyword = flask.request.args.get('keyword',"")
+	matches = flask.request.args.get('matches', None)
 	order = flask.request.args.get('order', "DESC")
-	limit = flask.request.args.get('limit', "5000")
+	limit = flask.request.args.get('limit', "3000")
 	check_geom = flask.request.args.get('requireGeom',False)
 
+	search_sql = ""
+	if matches is not None:
+		matches = matches.split(",")
+		for match in matches:
+			if "-" in match:
+				match = match.split("-")
+				if len(match[0])<=5:
+					match[0] += "0101"
+				if len(match[1])<=5:
+					match[1] += "1231"
+				search_sql += f" ((data ->> 'date')::int >= {match[0]} and (data ->> 'date')::int <= {match[1]}) "
+			else:
+				search_sql += f" (data ->> 'date') like '{match}%' "
+			search_sql+="or"
+
+	search_sql = search_sql[:-2]
+
+	print("search_sql", search_sql)
 	dict = {"type" : "FeatureCollection","features":[]}
 	rs = None
 
 	if check_geom is not False:
-		if rivername is not None:
-			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+		if len(keyword) > 1:
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'title') like \'%{keyword}%\' and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
 		else:
-			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
 	else:
-		if rivername is not None:
-			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'river') like \'{rivername}%\' and (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+		if len(keyword) > 1:
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'title') like \'%{keyword}%\' and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
 		else:
-			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'date')::int >= {since} and (data ->> 'date')::int <= {to} ORDER BY (data ->> 'date') {order} limit {limit}")
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where {search_sql} ORDER BY (data ->> 'date') {order} limit {limit}")
 
 	for row in rs:
-		d = {"type": "Feature", "geometry": {}, "properties": {}}
+		d = {"type": "Feature", "geometry": {"type":"Point","coordinates":[]}, "properties": {}}
 		if row['st_asgeojson'] is not None:
 			d['geometry'] = json.loads(row['st_asgeojson'])
 		if row['data'] is not None:

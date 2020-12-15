@@ -211,14 +211,14 @@ input[type=number] {
 }
 #detail-index>.tab-content {
 	margin: 15px;
-	height: calc(100% - 10em);
+	height: calc(100% - 8em);
 }
 
 #detail-pcc {
 	height: 100%;
 }
 #detail-pcc>.tab-content {
-	height: calc(100% - 2em);
+	height: 100%;
 }
 #detail-pcc .nav a{
 	font-size: 1em;
