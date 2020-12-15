@@ -286,13 +286,13 @@ def getriver():
 @app.route('/api/getpcc')
 def getpcc():
 	keyword = flask.request.args.get('keyword',"")
-	matches = flask.request.args.get('matches', None)
+	matches = flask.request.args.get('matches', "2000-2099")
 	order = flask.request.args.get('order', "DESC")
 	limit = flask.request.args.get('limit', "3000")
 	check_geom = flask.request.args.get('requireGeom',False)
 
 	search_sql = ""
-	if matches is not None:
+	if len(matches) > 0:
 		matches = matches.split(",")
 		for match in matches:
 			if "-" in match:
@@ -305,8 +305,9 @@ def getpcc():
 			else:
 				search_sql += f" (data ->> 'date') like '{match}%' "
 			search_sql+="or"
-
-	search_sql = search_sql[:-2]
+		search_sql = search_sql[:-2]
+	else:
+		search_sql = "TRUE"
 
 	print("search_sql", search_sql)
 	dict = {"type" : "FeatureCollection","features":[]}
