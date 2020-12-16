@@ -11,6 +11,7 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	line-height: 2em;
 	letter-spacing: 0.1px;
 	color: #D8D8D8;
+	word-break: break-all;
 }
 
 h1, h2, h3, h4, h5 {

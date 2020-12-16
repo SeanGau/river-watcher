@@ -141,7 +141,27 @@
 <br>
 4、各縣市特定水系及工程點位圖資整合下載：<br>
 將特定水系的工程點位圖另存成為圖檔下載使用<br>
-api:<br>
+<hr>
+<h4>河川圖資API (geojson)</h4>
+<a href="/api/getriver?rivername=淡水河">https://river-watcher.bambooculture.tw/api/getriver?rivername=淡水河</a>
+<table>
+  <thead>
+    <tr>
+      <th>網址參數</th>
+      <th>參數說明</th>
+      <th>預設值</th>
+    </tr>
+  </thead>
+  <tbody>
+		<tr>
+			<td>rivername</td>
+			<td>河川名稱 ex: 「淡水河」、「濁水溪」</td>
+			<td>N/A</td>
+		</tr>
+	</tbody>
+</table>
+<hr>
+<h4>標案資料API</h4>
 <a href="/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False">https://river-watcher.bambooculture.tw/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False</a>
 <table>
   <thead>
