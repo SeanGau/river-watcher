@@ -303,18 +303,18 @@ api:<br>
 						console.log("ERROR!!");
 				});
 			});
-			// Javascript to enable link to tab
-			var url = document.location.toString();
-			if (url.match('#')) {
-			    $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
-			}
 
-			// Change hash for page-reload
-			$('.nav-tabs a').on('shown.bs.tab', function (e) {
-			    window.location.hash = e.target.hash;
-			});
+			$(function() {
+			  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			    history.pushState({}, '', e.target.hash);
+			  });
 
-			$(window).ready(function(){
+			  var hash = document.location.hash;
+			  var prefix = "tab_";
+			  if (hash) {
+			    $('.nav-tabs a[href="'+hash.replace(prefix,"")+'"]').tab('show');
+			  }
+
 				if($("body").width()>768){
 					if($(this).scrollTop()>100){
 						isImgSmall = true;
