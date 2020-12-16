@@ -174,13 +174,27 @@ def pcc_crawler():
 		else:
 			if "weekly" in sys.argv:
 				date_b = date_b + datetime.timedelta(days=-7)
+			elif "auto" in sys.argv:
+				with urllib.request.urlopen("https://pcc.g0v.ronny.tw/api/getinfo") as ronnyinfo:
+					info = json.loads(ronnyinfo.read().decode())
+					infotime = info['最新資料時間'].split("T")[0].replace("-","")
+					with engine.connect() as con:
+						rs = con.execute(f"select data from pccgis ORDER BY data->>'date' DESC LIMIT 1")
+						date_str = rs.first()['data']['date']
+						date_b = datetime.datetime.strptime(str(date_str), "%Y%m%d")
+						if int(infotime) <= int(date_str):
+							print("not new datas")
+							return;
+
 			elif "last" in sys.argv:
 				with engine.connect() as con:
-					rs = con.execute(f"select ST_AsGeoJSON(geom),data from pccgis ORDER BY ID DESC LIMIT 1")
+					rs = con.execute(f"select data from pccgis ORDER BY data->>'date' DESC LIMIT 1")
 					date_b = datetime.datetime.strptime(str(rs.first()['data']['date']), "%Y%m%d")
+
 			elif "today" not in sys.argv:
 				date_input = input("參數錯誤！輸入起始日期 (6碼日期YYYYMMDD): ")
 				date_b = datetime.datetime.strptime(date_input, date_format)
+
 	else:
 		date_input = input("輸入起始日期 (6碼日期YYYYMMDD): ")
 		date_b = datetime.datetime.strptime(date_input, date_format)
