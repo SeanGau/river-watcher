@@ -16,18 +16,18 @@
 			<p style="background-color: black"><a href="/admin" style="color: white; text-align: center;">進入管理</a></p>
 		{%endif%}
 		<div class="container-fluid" id="landing-page">
-			<div class="ex-link-group col-md-4">
+			<div class="ex-link-box col-md-5 d-flex flex-column">
 				<a href="{{url_for('index')}}"><img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
-				<div id="ext-mattermost"><a href="{{url_for('link')}}#ext-mattermost"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
-				<div id="ext-depositar"><a href="{{url_for('link')}}#ext-depositar"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
-				<div id="ext-groups"><a href="{{url_for('link')}}#ext-groups"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
-			</div>
-			<div class="col-md-4 portal-news scroll-style">
-				<h5 style="margin: 2% 10%;">最新消息</h5>
-				<div>
-					{%for row in news%}
-						<p><a href="{{row['data']['url']}}" target="_blank" title="{{row['data']['text']}}">{{row['date']}}　{{row['data']['text']}}</a></p>
-					{%endfor%}
+				<div class="ex-link" id="ext-mattermost"><a href="{{url_for('link')}}#ext-mattermost"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
+				<div class="ex-link" id="ext-depositar"><a href="{{url_for('link')}}#ext-depositar"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
+				<div class="ex-link" id="ext-groups"><a href="{{url_for('link')}}#ext-groups"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
+				<div class="portal-news scroll-style px-4 py-2">
+					<h5>最新消息</h5>
+					<div>
+						{%for row in news%}
+							<p><a href="{{row['data']['url']}}" target="_blank" title="{{row['data']['text']}}">{{row['date']}}　{{row['data']['text']}}</a></p>
+						{%endfor%}
+					</div>
 				</div>
 			</div>
 			<div class="arrow arrow-1"></div>
