@@ -1,6 +1,7 @@
 import flask
-import requests, hashlib, json, csv, os, random, string, datetime, re
+import requests, hashlib, json, csv, os, random, string, datetime, re, codecs
 import urllib.parse
+import flask_excel as excel
 from config import mmConfig
 from flask_mail import Mail, Message
 from models import db, Users, Resetpw, News
@@ -11,6 +12,7 @@ app.config.from_object('config')
 app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
 mail = Mail(app)
 db.init_app(app)
+excel.init_excel(app)
 
 def gethashed(data):
 	data = data+app.config['SECRET_KEY']
@@ -282,13 +284,13 @@ def getriver():
 		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
 		dict['features'].append(d)
 	return dict
-
 @app.route('/api/getpcc')
 def getpcc():
 	keyword = flask.request.args.get('keyword',"")
 	matches = flask.request.args.get('matches', "2000-2099")
 	order = flask.request.args.get('order', "DESC")
 	limit = flask.request.args.get('limit', 3000)
+	type = flask.request.args.get('type', "geojson")
 	check_geom = flask.request.args.get('requireGeom',False)
 
 	search_sql = ""
@@ -333,7 +335,20 @@ def getpcc():
 		else:
 			continue
 		dict['features'].append(d)
-	return dict
+
+	if type is "geojson":
+		return dict
+	else:
+		csv_columns = dict['features'][0]['properties'].keys()
+		exdata = {}
+		for col in csv_columns:
+			exdata[col] = []
+			for row in dict['features']:
+				exdata[col].append(row['properties'][col])
+		excel.init_excel(app)
+		extension_type = type
+		filename = f"大河小溪_{keyword}{matches}.{extension_type}"
+		return excel.make_response_from_dict(exdata, file_type=extension_type, file_name=filename)
 
 @app.route('/api/addmail',methods=['POST'])
 def addmail():
