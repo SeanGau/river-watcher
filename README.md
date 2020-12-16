@@ -7,7 +7,7 @@
 
 >[網站平台](https://river-watcher.bambooculture.tw/)
 >
->[mattermost討論群](https://mattermost.river-watcher.bambooculture.tw/)
+>[API使用方式](https://river-watcher.bambooculture.tw/portal#about-data)
 >
 >[hackfoldr](https://beta.hackfoldr.org/bcsrcsp)
 
