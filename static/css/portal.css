@@ -11,6 +11,7 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	line-height: 2em;
 	letter-spacing: 0.1px;
 	color: #D8D8D8;
+	word-break: break-all;
 }
 
 h1, h2, h3, h4, h5 {
@@ -66,15 +67,12 @@ table td, table th {
 }
 
 .portal-news {
-	position: absolute;
-	bottom: 30px;
-	margin: 15px;
+	flex: 1;
 	border: 1px solid #D8D8D8;
 	border-radius: 4px;
 	background-color: rgba(50,50,50,0.75);
 }
 .portal-news > div {
-	height: 8em;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	width: 100%;
@@ -86,15 +84,16 @@ table td, table th {
 	margin-bottom: 0;
 }
 
-.ex-link-group {
+.ex-link-box {
+	height: 80%;
 	text-align: left;
 }
 
-.ex-link-group div {
-	margin: 10vh 0;
+.ex-link-box .ex-link {
+	padding: 2em 0em;
 }
 
-.ex-link-group div a {
+.ex-link-box .ex-link a {
 	color: #D8D8D8;
 	background-color: rgba(50,50,50,0.75);
 	font-size: 1em;
@@ -104,11 +103,11 @@ table td, table th {
 	border-radius: 4px;
 	border: 1px solid #D8D8D8;
 }
-.ex-link-group div a:hover {
+.ex-link-box .ex-link a:hover {
 	color: #0FC9DC;
 	text-decoration: none;
 }
-.ex-link-group #ext-mattermost:hover::after {
+.ex-link-box #ext-mattermost:hover::after {
 	content: "定期更新河川標案消息的討論區";
 	color: #AAA;
 	white-space:nowrap;
@@ -116,7 +115,7 @@ table td, table th {
 	left: 14em;
 	font-family: 'Noto Sans TC', sans-serif;
 }
-.ex-link-group #ext-depositar:hover::after {
+.ex-link-box #ext-depositar:hover::after {
 	content: "上傳河川相關資料的線上資料庫";
 	color: #AAA;
 	white-space:nowrap;
@@ -124,7 +123,7 @@ table td, table th {
 	left: 14em;
 	font-family: 'Noto Sans TC', sans-serif;
 }
-.ex-link-group #ext-groups:hover::after {
+.ex-link-box #ext-groups:hover::after {
 	content: "新增關注河川溪流的組織單位名錄";
 	color: #AAA;
 	white-space:nowrap;
@@ -444,10 +443,10 @@ table td, table th {
 	.go-to-map {
 		position: absolute;
 	}
-	.ex-link-group {
+	.ex-link-box {
 		text-align: center;
 	}
-	.ex-link-group div a {
+	.ex-link-box div a {
 		font-size: 1.2em;
 	}
 	.portal-block.col-md-8 {
@@ -498,13 +497,13 @@ table td, table th {
 		display: none;
 	}
 
-	.ex-link-group #ext-mattermost:hover::after {
+	.ex-link-box #ext-mattermost:hover::after {
 		content: "";
 	}
-	.ex-link-group #ext-depositar:hover::after {
+	.ex-link-box #ext-depositar:hover::after {
 		content: "";
 	}
-	.ex-link-group #ext-groups:hover::after {
+	.ex-link-box #ext-groups:hover::after {
 		content: "";
 	}
 }

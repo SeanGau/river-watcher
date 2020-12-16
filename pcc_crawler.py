@@ -174,13 +174,27 @@ def pcc_crawler():
 		else:
 			if "weekly" in sys.argv:
 				date_b = date_b + datetime.timedelta(days=-7)
+			elif "auto" in sys.argv:
+				with urllib.request.urlopen("https://pcc.g0v.ronny.tw/api/getinfo") as ronnyinfo:
+					info = json.loads(ronnyinfo.read().decode())
+					infotime = info['最新資料時間'].split("T")[0].replace("-","")
+					with engine.connect() as con:
+						rs = con.execute(f"select data from pccgis ORDER BY data->>'date' DESC LIMIT 1")
+						date_str = rs.first()['data']['date']
+						date_b = datetime.datetime.strptime(str(date_str), "%Y%m%d")
+						if int(infotime) <= int(date_str):
+							print("not new datas")
+							return;
+
 			elif "last" in sys.argv:
 				with engine.connect() as con:
-					rs = con.execute(f"select ST_AsGeoJSON(geom),data from pccgis ORDER BY ID DESC LIMIT 1")
+					rs = con.execute(f"select data from pccgis ORDER BY data->>'date' DESC LIMIT 1")
 					date_b = datetime.datetime.strptime(str(rs.first()['data']['date']), "%Y%m%d")
+
 			elif "today" not in sys.argv:
 				date_input = input("參數錯誤！輸入起始日期 (6碼日期YYYYMMDD): ")
 				date_b = datetime.datetime.strptime(date_input, date_format)
+
 	else:
 		date_input = input("輸入起始日期 (6碼日期YYYYMMDD): ")
 		date_b = datetime.datetime.strptime(date_input, date_format)
@@ -208,9 +222,10 @@ def pcc_crawler():
 		total_count += num_datas
 
 	with engine.connect() as con:
-		title = f"{pcc_dict['date']} 有 {total_count}筆 標案資料"
-		news_data = json.dumps({"url": f"/api/getpcc?matches={date_b.strftime('%Y%m%d')}-{date_a.strftime('%Y%m%d')}&limit=99999", "text": title}, ensure_ascii=False).replace('\'','\"')
-		con.execute(f"INSERT INTO news (data, date) VALUES(\'{news_data}\',\'{datetime.datetime.today()}\');")
+		if total_count > 0:
+			title = f"{pcc_dict['date']} 有 {total_count}筆 標案資料"
+			news_data = json.dumps({"url": f"/api/getpcc?matches={date_b.strftime('%Y%m%d')}-{date_a.strftime('%Y%m%d')}&limit=99999&type=xlsx", "text": title}, ensure_ascii=False).replace('\'','\"')
+			con.execute(f"INSERT INTO news (data, date) VALUES(\'{news_data}\',\'{datetime.datetime.today()}\');")
 
 if __name__ == "__main__":
 	pcc_crawler()
