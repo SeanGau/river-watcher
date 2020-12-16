@@ -4,13 +4,16 @@ import urllib.parse
 import flask_excel as excel
 from config import mmConfig
 from flask_mail import Mail, Message
+from flask_sslify import SSLify
 from models import db, Users, Resetpw, News
 from sqlalchemy.sql import func
+
 
 app = flask.Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
 mail = Mail(app)
+sslify = SSLify(app)
 db.init_app(app)
 excel.init_excel(app)
 
@@ -284,6 +287,7 @@ def getriver():
 		d = {"type": "Feature", "geometry": json.loads(row['st_asgeojson']), "properties": row['data']}
 		dict['features'].append(d)
 	return dict
+
 @app.route('/api/getpcc')
 def getpcc():
 	keyword = flask.request.args.get('keyword',"")
@@ -336,7 +340,7 @@ def getpcc():
 			continue
 		dict['features'].append(d)
 
-	if type is "geojson":
+	if type == "geojson":
 		return dict
 	else:
 		csv_columns = dict['features'][0]['properties'].keys()
@@ -350,8 +354,10 @@ def getpcc():
 		filename = f"大河小溪_{keyword}{matches}.{extension_type}"
 		return excel.make_response_from_dict(exdata, file_type=extension_type, file_name=filename)
 
+
 @app.route('/api/addmail',methods=['POST'])
 def addmail():
+	return flask.abort(403)
 	content = flask.request.json
 	titlelist = content['date']+ " 有"+ str(content['num_datas'])+"筆資料\r\n"
 	if content['num_datas']>0:
@@ -382,7 +388,7 @@ def test():
 		mail.send(msg)
 		return "SEND"
 	else:
-		return flask.abort(400)
+		return flask.abort(404)
 
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
 def reg():

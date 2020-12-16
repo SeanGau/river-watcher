@@ -15,16 +15,16 @@
 		{%if isadmin == true%}
 			<p style="background-color: black"><a href="/admin" style="color: white; text-align: center;">進入管理</a></p>
 		{%endif%}
-		<div class="container-fluid" id="landing-page">			
+		<div class="container-fluid" id="landing-page">
 			<div class="ex-link-group col-md-4">
 				<a href="{{url_for('index')}}"><img class="main-img" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
 				<div id="ext-mattermost"><a href="{{url_for('link')}}#ext-mattermost"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　討論群組</a></div>
 				<div id="ext-depositar"><a href="{{url_for('link')}}#ext-depositar"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　資料寄存</a></div>
 				<div id="ext-groups"><a href="{{url_for('link')}}#ext-groups"><span style="border-left: 3px solid rgb(15,201,220); margin-right: 1em;"/>　河川社群</a></div>
-			</div>	
+			</div>
 			<div class="col-md-4 portal-news scroll-style">
 				<h5 style="margin: 2% 10%;">最新消息</h5>
-				<div>					
+				<div>
 					{%for row in news%}
 						<p><a href="{{row['data']['url']}}" target="_blank" title="{{row['data']['text']}}">{{row['date']}}　{{row['data']['text']}}</a></p>
 					{%endfor%}
@@ -34,7 +34,7 @@
 			<div class="arrow arrow-2"></div>
 			<a class="go-to-map" href="{{url_for('map')}}">前往河川地圖　─────<img class="go-to-arrow" src="{{url_for('static', filename='img/right_arrow.svg')}}"/></a>
 		</div>
-		<div class="portal-page container-fluid" id="portal-page">	
+		<div class="portal-page container-fluid" id="portal-page">
 			<div class="row justify-content-center">
 				<div class="col col-md-10">
 					{%if username is defined%}
@@ -57,13 +57,13 @@
 					<datalist id="river-list">
 					{% for river in rivers_data %}
 						<option value="{{river['name']}}({{river['city']}})">
-					{% endfor %}	
+					{% endfor %}
 					</datalist>
 				</div>
 				<div class="portal-block col-md-8" id="sub-group">
 					{% for riverid in sub_list %}
 					<p class="sub-sets">{{riverid}}<button name="{{riverid}}">✖</button></p>
-					{% endfor %}	
+					{% endfor %}
 				</div>
 			</div>
 			{%endif%}
@@ -78,14 +78,14 @@
 						<li><a data-toggle="tab" href="#about-meaning">建設意義</a></li>
 						<li><a data-toggle="tab" href="#about-what">可獲得什麼資料？</a></li>
 					</ul>
-					<div class="tab-content nav nav-tabs flex-column">						
+					<div class="tab-content nav nav-tabs flex-column">
 						<a data-toggle="tab" href="#about-platform" class="mobile-tabs">平台介紹</a>
 						<div id="about-platform" class="tab-pane fade active show">
 							<h3>平台介紹</h3>
 							<p>大河小溪全民齊督工地圖平台，於 2019 年獲得 g0v 零時政府的公民科技創新獎助金，試圖透過公民科技降低公私部門之間的資訊落差，並將溪流整治工程相關部門的公開資訊視覺化。這個開源平台讓竹圍工作室長久以來對於環境的關注，有機會進一步對社會機制面造成影響，架構屬於台灣的河川情報系統，並拋出一個公民參與的另類想像。
 							</p>
 							<p>我們期望透過這個平台，建構以下可能：(1) 組織與社群的資訊網絡、(2) 河川系統與野溪情報網、(3) 公私部門資訊合作管道。
-							</p> 
+							</p>
 							<p>在平台上，使用者可以看到單一水系上，有哪些河川夥伴也正在關心這條河流。也能透過討論區，加入各種議題的討論、分享最新消息，或交換不同流域之間的經驗與故事。甚至，可以運用圖片上傳功能、研究資料寄存所、維基數據等管道，補充更多河川相關資料，參與台灣河川資料庫的共筆編輯。
 							</p>
 							<p>而政府所公開出來的工程點位資料，也會在地圖上被標記出來，方便以視覺化的方式理解歷年工程與水系之間的相對關係。當使用者對自己所關心的河川溪流點擊訂閱，一旦這條溪流和相關水系有新的工程發包，就會收到信件主動通知，提醒使用者介入追蹤。
@@ -141,7 +141,50 @@
 <br>
 4、各縣市特定水系及工程點位圖資整合下載：<br>
 將特定水系的工程點位圖另存成為圖檔下載使用<br>
-<br>
+api:<br>
+<a href="/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False">https://river-watcher.bambooculture.tw/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False</a>
+<table>
+  <thead>
+    <tr>
+      <th>網址參數</th>
+      <th>參數說明</th>
+      <th>預設值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>keyword</td>
+      <td>標案關鍵字 ex: 「淡水河」、「水壩」</td>
+      <td>N/A</td>
+    </tr>
+    <tr>
+      <td>matches</td>
+      <td>時間篩選 ex: 「20190301-20190901」、「2014,2017,2020」</td>
+      <td>2000-2099</td>
+    </tr>
+    <tr>
+      <td>order</td>
+      <td>資料排序方法 ex: 「DESC」、「ASC」</td>
+      <td>DESC</td>
+    </tr>
+    <tr>
+      <td>limit</td>
+      <td>資料筆數限制 ex: 「3000」、「999999」</td>
+      <td>3000</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>回傳資料類型 ex: 「geojson」、「csv」、「xlsx」</td>
+      <td>geojson</td>
+    </tr>
+    <tr>
+      <td>requireGeom</td>
+      <td>必須有地理資料 ex: 「True」、「False」</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<!--br>
 5、一次性圖層上傳與工程點位比對圖資整合下載：<br>
 使用者可自行上傳KML檔案，與地圖平台上的工程點位資料進行比對分析，並另存成為圖檔下載使用。所上傳的圖層資料將不會留存至下次登入<br>
 <br>
@@ -152,7 +195,7 @@
 使用者可點選任一河川，並檢視近期公布的工程審議會、說明會、公聽會等相關消息<br>
 <br>
 8、搜尋並連結各河川溪流相關資料集：<br>
-使用者可檢視與任一河川有關且被上傳到「資料寄存所」的河川溪流相關資料集，或在該網站進行註冊自行上傳更多資料。<br>
+使用者可檢視與任一河川有關且被上傳到「資料寄存所」的河川溪流相關資料集，或在該網站進行註冊自行上傳更多資料。<br-->
 							</p>
 						</div>
 					</div>
@@ -220,9 +263,9 @@
 			</div>
 		</div>
 		<!-- ----------------------------------------- -->
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
-    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.1/velocity.min.js"></script>
 		<script>
 			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
@@ -237,7 +280,7 @@
 					type: "add"
 				}, function(cb) {
 					if(cb.result=="ok"){
-						$("#sub-group").append('<p class="sub-sets">'+riverid+'<button name="'+riverid+'">✖</button></p>');						
+						$("#sub-group").append('<p class="sub-sets">'+riverid+'<button name="'+riverid+'">✖</button></p>');
 					}
 					else
 						console.log("ERROR!!");
@@ -254,7 +297,7 @@
 					type: "remove"
 				}, function(cb) {
 					if(cb.result=="ok"){
-					this_sel.parent("p").remove();					
+					this_sel.parent("p").remove();
 					}
 					else
 						console.log("ERROR!!");
@@ -272,7 +315,7 @@
 					}
 				}
 			});
-			
+
 			$(window).scroll(function(){
 				if($("body").width()>768){
 					if($(this).scrollTop()>100){
@@ -285,7 +328,7 @@
 					}
 				}
 			});
-			
+
 		</script>
 	</body>
  </html>
