@@ -76,7 +76,7 @@
 						<li><a data-toggle="tab" href="#about-platform" class="active">平台介紹</a></li>
 						<li><a data-toggle="tab" href="#about-team">建置團隊</a></li>
 						<li><a data-toggle="tab" href="#about-meaning">建設意義</a></li>
-						<li><a data-toggle="tab" href="#about-what">可獲得什麼資料？</a></li>
+						<li><a data-toggle="tab" href="#about-data">可獲得什麼資料？</a></li>
 					</ul>
 					<div class="tab-content nav nav-tabs flex-column">
 						<a data-toggle="tab" href="#about-platform" class="mobile-tabs">平台介紹</a>
@@ -126,8 +126,8 @@
 <p>在「大河小溪全民齊督工」地圖平台訂閱自己所關心的水系後，同一水系的相關工程都會在發包時主動發送通報給在地流域團體，讓全台灣各地關心河川、關心流域相關議題的單位都能收到更即時的工程資訊，讓民眾能從標案發包之初就開始追蹤工程的進度，並透過多筆資料的累積，提供未來描繪比對不同工程之間互動關係的資料基礎。
 </p>
 						</div>
-						<a data-toggle="tab" href="#about-what" class="mobile-tabs">可獲得什麼資料</a>
-						<div id="about-what" class="tab-pane fade">
+						<a data-toggle="tab" href="#about-data" class="mobile-tabs">可獲得什麼資料</a>
+						<div id="about-data" class="tab-pane fade">
 							<h3>可獲得什麼資料？</h3>
 							<p>
 1、開標主動通報：<br>
@@ -303,6 +303,17 @@ api:<br>
 						console.log("ERROR!!");
 				});
 			});
+			// Javascript to enable link to tab
+			var url = document.location.toString();
+			if (url.match('#')) {
+			    $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+			}
+
+			// Change hash for page-reload
+			$('.nav-tabs a').on('shown.bs.tab', function (e) {
+			    window.location.hash = e.target.hash;
+			});
+
 			$(window).ready(function(){
 				if($("body").width()>768){
 					if($(this).scrollTop()>100){
