@@ -20,6 +20,7 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
 	color: #CCC;
+	font-weight: lighter;
 }
 
 input:focus, button:focus{
@@ -166,7 +167,7 @@ table td, table th {
   }
 }
 
-.portal-page .row h5{
+.portal-page .col-md-2 h5{
 	color: #AAA;
 	margin-top: 2em;
 }
