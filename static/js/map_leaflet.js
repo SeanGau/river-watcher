@@ -92,7 +92,9 @@ function filter_pcc_api_datas(){
 					var properties = e['sourceTarget']['feature']['properties'];
 					$("#pcc-detail-box .scroll-data").html("");
 					for(var key in properties){
-						if(properties[key].includes("http"))
+						if(properties[key] == null)
+							$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>null</a></div></div>`);
+						if(String(properties[key]).includes("http"))
 							$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
 						else
 							$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
@@ -294,7 +296,9 @@ $("#pcc-box").on('click', '.list-title', function() {
 		var properties = feature['properties'];
 		$("#pcc-detail-box .scroll-data").html("");
 		for(var key in properties) {
-			if(properties[key].includes("http"))
+			if(properties[key] == null)
+			$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>null</a></div></div>`);
+			if(String(properties[key]).includes("http"))
 				$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
 			else
 				$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
