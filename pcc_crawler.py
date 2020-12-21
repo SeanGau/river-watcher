@@ -99,7 +99,7 @@ def pcc_crawler():
 						river_list.append(f'{keyword}({pccpos})')
 						with engine.connect() as con:
 							outdata['title'] = outdata['title'].replace("\'"," ").replace("\""," ")
-							river_name = outdata.get('key','N/A').split('(')[0]
+							river_name = outdata.get('river','N/A').split('(')[0]
 							county_name = 'NULL'
 							town_name = 'NULL'
 							rs = None
