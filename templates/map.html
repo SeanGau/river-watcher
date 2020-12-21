@@ -54,7 +54,7 @@
 										<p>民國<input type="number" min="50" max="150" value="106" placeholder="--" style="color: rgb(153,35,0)" id="year-filter-2-1"/>年及<input type="number" min="50" max="150" value="107" placeholder="--" style="color: rgb(255,81,46)" id="year-filter-2-2"/>年及<input type="number" min="50" max="150" value="108" placeholder="--" style="color: rgb(255,181,146)" id="year-filter-2-3"/>年</p>
 									<input type="radio" name="year-filter" id="year-filter-2"/><span class="radio-style1-box"></span></label>
 								</div>
-								<div style="text-align:center; margin: 5% 2% 2% 2%;">
+								<div style="text-align:center; margin: 1em 8px;">
 									<a style="float: left; font-size: 1.2em; border-bottom: 3px solid white;">標案列表</a>
 									<div class="form-check">
 								    <input type="checkbox" id="pcc-check-done" checked="true">
@@ -65,7 +65,7 @@
 								    <label class="form-check-label" for="pcc-check-other">其他</label>
 								  </div>
 								</div>
-								<div id="pcc-box" class="p-0 m-0">
+								<div id="pcc-box" class="">
 									<div id="pcc-list-box" class="scroll-style scroll-list">
 										<div id="pcc-list" class="scroll-data">
 										</div>
@@ -81,6 +81,9 @@
 											</div>
 										</div>
 									</div>
+								</div>
+								<div id="pcc-warning" class="pt-2 text-center">
+									<a>※由於效能問題，目前讀入上限<span></span>筆資料，請縮小搜尋範圍※</a>
 								</div>
 							</div>
 						</div>
@@ -184,6 +187,7 @@
 
 			{% with limit = pcc_data_limit %}
 			var pcc_data_limit = {{limit}};
+			$("#pcc-warning span").text(pcc_data_limit);
 			{% endwith %}
 		</script>
 		<script src="{{url_for('static', filename='js/map_leaflet.js')}}"></script>

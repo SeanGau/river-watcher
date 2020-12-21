@@ -254,12 +254,20 @@ input[type=number] {
 	overflow-x: hidden;
 }
 
+#pcc-warning {
+	font-size: 0.8em;
+	color: #DDD;
+}
+#pcc-warning span {
+	color: #C66;
+}
 
 #pcc-years {
 	height: 100%;
 }
 
 #pcc-box {
+	margin-left: 8px;
 	display: flex;
 	overflow: auto;
 	flex: 1;

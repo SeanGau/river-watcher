@@ -27,7 +27,13 @@ function pcc_icon_style(color) {
 }
 function show_pcc_datas(cb) {
 	if(cb['features'].length>0){
-		console.log(cb['features'].length + "筆資料顯示");
+		if(cb['features'].length >= pcc_data_limit) {
+			$("#pcc-warning").show();
+		}
+		else {
+			$("#pcc-warning").hide();			
+		}
+
 		pcc_api_datas = cb;
 		$('#pcc-list').html("");
 		pcc_group.removeFrom(mymap);
