@@ -3,7 +3,7 @@ body, #landing-page {
 	height: 100vh;
 }
 
-a, p, h1, h2, h3, h4, h5, input, label {
+a, p, h1, h2, h3, h4, h5, h6, input, label {
 	font-family: 'Noto Sans TC', sans-serif;
 	text-decoration: none;
 	text-align: justify;
@@ -14,8 +14,12 @@ a, p, h1, h2, h3, h4, h5, input, label {
 	word-break: break-all;
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
 	white-space:nowrap;
+}
+
+p {
+	color: #CCC;
 }
 
 input:focus, button:focus{

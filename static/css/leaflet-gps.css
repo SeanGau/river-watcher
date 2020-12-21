@@ -9,7 +9,7 @@
 	border-radius: 4px;
 	/*background-color: rgba(0, 0, 0, 0.25);*/
 	background-color: rgba(255, 255, 255, 0.8);
-	z-index:1000;	
+	z-index:1000;
 	/*box-shadow: 0 1px 7px rgba(0,0,0,0.65);*/
 	border: 2px solid rgba(0,0,0,0.2);
 	background-clip: padding-box;
@@ -38,10 +38,10 @@
 	background-position: 1px -28px;
 }
 .leaflet-control-gps .gps-button.active {
-	background-position: 1px -52px;
+	background-position: 1px -56px;
 }
 .leaflet-control-gps .gps-button.disabled {
-	background-position: 1px -24px;
+	background-position: 1px -28px;
 }
 
 .leaflet-control-gps .gps-alert {
@@ -56,5 +56,3 @@
 	background-color: rgba(255, 255, 255, 0.75);
 	border-radius:4px;
 }
-
-

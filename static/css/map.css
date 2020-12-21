@@ -247,6 +247,7 @@ input[type=number] {
 }
 
 .scroll-list {
+	min-width: 100%;
 	background-color: #29323b;
 	padding: 0.8em;
 	overflow-y: scroll;

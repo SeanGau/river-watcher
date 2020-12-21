@@ -13,7 +13,7 @@
 	</head>
 	<body class="scroll-style">
 		{%if isadmin == true%}
-			<p style="background-color: black"><a href="/admin" style="color: white; text-align: center;">進入管理</a></p>
+			<p style="background-color: black; position: fixed;z-index: 99999999; width: 100%; padding: 0 1em;"><a href="/admin" style="color: white; text-align: center;">進入管理</a></p>
 		{%endif%}
 		<div class="container-fluid" id="landing-page">
 			<div class="ex-link-box col-md-5 d-flex flex-column">
@@ -129,21 +129,17 @@
 						<a data-toggle="tab" href="#about-data" class="mobile-tabs">可獲得什麼資料</a>
 						<div id="about-data" class="tab-pane fade">
 							<h3>可獲得什麼資料？</h3>
-							<p>
-1、開標主動通報：<br>
-訂閱水系、河川溪流後，即時通知標案發包最新消息<br>
-<br>
-2、位置比對：<br>
-比對歷年河川溪流整治工程點位和各河川水系、上下游之間的關係<br>
-<br>
-3、相關河川社群登錄/查詢：<br>
-新增關注河川溪流的組織單位名錄<br>
-<br>
-4、各縣市特定水系及工程點位圖資整合下載：<br>
-將特定水系的工程點位圖另存成為圖檔下載使用<br>
+							<h6>1、開標主動通報：</h6>
+							<p>訂閱水系、河川溪流後，即時通知標案發包最新消息</p>
+							<h6>2、位置比對：</h6>
+							<p>比對歷年河川溪流整治工程點位和各河川水系、上下游之間的關係</p>
+							<h6>3、相關河川社群登錄/查詢：</h6>
+							<p>新增關注河川溪流的組織單位名錄</p>
+							<h6>4、各縣市特定水系及工程點位圖資整合下載：</h6>
+							<p>將特定水系的工程點位圖另存成為圖檔下載使用</p>
 <hr>
 <h4>河川圖資API (geojson)</h4>
-<a href="/api/getriver?rivername=淡水河">https://river-watcher.bambooculture.tw/api/getriver?rivername=淡水河</a>
+<a href="/api/getriver?rivername=淡水河" target="_blank">https://river-watcher.bambooculture.tw/api/getriver?rivername=淡水河</a>
 <table>
   <thead>
     <tr>
@@ -160,9 +156,10 @@
 		</tr>
 	</tbody>
 </table>
+<a href="https://data.gov.tw/dataset/25781" target="_blank">※資料來源：政府開放資料平台</a>
 <hr>
 <h4>標案資料API</h4>
-<a href="/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False">https://river-watcher.bambooculture.tw/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False</a>
+<a href="/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False" target="_blank">https://river-watcher.bambooculture.tw/api/getpcc?keyword=&matches=2000-2099&order=DESC&limit=3000&type=geojson&requireGeom=False</a>
 <table>
   <thead>
     <tr>
@@ -204,6 +201,7 @@
     </tr>
   </tbody>
 </table>
+<a href="https://ronnywang.github.io/pcc-viewer/index.html" target="_blank">※資料來源：ronnywang 標案資料瀏覽 (原始資料：政府電子採購網)</a>
 <!--br>
 5、一次性圖層上傳與工程點位比對圖資整合下載：<br>
 使用者可自行上傳KML檔案，與地圖平台上的工程點位資料進行比對分析，並另存成為圖檔下載使用。所上傳的圖層資料將不會留存至下次登入<br>

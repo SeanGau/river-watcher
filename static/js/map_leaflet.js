@@ -4,6 +4,10 @@ var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStree
 var satellite = L.tileLayer(MymbUrl, {id: 'ck0x9ai2j5kgb1co36kagohqm',   attribution: mbAttr}),
 	streets = L.tileLayer(MymbUrl, {id: 'ck0lupyad8k061dmv7zvbvwgv',   attribution: mbAttr});
 
+var type_dict = {
+	"done": ["決標公告","更正決標公告"],
+	"ongoing": ["公開招標公告","公開招標更正公告","公開取得報價單或企劃書公告","公開取得報價單或企劃書更正公告","限制性招標(經公開評選或公開徵求)公告","限制性招標(經公開評選或公開徵求)更正公告","招標文件公開閱覽公告資料公告","招標文件公開閱覽公告資料更正公告"]
+};
 var share_dict = {"type" : "FeatureCollection","features":[]};
 var pcc_api_datas = {};
 var pcc_datas_indexing = {};
@@ -35,6 +39,7 @@ function show_pcc_datas(cb) {
 	else {
 		$("body").removeClass("loading");
 		$("#search-list").html("<p><a>查無相關標案</a></p>");
+		$("#pcc-list").html("<p><a>查無相關標案</a></p>");
 	}
 }
 
@@ -48,6 +53,20 @@ function filter_pcc_api_datas(){
 				if(!String(feature['properties']['title']).includes(adv_key))
 					return false;
 			}
+
+			if(type_dict['done'].includes(feature['properties']['type'])) {
+				if($('#pcc-check-done:checked').val() != "on")
+					return false;
+			}
+			else if(type_dict['ongoing'].includes(feature['properties']['type'])) {
+				if($('#pcc-check-ongoing:checked').val() != "on")
+					return false;
+			}
+			else {
+				if($('#pcc-check-other:checked').val() != "on")
+					return false;
+			}
+
 			year = Number(feature['properties']['date'].substr(0,4)) - 1911;
 			if(pcc_datas_indexing[sha256(feature['properties']['link'])] == undefined){
 				pcc_datas_indexing[sha256(feature['properties']['link'])] = share_dict['features'].length;
@@ -105,121 +124,6 @@ function filter_pcc_api_datas(){
 	return rs;
 }
 
-/*
-function filter_pcc_datas(filter_type){
-	share_dict['features'] = [];
-	var rs = null;
-	if(Object.keys(pcc_api_datas).length > 0)
-		rs = filter_pcc_api_datas(filter_type);
-	else // depreciate, should all use api data
-		rs = L.geoJSON(pcc_datas,{
-			filter: function (feature, layer) {
-				var adv_key = String($('#adv-search').val());
-				if(adv_key.length > 0) {
-					if(!String(feature['properties']['工程名稱']).includes(adv_key))
-						return false;
-				}
-
-				var year_start = year_end = Number(feature['properties']['年份']);
-				var yearS = String(feature['properties']['年份']);
-				if(yearS.includes("-")){
-					var temp = yearS.split("-");
-					year_start = Number(temp[0]);
-					year_end = Number(temp[1]);
-				}
-
-				switch(filter_type) {
-					case 0:
-						return true;
-						break;
-					case 1:
-						if(year_start >= Number($('#year-filter-1-1').val()) && year_end <= Number($('#year-filter-1-2').val()))
-							return true;
-						break;
-					case 2:
-						if(yearS.includes($('#year-filter-2-1').val()) || yearS.includes($('#year-filter-2-2').val()) || yearS.includes($('#year-filter-2-3').val()))
-							return true;
-						break;
-				}
-			},
-			onEachFeature: function (feature, layer) {
-				var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['工程名稱']+feature['properties']['Google Map超連結']);
-
-				share_dict['features'].push(feature);
-				layer.on({
-					click: function pccClicked(e) {
-						var properties = e['sourceTarget']['feature']['properties'];
-						$("#pcc-detail-box .scroll-data").html("");
-						for(var key in properties){
-							$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a>${properties[key]}</a></div></div>`);
-							console.log(key+": "+properties[key]+"\n");
-						}
-						var title = `<a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}" data-class="${className}">${feature['properties']['工程名稱']}</a>`;
-						$("#pcc-detail-box .go-back span").html("");
-						$("#pcc-detail-box .go-back span").append(title);
-						if(!toggle){
-							$('#toggle-detail').trigger('click');
-						}
-						$("#pcc-list-box").addClass("d-none");
-						$("#pcc-detail-box").removeClass("d-none").queue(function(next){
-							$(".leaflet-marker-pane span.hovered-marker").removeClass('hovered-marker');
-							$(`.leaflet-marker-pane .${className} span`).addClass('hovered-marker');
-							next();
-						});
-					},
-				});
-				layer.bindTooltip('['+feature['properties']['年份']+']'+feature['properties']['工程名稱'],{direction: "bottom"});
-				$("#pcc-list").append(`<div class="row"><div class="col-3"><a >${feature['properties']['年份']}年度</a></div><div class="col"><a href="javascript:void(0)" class="list-title" latlng="${feature['geometry']['coordinates']}" title="${feature['properties']['工程名稱']}" data-class="${className}">${feature['properties']['工程名稱']}</a></div></div>`);
-			},
-			pointToLayer: function (feature, latlng) {
-				var className = sha256(String(feature['geometry']['coordinates'][0]+feature['geometry']['coordinates'][1])+feature['properties']['工程名稱']+feature['properties']['Google Map超連結']);
-				switch(filter_type) {
-					case 2:
-						var yearS = String(feature['properties']['年份']);
-						if(yearS.includes($('#year-filter-2-1').val())){
-							return L.marker(latlng, {icon: L.divIcon({
-								className: className,
-								iconAnchor: [0, 24],
-								labelAnchor: [-6, 0],
-								popupAnchor: [0, -36],
-								html: `<span style="${pcc_icon_style("rgb(153,35,0)")}" />`
-							})});
-						}
-						else if(yearS.includes($('#year-filter-2-2').val())){
-							return L.marker(latlng, {icon: L.divIcon({
-								className: className,
-								iconAnchor: [0, 24],
-								labelAnchor: [-6, 0],
-								popupAnchor: [0, -36],
-								html: `<span style="${pcc_icon_style("rgb(255,81,46)")}" />`
-							})});
-						}
-						else if(yearS.includes($('#year-filter-2-3').val())){
-							return L.marker(latlng, {icon: L.divIcon({
-								className: className,
-								iconAnchor: [0, 24],
-								labelAnchor: [-6, 0],
-								popupAnchor: [0, -36],
-								html: `<span style="${pcc_icon_style("rgb(255,181,146)")}" />`
-							})});
-						}
-						break;
-					default:
-						return L.marker(latlng, {icon: L.divIcon({
-							className: className,
-							iconAnchor: [0, 24],
-							labelAnchor: [-6, 0],
-							popupAnchor: [0, -36],
-							html: `<span style="${pcc_icon_style("rgb(252,112,5)")}" />`
-						})});
-						break;
-				}
-			},
-		});
-	return rs;
-}
-*/
-
 var myStyle = {
 	"fillColor": "#0FC9DC",
 	"color": "#0FC9DC",
@@ -270,7 +174,7 @@ var mymap = L.map('map', {
 L.control.zoom({
 	position:'topright'
 }).addTo(mymap);
-//mymap.addControl( new L.Control.Gps({position:'topright'}) );
+mymap.addControl( new L.Control.Gps({position:'topright'}) );
 
 
 var baseMaps = {
@@ -348,7 +252,7 @@ $.getJSON($SCRIPT_ROOT + '/api/getpcc', {
 	requireGeom: "True"
 }, show_pcc_datas);
 
-$('#detail-pcc input, #adv-search').change(function() {
+$('#detail-pcc input[type=number], #detail-pcc input[type=radio], #adv-search').change(function() {
 	$("body").addClass("loading");
 	$("#search-list").html("");
 	var matches = "";
@@ -370,6 +274,11 @@ $('#detail-pcc input, #adv-search').change(function() {
 	}, show_pcc_datas);
 });
 
+$('#detail-pcc .form-check input').change(function() {
+	$("body").addClass("loading");
+	show_pcc_datas(pcc_api_datas);
+});
+
 $("#pcc-box").on('click', '.list-title', function() {
 	var latlng = $(this).attr('latlng').split(',');
 	var className = $(this).attr('data-class');
@@ -378,7 +287,7 @@ $("#pcc-box").on('click', '.list-title', function() {
 		var feature = share_dict['features'][pcc_datas_indexing[className]];
 		var properties = feature['properties'];
 		$("#pcc-detail-box .scroll-data").html("");
-		for(var key in properties){
+		for(var key in properties) {
 			if(properties[key].includes("http"))
 				$("#pcc-detail-box .scroll-data").append(`<div class="row"><div class="col-4"><a >${key}</a></div><div class="col"><a href="${properties[key]}" target="_blank">標案資料瀏覽</a></div></div>`);
 			else
