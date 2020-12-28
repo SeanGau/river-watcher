@@ -256,10 +256,10 @@ def admin():
 
 @app.route("/portal") #主要使用者頁面
 def portal():
+	username = flask.session.get('username', False)
 	isAdmin = flask.session.get("email") in mmConfig['admin_id']
 	print("isAdmin: "+str(isAdmin))
 	rivers_data = get_rivers_list()
-	username = flask.session.get('username', False)
 	if not username:
 		return flask.render_template('portal.html', news=getnews(), rivers_data=rivers_data)
 	else:
@@ -355,6 +355,38 @@ def getpcc():
 		return excel.make_response_from_dict(exdata, file_type=extension_type, file_name=filename)
 
 
+@app.route('/api/adjpcc',methods=['POST'])
+def adjpcc():
+	username = flask.session.get('username', False)
+	isAdmin = flask.session.get("email") in mmConfig['admin_id']
+
+	if not isAdmin or not username:
+		return {
+		"status": 403,
+		"disc": f"require admins!"
+	}
+
+	content = flask.request.json	
+	for row in content.keys():
+		feature = content[row]
+		feature['properties']['last_edit'] = username
+		new_pos = f"{feature['target']['lng']},{feature['target']['lat']}"
+		link = feature['properties']['link']
+		properties = json.dumps(feature['properties'], ensure_ascii=False).replace('\'','\"').replace('%','%%')
+		sql_str = f"update pccgis set data=\'{properties}\', geom=ST_MakePoint({new_pos}) where data->>\'link\'=\'{link}\' returning id,geom"
+		print(sql_str)
+		rs = db.session.execute(sql_str)
+		for rr in rs:
+			print("db rs: ",rr)
+			rs2 = db.session.execute(f"select id,geom from pccgis where id=109964")
+			for rr2 in rs2:
+				print("db rs2: ",rr2)
+	db.session.commit()
+	return {
+		"status": 200,
+		"disc": f"修改成功!"
+	}
+
 @app.route('/api/addmail',methods=['POST'])
 def addmail():
 	return flask.abort(403)
@@ -416,9 +448,18 @@ def reg():
 @app.route('/map')
 def map():
 	pcc_data_limit = flask.request.args.get('limit', 3000)
+	username = flask.session.get('username', False)
+	user_email = flask.session.get("email", False)
+	isAdmin = user_email in mmConfig['admin_id']
+
+	user = json.dumps({
+		'username': username,
+		'email': user_email,
+		'isAdmin': isAdmin
+	})
 	print("limit",pcc_data_limit)
 	rivers_data = get_rivers_list()
-	return flask.render_template('map.html', rivers_data = rivers_data, pcc_data_limit = pcc_data_limit)
+	return flask.render_template('map.html', rivers_data = rivers_data, pcc_data_limit = pcc_data_limit, _user_data = user)
 
 @app.route('/link')
 def link():

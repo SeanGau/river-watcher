@@ -334,6 +334,10 @@ input[type=number] {
 	background-color: rgb(15,201,220) !important;
 }
 
+.modified-marker span {
+	border: 3px solid #ff00dd !important;
+}
+
 #detail-news #news-pcc {
 	background-color: #29323b;
 	padding: 1em;
@@ -348,6 +352,15 @@ input[type=number] {
 	border-radius: 5px;
 	position: absolute;
 	right: -45px;
+}
+
+#modify-box {
+	position: absolute;
+	z-index: 1000;
+	left: 50%;
+	width: 30%;
+	margin-left: -15%;
+	bottom: 20px;
 }
 
 #toggle-back {
@@ -524,6 +537,21 @@ input:checked + .slider:before {
 	border-radius: 4px;
 }
 
+
+.btn-style1 {
+	color: white;
+	background-color: rgba(104,111,121,0.9);
+	font-size: 1em;
+	font-weight: 200;
+	padding: 0.5em 1em;
+	border: none;
+	border-radius: 2px;
+	transition: 0.2s;
+}			
+.btn-style1:hover {
+	color: rgb(15,201,220);				
+	background-color: rgba(104,111,121,1);
+}
 
 @media (max-width: 768px) {
 	#search-list {

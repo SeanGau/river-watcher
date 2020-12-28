@@ -13,6 +13,7 @@ class Users(db.Model):
 	password = db.Column(db.String())
 	subscribe = db.Column(JSONB, default={})
 	time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+	create_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
 	def __init__(self, username, email, password, subscribe):
 		self.username = username
@@ -98,6 +99,7 @@ class Pccgis(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	data = db.Column(JSONB, default={})
 	geom = db.Column(Geometry('GEOMETRY'))
+	time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 	def __init__(self, data, geom):
 		self.data = data
