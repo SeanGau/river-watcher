@@ -8,7 +8,6 @@ from flask_sslify import SSLify
 from models import db, Users, Resetpw, News
 from sqlalchemy.sql import func
 
-
 app = flask.Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
