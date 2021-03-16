@@ -4,7 +4,7 @@ certifi==2020.6.20
 cffi==1.14.1
 chardet==3.0.4
 click==7.1.2
-cryptography==3.3.2
+cryptography==3.0
 et-xmlfile==1.0.1
 Flask==1.1.2
 Flask-Excel==0.0.7
@@ -14,6 +14,7 @@ Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.4
 Flask-SSLify==0.1.5
 GeoAlchemy2==0.8.4
+gunicorn==20.0.4
 idna==2.10
 itsdangerous==1.1.0
 jdcal==1.4.1
