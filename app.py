@@ -494,7 +494,7 @@ def link():
 	return flask.render_template('ext.html')
 
 if __name__ == "__main__":
-	if(app.debug == True):
+	if(app.debug == True and app.config['TEST_MODE'] == False):
 		app.run(host = "0.0.0.0", port = 5000)
 	else:
 		app.run(host = "0.0.0.0", port = 80)
