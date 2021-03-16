@@ -104,6 +104,7 @@ def getusers(email = None): #取得使用者資料庫
 
 def update_resets(token, email=None, pw=None):
 	if token == "null":
+		print("resets token is null")
 		return False
 	elif pw == None: #更新token
 		reset_user = db.session.query(Resetpw).filter_by(email = email).first()
@@ -229,6 +230,8 @@ def forget_pw():
 				'''
 				mail.send(msg)
 				return alert('請至信箱收信', flask.url_for('index')+"#login-page")
+			else:
+				return alert('伺服器錯誤！請聯絡管理員', flask.url_for('index')+"#login-page")
 	return  alert('使用者名稱或email錯誤！', flask.url_for('forget_pw'))
 
 @app.route('/reset', methods=['GET', 'POST'])
