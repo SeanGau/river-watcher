@@ -5,10 +5,9 @@ SECRET_KEY = ""
 MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 465
 DEBUG = True
-TESTING = False
-MAIL_SENDER = '"大河小溪全民齊督工" <riverwatcher.g0v@gmail.com>'
+MAIL_USE_SSL = True
 MAIL_USERNAME = 'riverwatcher.g0v@gmail.com'
-MAIL_PASSWORD = '--------'
+MAIL_PASSWORD = ''
 MAIL_DEFAULT_SENDER = ("大河小溪全民齊督工", "riverwatcher.g0v@gmail.com")
 
 mmConfig = {

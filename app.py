@@ -2,8 +2,7 @@ import flask
 import requests, hashlib, json, csv, os, random, string, datetime, re, codecs
 import urllib.parse
 import flask_excel as excel
-import smtplib
-from email.message import EmailMessage
+from flask_mail import Mail, Message
 from email import policy
 from config import mmConfig
 from flask_sslify import SSLify
@@ -13,6 +12,7 @@ from sqlalchemy.sql import func
 app = flask.Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
+mail = Mail(app)
 sslify = SSLify(app)
 db.init_app(app)
 excel.init_excel(app)
@@ -31,17 +31,8 @@ def alert(message, redir): #alert then redirect
 						</script>'''
 
 def send_mail(recevier_array, subject, html_content):
-		msg = EmailMessage(policy=policy.default)
-		msg["From"] = app.config['MAIL_SENDER']
-		msg["To"] = ','.join(recevier_array)
-		msg["Subject"] = subject
-		msg.set_content(html_content, subtype='html')	
-
-		server = smtplib.SMTP_SSL(app.config['MAIL_SERVER'], app.config['MAIL_PORT'])
-		server.ehlo()
-		server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-		server.send_message(msg)
-		server.quit()
+	msg = Message(subject=subject, recipients=recevier_array, html=html_content)
+	mail.send(msg)
 
 def mmsend(message, fpath = None): #傳訊息至mattermost
 	SERVER_URL = "https://mattermost.river-watcher.bambooculture.tw"
