@@ -2,8 +2,10 @@ import flask
 import requests, hashlib, json, csv, os, random, string, datetime, re, codecs
 import urllib.parse
 import flask_excel as excel
+import smtplib
+from email.message import EmailMessage
+from email import policy
 from config import mmConfig
-from flask_mail import Mail, Message
 from flask_sslify import SSLify
 from models import db, Users, Resetpw, News
 from sqlalchemy.sql import func
@@ -11,7 +13,6 @@ from sqlalchemy.sql import func
 app = flask.Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
-mail = Mail(app)
 sslify = SSLify(app)
 db.init_app(app)
 excel.init_excel(app)
@@ -28,6 +29,19 @@ def alert(message, redir): #alert then redirect
 						alert("{message}");
 						window.location.href = "{redir}";
 						</script>'''
+
+def send_mail(recevier_array, subject, html_content):
+		msg = EmailMessage(policy=policy.default)
+		msg["From"] = app.config['MAIL_SENDER']
+		msg["To"] = ','.join(recevier_array)
+		msg["Subject"] = subject
+		msg.set_content(html_content, subtype='html')	
+
+		server = smtplib.SMTP_SSL(app.config['MAIL_SERVER'], app.config['MAIL_PORT'])
+		server.ehlo()
+		server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+		server.send_message(msg)
+		server.quit()
 
 def mmsend(message, fpath = None): #傳訊息至mattermost
 	SERVER_URL = "https://mattermost.river-watcher.bambooculture.tw"
@@ -218,8 +232,9 @@ def forget_pw():
 			salt = ''.join(random.sample(string.ascii_letters, 16))
 			token = gethashed(email+salt)
 			if update_resets(token, email = email):
-				msg = Message('大河小溪全民齊督工─密碼重設', recipients=[f'{email}'])
-				msg.html = f'''
+				msg_to = [email]
+				msg_subject = '大河小溪全民齊督工─密碼重設'
+				msg_content = f'''
 				<div style="font-size: 1.5em; text-align: center;">
 				<p><b>{flask.request.form["username"]} </b>您好，</p>
 				<p>大河小溪全民齊督工平台收到<b>重設密碼</b>請求<p>
@@ -227,8 +242,8 @@ def forget_pw():
 				<p><a href="https://river-watcher.bambooculture.tw/reset?token={token}" style="padding: 1em; background-color: #AAA;color: white;">https://river-watcher.bambooculture.tw/reset?token={token}</a></p>
 				<p>若無法點擊，請複製連結貼到​​​您的​​​瀏覽器</p>
 				</div>
-				'''
-				mail.send(msg)
+				'''				
+				send_mail(msg_to, msg_subject, msg_content)
 				return alert('請至信箱收信', flask.url_for('index')+"#login-page")
 			else:
 				return alert('伺服器錯誤！請聯絡管理員', flask.url_for('index')+"#login-page")
@@ -404,14 +419,14 @@ def addmail():
 			titlelist += river + "\r\n"
 			sub_list = []
 			sub_list = get_subscribe(riverid = river)
-			msg = Message(f'大河小溪全民齊督工─{content["date"]} {river} 標案通知!!', recipients=sub_list)
-			msg.html = str("")
+			msg_subject = f'大河小溪全民齊督工─{content["date"]} {river} 標案通知!!'
+			msg_content = str("")
 			#print(msg)
 			for pccs in content['records'][river]:
 				titlelist += f'- ({pccs["type"]}) [{pccs["title"]}]({pccs["url"]}) \r\n'
-				msg.html += f'<p><a href=\"{pccs["url"]}\">({pccs["type"]}){pccs["title"]}</a></p>'
-			if len(sub_list) > 0:
-				mail.send(msg)
+				msg_content += f'<p><a href=\"{pccs["url"]}\">({pccs["type"]}){pccs["title"]}</a></p>'
+			if len(sub_list) > 0:				
+				send_mail(sub_list, msg_subject, msg_content)
 		titlelist += " @channel "
 		mmsend(titlelist, fpath=content["filename"])
 		adj_news(func.now(),f'{content["date"]} 有 {content["num_datas"]}筆 標案資料',f'/static/pcc/out/{os.path.basename(content["filename"])}')
@@ -426,8 +441,13 @@ def test():
 	if not isAdmin or not username:
 		return flask.abort(404)
 	else:
-		msg = Message(subject='test!', recipients=['rrtw0627@gmail.com'], html="<h1>TEST!</h1>")
-		mail.send(msg)
+		msg_to = ['rrtw0627@gmail.com','haca00193@gmail.com']
+		msg_subject = 'TEST'
+		msg_content = f'''
+			<h1>test</h1>
+			<p>yoyoyo</p>
+		'''
+		send_mail(msg_to, msg_subject, msg_content)
 		return "SEND"
 
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面

@@ -2,10 +2,14 @@ import json
 from sqlalchemy import create_engine
 
 SECRET_KEY = ""
-MAIL_SERVER = '127.0.0.1'
-MAIL_PORT = 25
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 465
 DEBUG = True
-MAIL_DEFAULT_SENDER = '"大河小溪全民齊督工" <riverwatcher@bambooculture.com>'
+TESTING = False
+MAIL_SENDER = '"大河小溪全民齊督工" <riverwatcher.g0v@gmail.com>'
+MAIL_USERNAME = 'riverwatcher.g0v@gmail.com'
+MAIL_PASSWORD = '--------'
+MAIL_DEFAULT_SENDER = ("大河小溪全民齊督工", "riverwatcher.g0v@gmail.com")
 
 mmConfig = {
 	"admin_id": [],
