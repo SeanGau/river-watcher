@@ -219,9 +219,13 @@ def forget_pw():
 			if update_resets(token, email = email):
 				msg = Message('大河小溪全民齊督工─密碼重設', recipients=[f'{email}'])
 				msg.html = f'''
-				<p>{flask.request.form["username"]} 您好，</p>
-				<p>大河小溪全民齊督工平台收到 重設密碼 請求<p>
-				<p><a href="https://river-watcher.bambooculture.tw/reset?token={token}">點此重設密碼</a></p>
+				<div style="font-size: 1.5em; text-align: center;">
+				<p><b>{flask.request.form["username"]} </b>您好，</p>
+				<p>大河小溪全民齊督工平台收到<b>重設密碼</b>請求<p>
+				<p>請點擊以下連結進行重設</p>
+				<p><a href="https://river-watcher.bambooculture.tw/reset?token={token}" style="padding: 1em; background-color: #AAA;color: white;">https://river-watcher.bambooculture.tw/reset?token={token}</a></p>
+				<p>若無法點擊，請複製連結貼到​​​您的​​​瀏覽器</p>
+				</div>
 				'''
 				mail.send(msg)
 				return alert('請至信箱收信', flask.url_for('index')+"#login-page")
