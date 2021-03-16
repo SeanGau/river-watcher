@@ -421,12 +421,14 @@ def addmail():
 
 @app.route('/test', methods=['GET'])
 def test():
-	if(app.debug == True):
+	username = flask.session.get('username', False)
+	isAdmin = flask.session.get("email") in mmConfig['admin_id']
+	if not isAdmin or not username:
+		return flask.abort(404)
+	else:
 		msg = Message(subject='test!', recipients=['rrtw0627@gmail.com'], html="<h1>TEST!</h1>")
 		mail.send(msg)
 		return "SEND"
-	else:
-		return flask.abort(404)
 
 @app.route('/register', methods=['GET', 'POST']) #註冊頁面
 def reg():
