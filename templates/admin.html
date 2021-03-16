@@ -1,71 +1,79 @@
-<!doctype html>
-<html lang="zh-hant">
-	<head>
-		<meta charset="UTF-8" />
-		<title>{{GLOBAL_TITLE}}</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-		<link href="https://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="{{url_for('static', filename='css/admin.css')}}">
-	</head>
-	<body>
-		<div id="user-list">
-			<h4>使用者</h4>
-			<input type="text" id="search-user" onkeyup="user_filter()" placeholder="Search for email...">
-			<div>
-				<table id="user-list-table">
-					<tr>
-						<th>email</th>
-						<th>id</th>
-					</tr>
-					{% for email in users.keys() %}
-					<tr>
-						<td>{{email}}</td><td>{{users[email]['id']}}</td>
-					</tr>
-					{%endfor%}
-				</table>
-			</div>
-		</div>
-		<br>
-		<div id="news-control">
-			<h4>最新消息</h4>
-			<form method="POST">
-			<h5>新增消息</h5>
-			date: <input name="date" type="date"> url: <input name="url" type="text"> text: <input name="text" type="text"><input type="submit" value="新增" name="addnews">
-			</form>
-			<h5>消息列表</h5>
-			<table>
-				<tr>
-					<th>id</th><th>date</th><th>text</th><th>url</th><th>刪除</th>
-				</tr>
-				{%for row in news%}
-				<tr>
-					<td>{{row.id}}</td><td>{{row.date}}</td><td>{{row.data.text}}</td><td><a href="{{row.data.url}}" target="_blank">{{row.data.url}}</a></td><td><form method="POST"><input type="hidden" name="id" value="{{row.id}}"><input type="submit" value="X" name="rmnews"></form></td>
-				</tr>
-				{%endfor%}			
-			</table>
-		</div>
-	</body>	
-	<script>
+{% extends "base.html" %}
+{% block title %}管理{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/admin.css')}}">
+{% endblock %}
+{% block body %}
+<div id="user-list">
+	<h4>使用者</h4>
+	<input type="text" id="search-user" onkeyup="user_filter()" placeholder="Search for email...">
+	<div>
+		<table id="user-list-table">
+			<tr>
+				<th>email</th>
+				<th>id</th>
+			</tr>
+			{% for email in users.keys() %}
+			<tr>
+				<td>{{email}}</td>
+				<td>{{users[email]['id']}}</td>
+			</tr>
+			{%endfor%}
+		</table>
+	</div>
+</div>
+<br>
+<div id="news-control">
+	<h4>最新消息</h4>
+	<form method="POST">
+		<h5>新增消息</h5>
+		date: <input name="date" type="date"> url: <input name="url" type="text"> text: <input name="text"
+			type="text"><input type="submit" value="新增" name="addnews">
+	</form>
+	<h5>消息列表</h5>
+	<table>
+		<tr>
+			<th>id</th>
+			<th>date</th>
+			<th>text</th>
+			<th>url</th>
+			<th>刪除</th>
+		</tr>
+		{%for row in news%}
+		<tr>
+			<td>{{row.id}}</td>
+			<td>{{row.date}}</td>
+			<td>{{row.data.text}}</td>
+			<td><a href="{{row.data.url}}" target="_blank">{{row.data.url}}</a></td>
+			<td>
+				<form method="POST"><input type="hidden" name="id" value="{{row.id}}"><input type="submit" value="X"
+						name="rmnews"></form>
+			</td>
+		</tr>
+		{%endfor%}
+	</table>
+</div>
+{% endblock %}
+{% block script %}
+
+<script>
 	function user_filter() {
-	  var input, filter, table, tr, td, i, txtValue;
-	  input = document.getElementById("search-user");
-	  filter = input.value.toUpperCase();
-	  table = document.getElementById("user-list-table");
-	  tr = table.getElementsByTagName("tr");
-	  for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName("td")[0];
-		if (td) {
-		  txtValue = td.textContent || td.innerText;
-		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-			tr[i].style.display = "";
-		  } else {
-			tr[i].style.display = "none";
-		  }
-		}       
-	  }
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("search-user");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("user-list-table");
+		tr = table.getElementsByTagName("tr");
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[0];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
 	}
-	</script>
- </html>
+</script>
+{% endblock %}

@@ -1,31 +1,21 @@
-<!doctype html>
-<html lang="zh-hant">
-	<head>
-		<meta charset="UTF-8" />
-		<title>{{GLOBAL_TITLE}}</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-		<link href="https://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-	</head>
-	<body>
-		<div class="d-flex justify-content-center align-items-center container-fluid login-page">
-			<a href="{{url_for('index')}}"><img class="main-img" style="height: 10vh;" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
-			<div class="login-box d-flex justify-content-center login-box-user col-md-4">
-				<div class="text-center" style="width: 80%;">	
-					<h4 class="text-center" style="margin-bottom: 0;">重設密碼</h4>
-					<p style="color: #AAA; font-size: 0.8em; width: 100%; margin-bottom: 5vh;" class="text-center">請輸入兩次相同密碼</p>
-					<form action='{{url_for("reset_pw", token = token)}}' method='POST' class="login-form">
-						<label class="label-idpw form-inline">密碼　<input type='password' name='password' minlength='6' placeholder='‧‧‧‧‧‧‧‧‧‧'/></label>
-						<label class="label-idpw form-inline">確認密碼　<input type='password' name='password2' placeholder='‧‧‧‧‧‧‧‧‧‧'/></label>
-						<input class="btn-style1" type='submit' value="確認修改"/>
-						</form>
-					</div>
+{% extends "base.html" %}
+{% block title %}重設密碼{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-center align-items-center container-fluid login-page">
+	<a href="{{url_for('index')}}"><img class="main-img" style="height: 10vh;" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
+	<div class="login-box d-flex justify-content-center login-box-user col-md-4">
+		<div class="text-center" style="width: 80%;">	
+			<h4 class="text-center" style="margin-bottom: 0;">重設密碼</h4>
+			<p style="color: #AAA; font-size: 0.8em; width: 100%; margin-bottom: 5vh;" class="text-center">請輸入兩次相同密碼</p>
+			<form action='{{url_for("reset_pw", token = token)}}' method='POST' class="login-form">
+				<label class="label-idpw form-inline">密碼　<input type='password' name='password' minlength='6' placeholder='‧‧‧‧‧‧‧‧‧‧'/></label>
+				<label class="label-idpw form-inline">確認密碼　<input type='password' name='password2' placeholder='‧‧‧‧‧‧‧‧‧‧'/></label>
+				<input class="btn-style1" type='submit' value="確認修改"/>
+				</form>
 			</div>
-		</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
-    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
-	</body>
- </html>
+	</div>
+</div>
+{% endblock %}

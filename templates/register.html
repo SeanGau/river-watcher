@@ -1,40 +1,41 @@
-<!doctype html>
-<html lang="zh-hant">
-	<head>
-		<meta charset="UTF-8" />
-		<title>{{GLOBAL_TITLE}}</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-		<link href="https://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-	</head>
-	<body>
-		<div class="d-flex justify-content-center align-items-center container-fluid login-page">
-			<a href="{{url_for('index')}}"><img class="main-img" style="height: 10vh;" src="{{url_for('static', filename='img/logo_w.png')}}"/></a>
-			<div class="login-box d-flex justify-content-center login-box-user col-md-4">
-				<div class="text-center" style="width: 80%;">	
-					<h4 class="text-center">成為會員</h4>
-					<form action='{{url_for('reg')}}' method='POST' class="login-form">
-						<label class="label-idpw form-inline">使用者名稱　<input type='text' name='username' placeholder='高O翔' required/></label>
-						<label class="label-idpw form-inline">登入信箱　<input type='text' name='email' maxlength='320' placeholder='bambooculture@gmail.com' required/></label>
-						<label class="label-idpw form-inline">登入密碼　<input type='password' name='password' minlength='8' placeholder='至少8位英數' required/></label>
-						<p class=" form-inline"><label class="checkbox-style1">我已詳閱<a href="#" style="font-size: 1em;" data-toggle="modal" data-target="#myModal">會員條款與隱私權條款</a><input type="checkbox" name="termok" oninvalid="alert('請確認會員條款與隱私權條款!');" required/><span class="checkbox-style1-box"></span></label></p>
-						<input class="btn-style1" type='submit' value="加入會員"/>
-						</form>
-					<a style="color: #AAA; font-size: 0.8em; width: 100%;" class="text-center">註冊為會員後，當您所訂閱關注的河川近期有標案即將發生，您將會收到電子報通知！</a>
-					</div>
-			</div>
+{% extends "base.html" %}
+{% block title %}成為會員{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-center align-items-center container-fluid login-page">
+	<a href="{{url_for('index')}}"><img class="main-img" style="height: 10vh;"
+			src="{{url_for('static', filename='img/logo_w.png')}}" /></a>
+	<div class="login-box d-flex justify-content-center login-box-user col-md-4">
+		<div class="text-center" style="width: 80%;">
+			<h4 class="text-center">成為會員</h4>
+			<form action='{{url_for('reg')}}' method='POST' class="login-form">
+				<label class="label-idpw form-inline">使用者名稱　<input type='text' name='username' placeholder='高O翔'
+						required /></label>
+				<label class="label-idpw form-inline">登入信箱　<input type='text' name='email' maxlength='320'
+						placeholder='bambooculture@gmail.com' required /></label>
+				<label class="label-idpw form-inline">登入密碼　<input type='password' name='password' minlength='8'
+						placeholder='至少8位英數' required /></label>
+				<p class=" form-inline"><label class="checkbox-style1">我已詳閱<a href="#" style="font-size: 1em;"
+							data-toggle="modal" data-target="#myModal">會員條款與隱私權條款</a><input type="checkbox"
+							name="termok" oninvalid="alert('請確認會員條款與隱私權條款!');" required /><span
+							class="checkbox-style1-box"></span></label></p>
+				<input class="btn-style1" type='submit' value="加入會員" />
+			</form>
+			<a style="color: #AAA; font-size: 0.8em; width: 100%;"
+				class="text-center">註冊為會員後，當您所訂閱關注的河川近期有標案即將發生，您將會收到電子報通知！</a>
 		</div>
-		<div id="myModal" class="modal fade scroll-style" role="dialog">
-		    <div class="modal-dialog modal-lg">
-				<div class="modal-content" style="background-color: rgba(100,100,100,0.9); color: #D8D8D8;">
-					<div class="modal-header">
-							<h4 class="modal-title">會員條款</h4>
-					</div>
-					<div class="modal-body">
-						<pre id="user-terms"><p>歡迎使用「大河小溪全民齊督工地圖平台」，竹圍工作室（以下簡稱「本工作室」）設立大河小溪全民齊督工地圖平台及相關附屬系統（以下簡稱「本平台」）並提供各項服務，為了讓您能夠安心的使用本網站的各項服務與資訊，特此向您說明本網站的隱私權保護政策，以保障您的權益，依「個人資料保護法」（以下簡稱「個資法」）第八條第一項規定，公告下列事項，請您詳閱下列內容：。
+	</div>
+</div>
+<div id="myModal" class="modal fade scroll-style" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="background-color: rgba(100,100,100,0.9); color: #D8D8D8;">
+			<div class="modal-header">
+				<h4 class="modal-title">會員條款</h4>
+			</div>
+			<div class="modal-body">
+				<pre id="user-terms"><p>歡迎使用「大河小溪全民齊督工地圖平台」，竹圍工作室（以下簡稱「本工作室」）設立大河小溪全民齊督工地圖平台及相關附屬系統（以下簡稱「本平台」）並提供各項服務，為了讓您能夠安心的使用本網站的各項服務與資訊，特此向您說明本網站的隱私權保護政策，以保障您的權益，依「個人資料保護法」（以下簡稱「個資法」）第八條第一項規定，公告下列事項，請您詳閱下列內容：。
 
 一、隱私權保護政策的適用範圍
 隱私權保護政策內容，包括本網站如何處理在您使用網站服務時收集到的個人識別資料。隱私權保護政策不適用於本網站以外的相關連結網站，也不適用於非本網站所委託或參與管理的人員。
@@ -72,14 +73,12 @@
 
 竹圍工作室　大河小溪平台運作團隊　2019.10.31
 </p></pre>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn" data-dismiss="modal" style="background-color: rgba(255,255,255,0.2); color: #D8D8D8;">關閉</button>
-					</div>
-				</div>
-		    </div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn" data-dismiss="modal"
+					style="background-color: rgba(255,255,255,0.2); color: #D8D8D8;">關閉</button>
+			</div>
 		</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
-    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>			
-	</body>
- </html>
+	</div>
+</div>
+{% endblock %}
