@@ -309,6 +309,9 @@ def getpcc():
 	type = flask.request.args.get('type', "geojson")
 	check_geom = flask.request.args.get('requireGeom',False)
 
+	keyword_sql = "\'%(" + "|".join(keyword.split(" ")) + ")%\'"
+	print("keyword_sql",keyword_sql)
+
 	search_sql = ""
 	if len(matches) > 0:
 		matches = matches.split(",")
@@ -333,12 +336,12 @@ def getpcc():
 
 	if check_geom is not False:
 		if len(keyword) > 1:
-			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'title') like \'%{keyword}%\' and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and (data ->> 'title') SIMILAR TO {keyword_sql} and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
 		else:
 			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where geom IS NOT NULL and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
 	else:
 		if len(keyword) > 1:
-			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'title') like \'%{keyword}%\' and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
+			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where (data ->> 'title') SIMILAR TO {keyword_sql} and ({search_sql}) ORDER BY (data ->> 'date') {order} limit {limit}")
 		else:
 			rs = db.session.execute(f"select ST_AsGeoJSON(geom),data from pccgis where {search_sql} ORDER BY (data ->> 'date') {order} limit {limit}")
 

@@ -310,9 +310,6 @@ input[type=number] {
     display    : flex;
     overflow   : auto;
     flex       : 1;
-}
-
-#pcc-box a {
     color: #AAA;
 }
 
@@ -329,7 +326,7 @@ input[type=number] {
 
 .scroll-list .scroll-data a {
     line-height: 2em;
-    color      : #AAA;
+    color: #AAA;
 }
 
 .scroll-list .scroll-data .col-3 {
@@ -636,14 +633,36 @@ input[type="checkbox"]+label span {
     cursor        : pointer;
 }
 
-input[type="checkbox"]:hover+label span {
-    border-color: #0DB8CB;
+input[type="checkbox"]:hover+label[for=pcc-check-done] span {
+    border-color: #FAA;
+}
+input[type="checkbox"]:checked+label[for=pcc-check-done] span {
+    background-color: #FAA;
 }
 
-input[type="checkbox"]:checked+label span {
-    background-color: #0FC9DC;
+input[type="checkbox"]:hover+label[for=pcc-check-ongoing] span {
+    border-color: #AFA;
+}
+input[type="checkbox"]:checked+label[for=pcc-check-ongoing] span {
+    background-color: #AFA;
 }
 
+input[type="checkbox"]:hover+label[for=pcc-check-other] span {
+    border-color: #AAF;
+}
+input[type="checkbox"]:checked+label[for=pcc-check-other] span {
+    background-color: #AAF;
+}
+
+.scroll-list .scroll-data a.color-done {
+    color: #FAA;
+}
+.scroll-list .scroll-data a.color-ongoing {
+    color: #AFA;
+}
+.scroll-list .scroll-data a.color-other {
+    color: #AAF;
+}
 
 @media (max-width: 768px) {
     #search-list {
