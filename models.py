@@ -114,3 +114,30 @@ class Pccgis(db.Model):
 			'data': self.data,
 			'geom': self.geom
 		}
+
+class Modifylog(db.Model):
+	__tablename__ = 'modifylog'
+	id = db.Column(db.Integer, primary_key=True)
+	new_data = db.Column(JSONB, default={})
+	new_geom = db.Column(Geometry('GEOMETRY'))
+	old_data = db.Column(JSONB, default={})
+	old_geom = db.Column(Geometry('GEOMETRY'))
+	time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+	def __init__(self, new_data, new_geom, old_data, old_geom):
+		self.new_data = new_data
+		self.new_geom = new_geom
+		self.old_data = old_data
+		self.old_geom = old_geom
+
+	def __repr__(self):
+		return '<id {}>'.format(self.id)
+
+	def serialize(self):
+		return {
+			'id': self.id,
+			'new_data': self.new_data,
+			'new_geom': self.new_geom,
+			'old_data': self.old_data,
+			'old_geom': self.old_geom,
+		}

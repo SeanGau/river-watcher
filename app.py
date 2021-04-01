@@ -388,14 +388,15 @@ def adjpcc():
 		new_pos = f"{feature['target']['lng']},{feature['target']['lat']}"
 		link = feature['properties']['link']
 		properties = json.dumps(feature['properties'], ensure_ascii=False).replace('\'','\"').replace('%','%%')
+		
+		rs_orig = db.session.execute(f"select data,geom from pccgis where data->>\'link\'=\'{link}\'")
+		for orig_row in rs_orig:
+			old_data = json.dumps(orig_row['data'], ensure_ascii=False).replace('\'','\"').replace('%','%%')
+			db.session.execute(f"INSERT INTO modifylog (new_data, new_geom, old_data, old_geom) VALUES (\'{properties}\', ST_MakePoint({new_pos}), \'{old_data}\', \'{orig_row['geom']}\')")
+		
 		sql_str = f"update pccgis set data=\'{properties}\', geom=ST_MakePoint({new_pos}) where data->>\'link\'=\'{link}\' returning id,geom"
 		print(sql_str)
 		rs = db.session.execute(sql_str)
-		for rr in rs:
-			print("db rs: ",rr)
-			rs2 = db.session.execute(f"select id,geom from pccgis where id=109964")
-			for rr2 in rs2:
-				print("db rs2: ",rr2)
 	db.session.commit()
 	return {
 		"status": 200,

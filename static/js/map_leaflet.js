@@ -13,6 +13,7 @@ var modified_dict = {};
 var share_dict = { "type": "FeatureCollection", "features": [] };
 var pcc_api_datas = {};
 var pcc_datas_indexing = {};
+let current_dragging = null;
 
 function show_pcc_details(feature) {
 	let className = sha256(feature['properties']['link']);
@@ -145,8 +146,18 @@ function filter_pcc_api_datas() {
 				click: function pccClicked(e) {
 					show_pcc_details(e['sourceTarget']['feature']);
 				},
-				dragend: function pccDragged(e) {
+				movestart: function pccMoveStart(e) {			
 					$("#modify-box").removeClass("d-none");
+					$("#modify-box").data("current", className);
+					current_dragging = this;
+				},
+				drag: function pccMoving(e) {
+					console.log(e);
+					$("#modify-lat").val(e.latlng['lat']);
+					$("#modify-lng").val(e.latlng['lng']);
+				},
+				moveend: function pccMoved(e) {
+					console.log(current_dragging);
 					modified_dict[className] = e['target']['feature'];
 					modified_dict[className]['target'] = e['target'].getLatLng();
 					e['target'].setIcon(L.divIcon({
@@ -156,7 +167,6 @@ function filter_pcc_api_datas() {
 						popupAnchor: [0, -36],
 						html: `<span style="${pcc_icon_style("rgb(252,112,5)")}" />`
 					}))
-					//console.log("dragged!!", e['target']['feature']);
 				}
 			});
 			year = Number(feature['properties']['date'].substr(0, 4)) - 1911;
@@ -332,6 +342,14 @@ $('#detail-pcc input[type=number], #detail-pcc input[type=radio], #adv-search').
 	}, show_pcc_datas);
 });
 
+$('#modify-box').on('change','[type=number]', function() {
+	let lat = $("#modify-lat").val();
+	let lng = $("#modify-lng").val();
+	let className = $("#modify-box").data("current");
+	current_dragging.setLatLng({lat: lat, lng: lng});
+	modified_dict[className]['target'] = {lat: lat, lng: lng};
+});
+
 $('#modify-submit').on('click', function () {
 	if (user_data['isAdmin'] != true) {
 		alert("此功能需要認證會員！");
@@ -361,6 +379,7 @@ $('#modify-submit').on('click', function () {
 	modified_dict = {};
 	$(".modified-marker").removeClass("modified-marker");
 	$("#modify-box").addClass("d-none");
+	current_dragging = null;
 });
 
 $('#modify-cancel').on('click', function () {
@@ -371,6 +390,7 @@ $('#modify-cancel').on('click', function () {
 	$("body").addClass("loading");
 	show_pcc_datas(pcc_api_datas);
 	$("#modify-box").addClass("d-none");
+	current_dragging = null;
 });
 
 $('#detail-pcc .form-check input').change(function () {
