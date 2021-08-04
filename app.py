@@ -1,11 +1,8 @@
 import flask
-import requests, hashlib, json, csv, os, random, string, datetime, re, codecs
-import urllib.parse
+import requests, hashlib, json, csv, os, random, string
 import flask_excel as excel
 from flask_mail import Mail, Message
-from email import policy
 from config import mmConfig
-from flask_sslify import SSLify
 from models import db, Users, Resetpw, News
 from sqlalchemy.sql import func
 
@@ -13,7 +10,6 @@ app = flask.Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.globals['GLOBAL_TITLE'] = "大河小溪全民齊督工"
 mail = Mail(app)
-sslify = SSLify(app)
 db.init_app(app)
 excel.init_excel(app)
 
@@ -489,7 +485,4 @@ def link():
 	return flask.render_template('ext.html')
 
 if __name__ == "__main__":
-	if(app.debug == True):
-		app.run(host = "0.0.0.0", port = 5000)
-	else:
-		app.run(host = "0.0.0.0", port = 80)
+	app.run(threaded=True, port=5000, debug=True)

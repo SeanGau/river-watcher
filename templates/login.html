@@ -9,7 +9,7 @@
 			<div class="login-box d-flex justify-content-center login-box-user col-md-4">
 				<div class="text-center" style="width: 80%;">	
 					<h4 class="text-center">恭喜你成為會員</h4>
-					<form action='{{url_for('login')}}' method='POST' class="login-form">
+					<form action="{{url_for('login')}}" method='POST' class="login-form">
 						<label class="label-idpw form-inline">信箱　<input type='text' name='email' placeholder='bambooculture@gmail.com'/></label>
 						<label class="label-idpw form-inline">密碼　<input type='password' name='password' minlength='6' placeholder='‧‧‧‧‧‧‧‧‧‧'/></label>
 						<p class=" form-inline"><label class="checkbox-style1">記住我<input type="checkbox" name="rememberme"/><span class="checkbox-style1-box"></span></label><a href="{{url_for('forget_pw')}}">忘記密碼？</a></p>
