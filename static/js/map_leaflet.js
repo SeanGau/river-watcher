@@ -244,7 +244,10 @@ var mymap = L.map('map', {
 L.control.zoom({
 	position: 'topright'
 }).addTo(mymap);
-mymap.addControl(new L.Control.Gps({ position: 'topright' }));
+
+L.control.locate({
+	position: 'topright'
+  }).addTo(mymap);
 
 
 var baseMaps = {

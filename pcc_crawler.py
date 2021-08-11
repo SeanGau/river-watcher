@@ -183,7 +183,7 @@ def pcc_crawler():
 						date_str = rs.first()['data']['date']
 						date_b = datetime.datetime.strptime(str(date_str), "%Y%m%d")
 						if int(infotime) <= int(date_str):
-							print("not new datas")
+							print("no new datas")
 							return;
 
 			elif "last" in sys.argv:
