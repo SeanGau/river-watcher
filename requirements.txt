@@ -25,4 +25,4 @@ requests==2.26.0
 SQLAlchemy==1.4.22
 texttable==1.6.4
 urllib3==1.26.6
-Werkzeug==2.0.1
+Werkzeug==2.2.3
